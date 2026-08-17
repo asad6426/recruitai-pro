@@ -1,0 +1,106 @@
+{% extends "auth/base_auth.html" %}
+{% load static %}
+{% block title %}Sign In &middot; RecruitAI{% endblock %}
+
+{% block brand_panel %}
+  <h1 class="mb-3" style="font-size:clamp(1.9rem,3.2vw,2.5rem);line-height:1.2;">
+    Hire smarter with<br>AI-driven screening
+  </h1>
+  <p class="mb-4" style="color:rgba(255,255,255,.82);max-width:32rem;line-height:1.7;">
+    Experience the next generation of recruitment. Our intelligent platform automates
+    workflows so you can focus on building relationships, not managing resumes.
+  </p>
+
+  <div class="row g-3 mb-4" style="max-width:34rem;">
+    <div class="col-sm-6">
+      <div class="ra-auth-stat h-100">
+        <div class="ra-auth-stat__value"><span data-count="75" data-suffix="%">75%</span></div>
+        <div class="ra-auth-stat__label">Reduction in time-to-hire</div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="ra-auth-stat h-100">
+        <div class="ra-auth-stat__value"><span data-count="12.5" data-decimals="1" data-suffix="k">12.5k</span></div>
+        <div class="ra-auth-stat__label">Top-tier candidates placed</div>
+      </div>
+    </div>
+  </div>
+
+  <blockquote class="ra-auth-quote mb-0" style="max-width:34rem;">
+    <div class="mb-2" style="color:#6ee7a8;letter-spacing:.1em;">
+      <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+    </div>
+    <p class="fst-italic mb-4" style="color:rgba(255,255,255,.9);line-height:1.7;">
+      "Aura ATS has completely transformed how our talent team operates. The AI screening
+      accuracy is uncanny, saving us hundreds of hours every quarter."
+    </p>
+    <footer class="d-flex align-items-center gap-3">
+      <img src="{% static 'assets/img/avatars/sarah-jenkins.svg' %}" alt="" class="ra-avatar ra-avatar--md">
+      <div>
+        <div class="fw-bold text-white">Sarah Jenkins</div>
+        <div class="text-sm" style="color:rgba(255,255,255,.7);">Head of Talent @ GlobalTech</div>
+      </div>
+    </footer>
+  </blockquote>
+{% endblock %}
+
+{% block auth_form %}
+  <h2 class="mb-2" style="font-size:2rem;">Welcome back</h2>
+  <p class="ra-muted mb-4">Enter your credentials to access your workspace.</p>
+
+  <form class="needs-validation" novalidate method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label" for="id_username">Email Address</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+        <input type="email" class="form-control border-start-0 ps-0{% if form.errors %} is-invalid{% endif %}" id="id_username" name="username" placeholder="name@company.com" value="{{ form.username.value|default:'' }}" required>
+        <div class="invalid-feedback">Enter a valid work email address.</div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="id_password">Password</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+        <input type="password" class="form-control border-start-0 border-end-0 ps-0{% if form.errors %} is-invalid{% endif %}" id="id_password" name="password" placeholder="••••••••" required minlength="8">
+        <button class="btn btn-outline-neutral border-start-0" type="button" data-ra-password-toggle="id_password" aria-label="Show password">
+          <i class="bi bi-eye"></i>
+        </button>
+        <div class="invalid-feedback">{% if form.errors %}Incorrect email or password.{% else %}Password must be at least 8 characters.{% endif %}</div>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="rememberMe" name="remember_me">
+        <label class="form-check-label text-sm" for="rememberMe">Remember me</label>
+      </div>
+      <a href="{% url 'password_reset' %}" class="text-sm fw-semibold">Forgot password?</a>
+    </div>
+
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="btn btn-primary btn-lg w-100 mb-4">Sign In</button>
+
+    <div class="ra-divider-text mb-4">Or continue with</div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-6">
+        <button type="button" class="btn btn-outline-neutral w-100 d-flex align-items-center justify-content-center gap-2"
+                data-ra-toast="Google sign-in is not wired up in this prototype." data-ra-toast-variant="info">
+          <i class="bi bi-google text-danger"></i> Google
+        </button>
+      </div>
+      <div class="col-6">
+        <button type="button" class="btn btn-outline-neutral w-100 d-flex align-items-center justify-content-center gap-2"
+                data-ra-toast="Microsoft sign-in is not wired up in this prototype." data-ra-toast-variant="info">
+          <i class="bi bi-microsoft text-primary"></i> Microsoft
+        </button>
+      </div>
+    </div>
+
+    <p class="text-center ra-muted mb-0">
+      Don't have an account? <a href="{% url 'signup' %}" class="fw-semibold">Create an account</a>
+    </p>
+  </form>
+{% endblock %}

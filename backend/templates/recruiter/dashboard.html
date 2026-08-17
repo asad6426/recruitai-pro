@@ -1,0 +1,221 @@
+{% extends "recruiter/base_recruiter.html" %}
+{% load static ra_extras %}
+{% block title %}Recruiter Dashboard &middot; RecruitAI Pro{% endblock %}
+
+{% block topbar_title %}
+<h1 class="ra-page-title">Recruiter Dashboard</h1>
+<p class="text-sm ra-muted mb-0 d-none d-sm-block">Welcome back, {{ request.user.first_name }}. Here's what's happening today.</p>
+{% endblock %}
+
+{% block topbar_actions %}
+<div class="dropdown d-none d-md-block">
+  <button class="btn btn-outline-neutral dropdown-toggle" type="button" data-bs-toggle="dropdown">
+    <i class="bi bi-calendar3 me-1"></i> Last 30 Days
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><a class="dropdown-item active" href="#">Last 30 Days</a></li>
+  </ul>
+</div>
+<button class="btn btn-outline-neutral d-none d-md-inline-flex" data-ra-toast="Report exported as CSV." data-ra-toast-variant="success">
+  <i class="bi bi-download me-1"></i> Export Report
+</button>
+{% endblock %}
+
+{% block content %}
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-4 col-xl">
+    <div class="ra-stat">
+      <div class="ra-stat__top">
+        <span class="ra-stat__icon"><i class="bi bi-people-fill"></i></span>
+        {% if total_candidates_trend != None %}<span class="ra-badge {% if total_candidates_trend >= 0 %}ra-badge--success{% else %}ra-badge--danger{% endif %}">{{ total_candidates_trend|stringformat:"+d" }}%</span>{% endif %}
+      </div>
+      <div class="ra-stat__label">Total Candidates</div>
+      <div class="ra-stat__value"><span data-count="{{ total_candidates }}">{{ total_candidates }}</span></div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-4 col-xl">
+    <div class="ra-stat">
+      <div class="ra-stat__top">
+        <span class="ra-stat__icon ra-stat__icon--warning"><i class="bi bi-briefcase-fill"></i></span>
+      </div>
+      <div class="ra-stat__label">Active Jobs</div>
+      <div class="ra-stat__value"><span data-count="{{ active_jobs }}">{{ active_jobs }}</span></div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-4 col-xl">
+    <div class="ra-stat">
+      <div class="ra-stat__top">
+        <span class="ra-stat__icon ra-stat__icon--success"><i class="bi bi-patch-check-fill"></i></span>
+      </div>
+      <div class="ra-stat__label">Shortlisted</div>
+      <div class="ra-stat__value"><span data-count="{{ shortlisted }}">{{ shortlisted }}</span></div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-6 col-xl">
+    <div class="ra-stat">
+      <div class="ra-stat__top">
+        <span class="ra-stat__icon ra-stat__icon--danger"><i class="bi bi-camera-video-fill"></i></span>
+        <span class="ra-badge ra-badge--danger">Today</span>
+      </div>
+      <div class="ra-stat__label">Scheduled Today</div>
+      <div class="ra-stat__value"><span data-count="{{ interviews_today.count }}">{{ interviews_today.count }}</span></div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-6 col-xl">
+    <div class="ra-stat">
+      <div class="ra-stat__top">
+        <span class="ra-stat__icon ra-stat__icon--neutral"><i class="bi bi-clock-history"></i></span>
+      </div>
+      <div class="ra-stat__label">Avg Time to Hire</div>
+      <div class="ra-stat__value">{% if avg_time_to_hire != None %}<span data-count="{{ avg_time_to_hire }}">{{ avg_time_to_hire }}</span> <small>days</small>{% else %}<small class="ra-muted">No hires yet</small>{% endif %}</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+
+  <div class="col-xl-8">
+
+    <div class="card mb-4">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h2 class="ra-title mb-0">Recent Applications</h2>
+        <a href="{% url 'recruiter_candidates' %}" class="fw-semibold text-sm">View All</a>
+      </div>
+      <div class="ra-table-wrap">
+        <table class="ra-table">
+          <thead>
+            <tr>
+              <th>Candidate</th>
+              <th>Applied Role</th>
+              <th>ATS Score</th>
+              <th>Stage</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for application in recent_applications %}
+            <tr>
+              <td>
+                <div class="ra-cell-person">
+                  {% if application.candidate.user.avatar %}<img src="{{ application.candidate.user.avatar.url }}" alt="" class="ra-avatar ra-avatar--sm">
+                  {% else %}<img src="{% static 'assets/img/avatars/placeholder.svg' %}" alt="" class="ra-avatar ra-avatar--sm">{% endif %}
+                  <div>
+                    <div class="ra-cell-person__name">{{ application.candidate.user.get_full_name }}</div>
+                    <div class="ra-cell-person__meta">{{ application.applied_at|timesince }} ago</div>
+                  </div>
+                </div>
+              </td>
+              <td>{{ application.job.title }}</td>
+              <td><span class="ra-score-ring ra-score-ring--{{ application.ats_score|score_ring_variant }}">{{ application.ats_score|default:"—" }}</span></td>
+              <td><span class="ra-badge ra-badge--{{ application.stage|stage_variant }}">{{ application.get_stage_display }}</span></td>
+              <td class="text-end">
+                <div class="dropdown">
+                  <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{% url 'recruiter_candidate_profile' application.pk %}"><i class="bi bi-person me-2"></i>View profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'recruiter_resume_analysis' application.pk %}"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <form method="post" action="{% url 'recruiter_application_stage' application.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="stage" value="rejected">
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="dropdown-item text-danger"><i class="bi bi-x-circle me-2"></i>Reject</button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center ra-muted py-4">No applications yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h2 class="ra-title mb-0">Hiring Funnel</h2>
+        <span class="text-sm ra-muted d-flex align-items-center gap-2">
+          <span style="width:9px;height:9px;border-radius:50%;background:var(--ra-blue);display:inline-block;"></span>
+          Overall Conversion
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="ra-funnel">
+          {% for stage in funnel %}
+          <div class="ra-funnel__col">
+            <div class="ra-funnel__bar ra-funnel__bar--{{ forloop.counter }}" data-height="{{ stage.height }}">
+              <span class="ra-funnel__num">{{ stage.count }}</span>
+              <span class="ra-funnel__cap">{{ stage.label }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-4">
+
+    <div class="card mb-4">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h2 class="ra-title mb-0">Interviews Today</h2>
+        <span class="ra-badge ra-badge--danger">{{ interviews_today.count }} Total</span>
+      </div>
+      <div class="card-body">
+        {% for interview in interviews_today %}
+        <div class="ra-interview-card mb-3">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="ra-badge ra-badge--neutral">{{ interview.scheduled_at|date:"g:i A" }}</span>
+            <i class="bi {% if interview.mode == 'video' %}bi-camera-video{% else %}bi-people{% endif %} ra-muted"></i>
+          </div>
+          <div class="d-flex align-items-center gap-2 mb-3">
+            {% if interview.application.candidate.user.avatar %}<img src="{{ interview.application.candidate.user.avatar.url }}" alt="" class="ra-avatar ra-avatar--sm">
+            {% else %}<img src="{% static 'assets/img/avatars/placeholder.svg' %}" alt="" class="ra-avatar ra-avatar--sm">{% endif %}
+            <div>
+              <div class="fw-bold ra-navy text-sm">{{ interview.application.candidate.user.get_full_name }}</div>
+              <div class="text-xs ra-muted">{{ interview.application.job.title }}</div>
+            </div>
+          </div>
+          {% if interview.mode == 'video' %}
+          <button class="btn btn-primary w-100" data-ra-toast="Opening meeting room…" data-ra-toast-variant="info">Join Meeting</button>
+          {% else %}
+          <a href="{% url 'recruiter_candidate_profile' interview.application.pk %}" class="btn btn-outline-neutral w-100">View Profile</a>
+          {% endif %}
+        </div>
+        {% empty %}
+        <p class="ra-muted text-sm mb-0">No interviews scheduled today.</p>
+        {% endfor %}
+
+        <button class="btn w-100 fw-semibold text-primary" style="border:1px dashed var(--ra-blue);"
+                data-ra-toast="Calendar view opens in the full product." data-ra-toast-variant="info">
+          View Calendar
+        </button>
+      </div>
+    </div>
+
+    <div class="ra-goal-card">
+      <h5 class="mb-2" style="font-size:1.125rem;">Recruiter Goal</h5>
+      <p class="text-sm mb-4" style="color:rgba(255,255,255,.85);line-height:1.6;">
+        {% if pending_offers > 0 %}You have {{ pending_offers }} candidate{{ pending_offers|pluralize }} pending offer letters. Complete them today to meet your hiring target.{% else %}No offers pending right now — keep the pipeline moving.{% endif %}
+      </p>
+      {% if goal %}
+      <div class="ra-meter ra-meter--thin mb-2">
+        <div class="ra-meter__track"><span class="ra-meter__fill" data-value="{{ goal_pct }}"></span></div>
+      </div>
+      <div class="d-flex justify-content-between text-sm fw-semibold">
+        <span>{{ goal_pct }}% to target</span>
+        <span>{{ goal_current_hires }}/{{ goal.target_hires }} Hired</span>
+      </div>
+      {% else %}
+      <p class="text-sm mb-0" style="color:rgba(255,255,255,.7);">No hiring goal set for this period yet.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

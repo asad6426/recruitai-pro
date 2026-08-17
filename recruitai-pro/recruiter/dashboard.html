@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recruiter Dashboard &middot; RecruitAI Pro</title>
+<link rel="icon" href="../assets/img/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+<link href="../assets/css/layout.css" rel="stylesheet">
+<link href="../assets/css/components.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="ra-app">
+  <div class="ra-app-body">
+
+    <!-- =============================== Sidebar =============================== -->
+    <div class="ra-sidebar-backdrop d-lg-none"></div>
+    <aside class="ra-sidebar">
+      <div class="ra-sidebar__brand">
+        <img src="../assets/img/logo.svg" alt="" width="34" height="34">
+        <div>
+          <div class="ra-sidebar__brand-name">RecruitAI Pro</div>
+          <div class="ra-sidebar__brand-sub">Enterprise HR</div>
+        </div>
+      </div>
+
+      <nav class="ra-sidebar__nav">
+        <a class="ra-nav-link active" href="dashboard.html"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+        <a class="ra-nav-link" href="candidates.html"><i class="bi bi-people"></i> Candidates</a>
+        <a class="ra-nav-link" href="jobs.html"><i class="bi bi-briefcase"></i> Jobs</a>
+        <a class="ra-nav-link is-soon" href="#"><i class="bi bi-calendar-event"></i> Interviews</a>
+        <a class="ra-nav-link is-soon" href="#"><i class="bi bi-bar-chart"></i> Analytics</a>
+        <a class="ra-nav-link is-soon" href="#"><i class="bi bi-bell"></i> Notifications</a>
+        <a class="ra-nav-link is-soon" href="#"><i class="bi bi-gear"></i> Settings</a>
+      </nav>
+
+      <div class="ra-sidebar__foot">
+        <a href="post-job.html" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Post a New Job</a>
+        <a class="ra-nav-link" href="#" data-ra-toast="Help Center opens in the full product." data-ra-toast-variant="info"><i class="bi bi-question-circle"></i> Help Center</a>
+        <a class="ra-nav-link ra-nav-link--danger" href="../login.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+      </div>
+    </aside>
+
+    <!-- ================================= Main ================================ -->
+    <div class="ra-main">
+
+      <!-- Topbar -->
+      <header class="ra-topbar">
+        <button class="ra-icon-btn d-lg-none" data-ra-sidebar-toggle type="button" aria-label="Open menu">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="ra-topbar__title">
+          <h1 class="ra-page-title">Recruiter Dashboard</h1>
+          <p class="text-sm ra-muted mb-0 d-none d-sm-block">Welcome back, Sarah. Here's what's happening today.</p>
+        </div>
+
+        <div class="dropdown d-none d-md-block">
+          <button class="btn btn-outline-neutral dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-calendar3 me-1"></i> Last 30 Days
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#">Last 7 Days</a></li>
+            <li><a class="dropdown-item active" href="#">Last 30 Days</a></li>
+            <li><a class="dropdown-item" href="#">This Quarter</a></li>
+            <li><a class="dropdown-item" href="#">Year to Date</a></li>
+          </ul>
+        </div>
+
+        <button class="btn btn-outline-neutral d-none d-md-inline-flex" data-ra-toast="Report exported as CSV." data-ra-toast-variant="success">
+          <i class="bi bi-download me-1"></i> Export Report
+        </button>
+
+        <button class="ra-icon-btn" data-ra-theme-toggle type="button" aria-label="Toggle dark mode">
+          <i class="bi bi-moon-stars" data-ra-theme-icon></i>
+        </button>
+        <button class="ra-icon-btn" data-ra-search-open type="button" aria-label="Search">
+          <i class="bi bi-search"></i>
+        </button>
+        <button class="ra-icon-btn" type="button" aria-label="Notifications" data-ra-toast="3 unread notifications." data-ra-toast-variant="info">
+          <i class="bi bi-bell"></i><span class="ra-icon-btn__dot"></span>
+        </button>
+        <button class="ra-avatar-btn" type="button" aria-label="Account">
+          <img src="../assets/img/avatars/sarah-jenkins.svg" alt="Sarah Jenkins" class="ra-avatar ra-avatar--sm">
+        </button>
+      </header>
+
+      <!-- Content -->
+      <main class="ra-content">
+
+        <!-- ---------------------------- KPI cards ---------------------------- -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-lg-4 col-xl">
+            <div class="ra-stat">
+              <div class="ra-stat__top">
+                <span class="ra-stat__icon"><i class="bi bi-people-fill"></i></span>
+                <span class="ra-badge ra-badge--success">+12%</span>
+              </div>
+              <div class="ra-stat__label">Total Candidates</div>
+              <div class="ra-stat__value"><span data-count="1240">1,240</span></div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 col-xl">
+            <div class="ra-stat">
+              <div class="ra-stat__top">
+                <span class="ra-stat__icon ra-stat__icon--warning"><i class="bi bi-briefcase-fill"></i></span>
+              </div>
+              <div class="ra-stat__label">Active Jobs</div>
+              <div class="ra-stat__value"><span data-count="18">18</span></div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 col-xl">
+            <div class="ra-stat">
+              <div class="ra-stat__top">
+                <span class="ra-stat__icon ra-stat__icon--success"><i class="bi bi-patch-check-fill"></i></span>
+              </div>
+              <div class="ra-stat__label">Shortlisted</div>
+              <div class="ra-stat__value"><span data-count="145">145</span></div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-6 col-xl">
+            <div class="ra-stat">
+              <div class="ra-stat__top">
+                <span class="ra-stat__icon ra-stat__icon--danger"><i class="bi bi-camera-video-fill"></i></span>
+                <span class="ra-badge ra-badge--danger">Today</span>
+              </div>
+              <div class="ra-stat__label">Scheduled Today</div>
+              <div class="ra-stat__value"><span data-count="12">12</span></div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-6 col-xl">
+            <div class="ra-stat">
+              <div class="ra-stat__top">
+                <span class="ra-stat__icon ra-stat__icon--neutral"><i class="bi bi-clock-history"></i></span>
+              </div>
+              <div class="ra-stat__label">Avg Time to Hire</div>
+              <div class="ra-stat__value"><span data-count="22">22</span> <small>days</small></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+
+          <!-- ======================== Left column ======================== -->
+          <div class="col-xl-8">
+
+            <!-- Recent applications -->
+            <div class="card mb-4">
+              <div class="card-header d-flex align-items-center justify-content-between">
+                <h2 class="ra-title mb-0">Recent Applications</h2>
+                <a href="candidates.html" class="fw-semibold text-sm">View All</a>
+              </div>
+              <div class="ra-table-wrap">
+                <table class="ra-table">
+                  <thead>
+                    <tr>
+                      <th>Candidate</th>
+                      <th>Applied Role</th>
+                      <th>ATS Score</th>
+                      <th>Stage</th>
+                      <th class="text-end">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="ra-cell-person">
+                          <img src="../assets/img/avatars/sarah-jenkins.svg" alt="" class="ra-avatar ra-avatar--sm">
+                          <div>
+                            <div class="ra-cell-person__name">Sarah Jenkins</div>
+                            <div class="ra-cell-person__meta">2h ago</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Senior Product Designer</td>
+                      <td><span class="ra-score-ring ra-score-ring--success">92</span></td>
+                      <td><span class="ra-badge ra-badge--success">Interviewing</span></td>
+                      <td class="text-end">
+                        <div class="dropdown">
+                          <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                          <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                            <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="ra-cell-person">
+                          <img src="../assets/img/avatars/marcus-thorne.svg" alt="" class="ra-avatar ra-avatar--sm">
+                          <div>
+                            <div class="ra-cell-person__name">Marcus Thorne</div>
+                            <div class="ra-cell-person__meta">5h ago</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Lead Dev Ops</td>
+                      <td><span class="ra-score-ring ra-score-ring--info">88</span></td>
+                      <td><span class="ra-badge ra-badge--neutral">New Applied</span></td>
+                      <td class="text-end">
+                        <div class="dropdown">
+                          <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                          <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                            <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="ra-cell-person">
+                          <img src="../assets/img/avatars/li-wei.svg" alt="" class="ra-avatar ra-avatar--sm">
+                          <div>
+                            <div class="ra-cell-person__name">Li Wei</div>
+                            <div class="ra-cell-person__meta">Yesterday</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Data Analyst</td>
+                      <td><span class="ra-score-ring ra-score-ring--success">84</span></td>
+                      <td><span class="ra-badge ra-badge--warning">Technical Test</span></td>
+                      <td class="text-end">
+                        <div class="dropdown">
+                          <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                          <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                            <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Hiring funnel -->
+            <div class="card">
+              <div class="card-header d-flex align-items-center justify-content-between">
+                <h2 class="ra-title mb-0">Hiring Funnel</h2>
+                <span class="text-sm ra-muted d-flex align-items-center gap-2">
+                  <span style="width:9px;height:9px;border-radius:50%;background:var(--ra-blue);display:inline-block;"></span>
+                  Overall Conversion
+                </span>
+              </div>
+              <div class="card-body">
+                <div class="ra-funnel">
+                  <div class="ra-funnel__col">
+                    <div class="ra-funnel__bar ra-funnel__bar--1" data-height="100">
+                      <span class="ra-funnel__num">1.2k</span>
+                      <span class="ra-funnel__cap">Applied</span>
+                    </div>
+                  </div>
+                  <div class="ra-funnel__col">
+                    <div class="ra-funnel__bar ra-funnel__bar--2" data-height="71">
+                      <span class="ra-funnel__num">850</span>
+                      <span class="ra-funnel__cap">Screening</span>
+                    </div>
+                  </div>
+                  <div class="ra-funnel__col">
+                    <div class="ra-funnel__bar ra-funnel__bar--3" data-height="47">
+                      <span class="ra-funnel__num">320</span>
+                      <span class="ra-funnel__cap">Interviews</span>
+                    </div>
+                  </div>
+                  <div class="ra-funnel__col">
+                    <div class="ra-funnel__bar ra-funnel__bar--4" data-height="26">
+                      <span class="ra-funnel__num">120</span>
+                      <span class="ra-funnel__cap">Offer</span>
+                    </div>
+                  </div>
+                  <div class="ra-funnel__col">
+                    <div class="ra-funnel__bar ra-funnel__bar--5" data-height="20">
+                      <span class="ra-funnel__num">84</span>
+                      <span class="ra-funnel__cap">Hired</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ======================== Right column ======================== -->
+          <div class="col-xl-4">
+
+            <!-- Interviews today -->
+            <div class="card mb-4">
+              <div class="card-header d-flex align-items-center justify-content-between">
+                <h2 class="ra-title mb-0">Interviews Today</h2>
+                <span class="ra-badge ra-badge--danger">12 Total</span>
+              </div>
+              <div class="card-body">
+
+                <div class="ra-interview-card mb-3">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="ra-badge ra-badge--neutral">10:00 AM</span>
+                    <i class="bi bi-camera-video ra-muted"></i>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 mb-3">
+                    <img src="../assets/img/avatars/david-miller.svg" alt="" class="ra-avatar ra-avatar--sm">
+                    <div>
+                      <div class="fw-bold ra-navy text-sm">David Miller</div>
+                      <div class="text-xs ra-muted">Cloud Architect</div>
+                    </div>
+                  </div>
+                  <button class="btn btn-primary w-100" data-ra-toast="Opening meeting room…" data-ra-toast-variant="info">Join Meeting</button>
+                </div>
+
+                <div class="ra-interview-card mb-3">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="ra-badge ra-badge--neutral">11:30 AM</span>
+                    <i class="bi bi-people ra-muted"></i>
+                  </div>
+                  <div class="d-flex align-items-center gap-2 mb-3">
+                    <img src="../assets/img/avatars/elena-rodriguez.svg" alt="" class="ra-avatar ra-avatar--sm">
+                    <div>
+                      <div class="fw-bold ra-navy text-sm">Elena Rodriguez</div>
+                      <div class="text-xs ra-muted">Product Manager</div>
+                    </div>
+                  </div>
+                  <a href="candidate-profile.html" class="btn btn-outline-neutral w-100">View Profile</a>
+                </div>
+
+                <button class="btn w-100 fw-semibold text-primary" style="border:1px dashed var(--ra-blue);"
+                        data-ra-toast="Calendar view opens in the full product." data-ra-toast-variant="info">
+                  View Calendar
+                </button>
+              </div>
+            </div>
+
+            <!-- Recruiter goal -->
+            <div class="ra-goal-card">
+              <h5 class="mb-2" style="font-size:1.125rem;">Recruiter Goal</h5>
+              <p class="text-sm mb-4" style="color:rgba(255,255,255,.85);line-height:1.6;">
+                You have 5 candidates pending offer letters. Complete them today to meet your hiring target.
+              </p>
+              <div class="ra-meter ra-meter--thin mb-2">
+                <div class="ra-meter__track"><span class="ra-meter__fill" data-value="75"></span></div>
+              </div>
+              <div class="d-flex justify-content-between text-sm fw-semibold">
+                <span>75% to target</span>
+                <span>15/20 Hired</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+
+      <!-- =============================== Footer =============================== -->
+      <footer class="ra-footer">
+        <div class="container-fluid px-lg-4">
+          <div class="row g-4">
+            <div class="col-lg-4">
+              <div class="ra-footer__brand"><img src="../assets/img/logo.svg" alt="" width="26" height="26"> RecruitAI</div>
+              <p class="ra-footer__blurb">
+                The world's most advanced AI resume screening and talent matching platform.
+                Empowering human potential through intelligent automation.
+              </p>
+              <div class="mt-3">
+                <a href="#" class="ra-footer__social" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+                <a href="#" class="ra-footer__social" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+              </div>
+            </div>
+            <div class="col-6 col-lg-2 offset-lg-1">
+              <h6>Product</h6>
+              <ul class="ra-footer__links">
+                <li><a href="../index.html#features">Features</a></li>
+                <li><a href="../index.html#features">Integrations</a></li>
+                <li><a href="../index.html#cta">Pricing</a></li>
+                <li><a href="../index.html#audience">Enterprise</a></li>
+              </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+              <h6>Resources</h6>
+              <ul class="ra-footer__links">
+                <li><a href="#">Documentation</a></li>
+                <li><a href="#">API Reference</a></li>
+                <li><a href="#">Community</a></li>
+                <li><a href="#">Marketplace</a></li>
+              </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+              <h6>Company</h6>
+              <ul class="ra-footer__links">
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="ra-footer__bar">
+            <span>&copy; 2024 RecruitAI Inc. All rights reserved.</span>
+            <span class="ra-footer__status">System Status: All Systems Operational</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+</div>
+
+<!-- ========================== Global search modal ========================== -->
+<div class="modal fade" id="globalSearchModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="ra-search w-100" style="width:100% !important;">
+          <i class="bi bi-search"></i>
+          <input type="search" class="form-control" placeholder="Search candidates, jobs, interviews…" data-ra-search-input aria-label="Global search">
+        </div>
+      </div>
+      <div class="modal-body pt-2">
+        <div class="ra-eyebrow mb-2">Quick links</div>
+        <div class="list-group list-group-flush">
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="candidates.html" data-ra-search-item><i class="bi bi-people me-2 text-primary"></i>All candidates</a>
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="candidate-profile.html" data-ra-search-item><i class="bi bi-person-badge me-2 text-primary"></i>Alexandria Sterling — Candidate profile</a>
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="resume-analysis.html" data-ra-search-item><i class="bi bi-file-earmark-text me-2 text-primary"></i>Resume analysis — Senior Frontend Developer</a>
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="jobs.html" data-ra-search-item><i class="bi bi-briefcase me-2 text-primary"></i>Job postings</a>
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="post-job.html" data-ra-search-item><i class="bi bi-plus-circle me-2 text-primary"></i>Post a new job</a>
+        </div>
+        <div class="ra-empty d-none" data-ra-search-empty>
+          <i class="bi bi-search"></i>
+          No results for that search.
+        </div>
+      </div>
+      <div class="modal-footer justify-content-start text-xs ra-muted">
+        Press <span class="ra-kbd">Ctrl</span> + <span class="ra-kbd">K</span> anywhere to open this.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ra-toast-stack"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

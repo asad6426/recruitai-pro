@@ -1,0 +1,387 @@
+/* ==========================================================================
+   RecruitAI Pro — layout.css
+   Three shells: app shell (sidebar), app shell + top nav, auth/marketing.
+   Plus sidebar, topbar and the shared dark footer.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   App shell
+   -------------------------------------------------------------------------- */
+.ra-app { min-height: 100vh; display: flex; flex-direction: column; }
+
+.ra-app-body { display: flex; flex: 1 0 auto; align-items: stretch; }
+
+.ra-main {
+  flex: 1 1 auto;
+  min-width: 0;                       /* lets tables scroll instead of pushing */
+  display: flex;
+  flex-direction: column;
+  background: var(--ra-bg);
+}
+
+.ra-content { padding: 1.5rem; flex: 1 0 auto; }
+
+/* Content + right drawer sit side by side under the topbar. */
+.ra-split { display: flex; align-items: stretch; flex: 1 0 auto; min-width: 0; }
+.ra-split > .ra-content { flex: 1 1 auto; min-width: 0; }
+
+@media (max-width: 575.98px) {
+  .ra-content { padding: 1rem; }
+}
+
+/* --------------------------------------------------------------------------
+   Sidebar
+   -------------------------------------------------------------------------- */
+.ra-sidebar {
+  width: var(--ra-sidebar-w);
+  flex: 0 0 var(--ra-sidebar-w);
+  background: var(--ra-surface);
+  border-right: 1px solid var(--ra-border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+}
+
+.ra-sidebar__brand {
+  padding: 1.25rem 1.25rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: .625rem;
+}
+.ra-sidebar__brand-name {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--ra-blue);
+  line-height: 1.15;
+  letter-spacing: -.02em;
+}
+.ra-sidebar__brand-sub { font-size: .75rem; color: var(--ra-text-muted); }
+
+.ra-sidebar__nav { padding: .25rem .75rem; flex: 1 1 auto; overflow-y: auto; }
+
+.ra-nav-link {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .625rem .75rem;
+  margin-bottom: .125rem;
+  border-radius: var(--ra-radius-sm);
+  color: var(--ra-text);
+  font-size: .9375rem;
+  font-weight: 500;
+  transition: background-color .15s ease, color .15s ease;
+}
+.ra-nav-link i { font-size: 1.0625rem; color: var(--ra-text-muted); line-height: 1; }
+.ra-nav-link:hover { background: var(--ra-surface-alt); color: var(--ra-text); }
+.ra-nav-link.active {
+  background: var(--ra-blue-050);
+  color: var(--ra-blue);
+  font-weight: 600;
+}
+.ra-nav-link.active i { color: var(--ra-blue); }
+
+/* Nav items whose page isn't built yet — visible but clearly inert. */
+.ra-nav-link.is-soon { color: var(--ra-text-faint); cursor: default; }
+.ra-nav-link.is-soon i { color: var(--ra-text-faint); }
+.ra-nav-link.is-soon:hover { background: transparent; }
+.ra-nav-link.is-soon::after {
+  content: "Soon";
+  margin-left: auto;
+  font-size: .625rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ra-text-faint);
+  background: var(--ra-neutral-bg);
+  padding: .125rem .375rem;
+  border-radius: 999px;
+}
+
+.ra-sidebar__foot { padding: 1rem .75rem 1.25rem; border-top: 1px solid var(--ra-border); }
+.ra-sidebar__foot .btn { width: 100%; margin-bottom: .75rem; }
+.ra-sidebar__foot .ra-nav-link { font-size: .9375rem; }
+.ra-nav-link--danger { color: var(--ra-danger); }
+.ra-nav-link--danger i { color: var(--ra-danger); }
+.ra-nav-link--danger:hover { background: var(--ra-danger-bg); color: var(--ra-danger); }
+
+/* Below lg the sidebar becomes an offcanvas panel. */
+@media (max-width: 991.98px) {
+  .ra-sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 1045;
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    box-shadow: var(--ra-shadow-lg);
+  }
+  .ra-sidebar.is-open { transform: translateX(0); }
+  .ra-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .45);
+    z-index: 1040;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+  }
+  .ra-sidebar-backdrop.is-open { opacity: 1; pointer-events: auto; }
+}
+
+/* --------------------------------------------------------------------------
+   Topbar
+   -------------------------------------------------------------------------- */
+.ra-topbar {
+  min-height: var(--ra-topbar-h);
+  background: var(--ra-surface);
+  border-bottom: 1px solid var(--ra-border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .75rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
+.ra-topbar__title { flex: 1 1 auto; min-width: 0; }
+
+.ra-search {
+  position: relative;
+  width: min(360px, 34vw);
+}
+.ra-search i {
+  position: absolute;
+  left: .875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ra-text-faint);
+  font-size: .9375rem;
+  pointer-events: none;
+}
+.ra-search .form-control {
+  padding-left: 2.375rem;
+  border-radius: 999px;
+  background: var(--ra-surface-alt);
+  font-size: .875rem;
+}
+
+.ra-icon-btn {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ra-text-muted);
+  font-size: 1.125rem;
+  position: relative;
+  transition: background-color .15s ease, color .15s ease;
+}
+.ra-icon-btn:hover { background: var(--ra-surface-alt); color: var(--ra-text); }
+
+.ra-icon-btn__dot {
+  position: absolute;
+  top: 8px; right: 9px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--ra-danger);
+  border: 2px solid var(--ra-surface);
+}
+
+.ra-avatar-btn { padding: 0; border: 0; background: transparent; border-radius: 50%; }
+
+@media (max-width: 767.98px) {
+  .ra-topbar { padding: .75rem 1rem; }
+  .ra-search { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   App shell variant with a product top nav (applicant Browse Jobs)
+   -------------------------------------------------------------------------- */
+.ra-topnav {
+  background: var(--ra-surface);
+  border-bottom: 1px solid var(--ra-border);
+  padding: .75rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 1035;
+}
+.ra-topnav .navbar-brand {
+  font-weight: 800;
+  color: var(--ra-blue);
+  font-size: 1.25rem;
+  letter-spacing: -.02em;
+}
+.ra-topnav .nav-link {
+  color: var(--ra-text);
+  font-weight: 500;
+  padding: .25rem 0;
+  margin: 0 .875rem;
+  border-bottom: 2px solid transparent;
+}
+.ra-topnav .nav-link.active {
+  color: var(--ra-blue);
+  font-weight: 600;
+  border-bottom-color: var(--ra-blue);
+}
+
+/* With a top nav above it, the sidebar starts below that bar. */
+.ra-app--topnav .ra-sidebar {
+  top: var(--ra-topbar-h);
+  height: calc(100vh - var(--ra-topbar-h));
+}
+@media (max-width: 991.98px) {
+  .ra-app--topnav .ra-sidebar { top: 0; height: 100vh; }
+}
+
+/* --------------------------------------------------------------------------
+   Auth / marketing shells
+   -------------------------------------------------------------------------- */
+.ra-auth { min-height: 100vh; display: flex; }
+
+.ra-auth__brand {
+  flex: 0 0 50%;
+  background:
+    radial-gradient(120% 90% at 78% 22%, rgba(96, 156, 255, .55) 0%, rgba(96, 156, 255, 0) 55%),
+    linear-gradient(150deg, #0a2a7a 0%, #1550cf 48%, #1f5fe0 100%);
+  color: #fff;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.ra-auth__brand h1, .ra-auth__brand h2 { color: #fff; }
+
+.ra-auth__form {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  background: var(--ra-surface);
+}
+.ra-auth__form-inner { width: 100%; max-width: 420px; }
+
+.ra-auth-stat {
+  background: rgba(255, 255, 255, .12);
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: var(--ra-radius);
+  padding: 1.125rem 1.25rem;
+}
+.ra-auth-stat__value { font-size: 1.75rem; font-weight: 800; color: #6ee7a8; line-height: 1.1; }
+.ra-auth-stat__label {
+  font-size: .6875rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .78);
+  margin-top: .375rem;
+}
+
+.ra-auth-quote {
+  background: rgba(255, 255, 255, .12);
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: var(--ra-radius);
+  padding: 1.5rem;
+}
+
+@media (max-width: 991.98px) {
+  .ra-auth { flex-direction: column; }
+  .ra-auth__brand { flex: 0 0 auto; padding: 2rem 1.5rem; }
+  .ra-auth__form { padding: 2.5rem 1.5rem; }
+}
+
+/* Centered single-column shell (role select) */
+.ra-center-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ra-bg);
+}
+.ra-center-shell__body {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Shared dark footer
+   -------------------------------------------------------------------------- */
+.ra-footer {
+  background: var(--ra-navy-deep);
+  color: #cbd5e1;
+  padding: 3rem 1.5rem 0;
+  flex-shrink: 0;
+}
+.ra-footer__brand {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: .875rem;
+}
+.ra-footer__blurb { font-size: .875rem; line-height: 1.6; color: #94a3b8; max-width: 22rem; }
+.ra-footer h6 {
+  color: #fff;
+  font-size: .9375rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.ra-footer__links { list-style: none; padding: 0; margin: 0; }
+.ra-footer__links li { margin-bottom: .625rem; }
+.ra-footer__links a { color: #94a3b8; font-size: .875rem; transition: color .15s ease; }
+.ra-footer__links a:hover { color: #fff; }
+
+.ra-footer__social {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  margin-right: .5rem;
+  transition: background-color .15s ease;
+}
+.ra-footer__social:hover { background: var(--ra-blue); color: #fff; }
+
+.ra-footer__bar {
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  margin-top: 2.5rem;
+  padding: 1.25rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  justify-content: space-between;
+  font-size: .8125rem;
+  color: #94a3b8;
+}
+.ra-footer__status { display: inline-flex; align-items: center; gap: .5rem; }
+.ra-footer__status::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+/* --------------------------------------------------------------------------
+   Toast stack
+   -------------------------------------------------------------------------- */
+.ra-toast-stack {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 1090;
+  display: flex;
+  flex-direction: column;
+  gap: .625rem;
+}

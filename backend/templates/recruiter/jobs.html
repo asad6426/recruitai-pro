@@ -1,0 +1,179 @@
+{% extends "recruiter/base_recruiter.html" %}
+{% load static ra_extras %}
+{% block title %}Job Postings &middot; RecruitAI Pro{% endblock %}
+
+{% block topbar_title %}
+<div class="ra-topbar__title d-flex align-items-center gap-3">
+  <h1 class="ra-page-title">Job Postings</h1>
+  <span class="ra-badge ra-badge--info">{{ active_jobs_count }} Active</span>
+</div>
+{% endblock %}
+
+{% block topbar_actions %}
+<div class="ra-search">
+  <i class="bi bi-search"></i>
+  <input type="search" class="form-control" id="jobSearch" placeholder="Search job postings…" aria-label="Search job postings">
+</div>
+<a href="{% url 'recruiter_post_job' %}" class="btn btn-primary d-none d-md-inline-flex"><i class="bi bi-plus-lg me-1"></i> Post New Job</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-xl-3">
+    <div class="ra-stat">
+      <div class="ra-stat__top"><span class="ra-stat__icon"><i class="bi bi-briefcase-fill"></i></span></div>
+      <div class="ra-stat__label">Active Jobs</div>
+      <div class="ra-stat__value"><span data-count="{{ active_jobs_count }}">{{ active_jobs_count }}</span></div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="ra-stat">
+      <div class="ra-stat__top"><span class="ra-stat__icon ra-stat__icon--neutral"><i class="bi bi-file-earmark"></i></span></div>
+      <div class="ra-stat__label">Drafts</div>
+      <div class="ra-stat__value"><span data-count="{{ drafts_count }}">{{ drafts_count }}</span></div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="ra-stat">
+      <div class="ra-stat__top">
+        <span class="ra-stat__icon ra-stat__icon--success"><i class="bi bi-people-fill"></i></span>
+      </div>
+      <div class="ra-stat__label">Total Applicants</div>
+      <div class="ra-stat__value"><span data-count="{{ total_applicants }}">{{ total_applicants }}</span></div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="ra-stat">
+      <div class="ra-stat__top"><span class="ra-stat__icon ra-stat__icon--warning"><i class="bi bi-clock-history"></i></span></div>
+      <div class="ra-stat__label">Avg Time to Fill</div>
+      <div class="ra-stat__value">{% if avg_time_to_fill != None %}<span data-count="{{ avg_time_to_fill }}">{{ avg_time_to_fill }}</span> <small>days</small>{% else %}<small class="ra-muted">No hires yet</small>{% endif %}</div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-body d-flex flex-wrap align-items-center gap-3">
+    <select class="form-select w-auto" id="jobStatusFilter" aria-label="Filter by status">
+      <option value="all">All statuses</option>
+      {% for value, label in status_choices %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+    </select>
+    <select class="form-select w-auto" id="jobDeptFilter" aria-label="Filter by department">
+      <option value="all">All departments</option>
+      {% for value, label in department_choices %}<option value="{{ label }}">{{ label }}</option>{% endfor %}
+    </select>
+    <a href="{% url 'recruiter_post_job' %}" class="btn btn-primary ms-auto"><i class="bi bi-plus-lg me-1"></i> Post New Job</a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ra-table-wrap">
+    <table class="ra-table" id="jobTable">
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>Department</th>
+          <th>Location</th>
+          <th>Applicants</th>
+          <th>Pipeline</th>
+          <th>Status</th>
+          <th>Posted</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in job_rows %}
+        {% with job=row.job %}
+        <tr data-title="{{ job.title }}" data-dept="{{ job.get_department_display }}" data-status="{{ job.status }}">
+          <td>
+            <div class="ra-cell-person__name">{{ job.title }}</div>
+            <div class="ra-cell-person__meta">{{ job.get_employment_type_display }} &bull; {{ job.salary_min|currency_k }} – {{ job.salary_max|currency_k }}</div>
+          </td>
+          <td>{{ job.get_department_display }}</td>
+          <td>{{ job.location }}</td>
+          <td class="{% if row.applicant_count %}fw-bold ra-navy{% else %}ra-muted{% endif %}">{{ row.applicant_count|default:"—" }}</td>
+          <td>
+            {% if job.status == 'draft' %}<span class="text-xs ra-faint">Not published</span>
+            {% else %}
+            <div class="ra-score">
+              <span class="ra-score__track"><span class="ra-score__fill{% if row.fill_pct >= 90 %} ra-score__fill--success{% endif %}" data-value="{{ row.fill_pct }}"></span></span>
+              <span class="text-xs ra-muted">{% if job.status == 'closed' %}Filled{% else %}{{ row.fill_pct }}%{% endif %}</span>
+            </div>
+            {% endif %}
+          </td>
+          <td><span class="ra-badge ra-badge--{% if job.status == 'open' %}success{% elif job.status == 'paused' %}warning{% elif job.status == 'closed' %}danger{% else %}neutral{% endif %} ra-badge--caps">{{ job.get_status_display }}</span></td>
+          <td class="text-sm ra-muted">{{ job.published_at|date:"M d, Y"|default:"—" }}</td>
+          <td class="text-end">
+            <div class="dropdown">
+              <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                {% if job.status != 'draft' %}<li><a class="dropdown-item" href="{% url 'recruiter_candidates' %}?job={{ job.pk }}"><i class="bi bi-people me-2"></i>View applicants</a></li>{% endif %}
+                <li><a class="dropdown-item" href="{% url 'recruiter_edit_job' job.pk %}"><i class="bi bi-pencil me-2"></i>{% if job.status == 'draft' %}Continue editing{% else %}Edit posting{% endif %}</a></li>
+                <li><hr class="dropdown-divider"></li>
+                {% if job.status == 'open' %}
+                <li><form method="post" action="{% url 'recruiter_job_status' job.pk %}">{% csrf_token %}<input type="hidden" name="status" value="paused"><button type="submit" class="dropdown-item"><i class="bi bi-pause-circle me-2"></i>Pause</button></form></li>
+                <li><form method="post" action="{% url 'recruiter_job_status' job.pk %}">{% csrf_token %}<input type="hidden" name="status" value="closed"><button type="submit" class="dropdown-item text-danger"><i class="bi bi-x-circle me-2"></i>Close role</button></form></li>
+                {% elif job.status == 'paused' %}
+                <li><form method="post" action="{% url 'recruiter_job_status' job.pk %}">{% csrf_token %}<input type="hidden" name="status" value="open"><button type="submit" class="dropdown-item"><i class="bi bi-play-circle me-2"></i>Resume</button></form></li>
+                <li><form method="post" action="{% url 'recruiter_job_status' job.pk %}">{% csrf_token %}<input type="hidden" name="status" value="closed"><button type="submit" class="dropdown-item text-danger"><i class="bi bi-x-circle me-2"></i>Close role</button></form></li>
+                {% elif job.status == 'closed' %}
+                <li><form method="post" action="{% url 'recruiter_job_status' job.pk %}">{% csrf_token %}<input type="hidden" name="status" value="open"><button type="submit" class="dropdown-item"><i class="bi bi-arrow-counterclockwise me-2"></i>Reopen</button></form></li>
+                {% elif job.status == 'draft' %}
+                <li><form method="post" action="{% url 'recruiter_job_status' job.pk %}">{% csrf_token %}<input type="hidden" name="status" value="open"><button type="submit" class="dropdown-item"><i class="bi bi-send me-2"></i>Publish</button></form></li>
+                <li><form method="post" action="{% url 'recruiter_job_delete' job.pk %}">{% csrf_token %}<button type="submit" class="dropdown-item text-danger"><i class="bi bi-trash me-2"></i>Delete draft</button></form></li>
+                {% endif %}
+              </ul>
+            </div>
+          </td>
+        </tr>
+        {% endwith %}
+        {% empty %}
+        <tr>
+          <td colspan="8">
+            <div class="ra-empty"><i class="bi bi-briefcase"></i> No job postings yet.</div>
+          </td>
+        </tr>
+        {% endfor %}
+
+        <tr id="jobTableEmpty" class="d-none">
+          <td colspan="8">
+            <div class="ra-empty"><i class="bi bi-briefcase"></i> No jobs match these filters.</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var table = document.getElementById('jobTable');
+  if (!table) return;
+  var rows = Array.prototype.slice.call(table.querySelectorAll('tbody tr[data-title]'));
+  var statusFilter = document.getElementById('jobStatusFilter');
+  var deptFilter = document.getElementById('jobDeptFilter');
+  var searchInput = document.getElementById('jobSearch');
+  var empty = document.getElementById('jobTableEmpty');
+
+  function apply() {
+    var status = statusFilter.value, dept = deptFilter.value;
+    var q = (searchInput.value || '').trim().toLowerCase();
+    var visible = 0;
+    rows.forEach(function (row) {
+      var matchesStatus = status === 'all' || row.dataset.status === status;
+      var matchesDept = dept === 'all' || row.dataset.dept === dept;
+      var matchesQ = !q || row.dataset.title.toLowerCase().indexOf(q) !== -1;
+      var show = matchesStatus && matchesDept && matchesQ;
+      row.classList.toggle('d-none', !show);
+      if (show) visible++;
+    });
+    empty.classList.toggle('d-none', visible > 0);
+  }
+
+  [statusFilter, deptFilter].forEach(function (el) { el.addEventListener('change', apply); });
+  searchInput.addEventListener('input', apply);
+});
+</script>
+{% endblock %}

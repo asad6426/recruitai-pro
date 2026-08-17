@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Post a New Job &middot; RecruitAI Pro</title>
+<link rel="icon" href="../assets/img/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+<link href="../assets/css/layout.css" rel="stylesheet">
+<link href="../assets/css/components.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="ra-app">
+  <div class="ra-app-body">
+
+    <!-- =============================== Sidebar =============================== -->
+    <div class="ra-sidebar-backdrop d-lg-none"></div>
+    <aside class="ra-sidebar">
+      <div class="ra-sidebar__brand">
+        <img src="../assets/img/logo.svg" alt="" width="34" height="34">
+        <div>
+          <div class="ra-sidebar__brand-name">RecruitAI Pro</div>
+          <div class="ra-sidebar__brand-sub">Enterprise HR Portal</div>
+        </div>
+      </div>
+
+      <nav class="ra-sidebar__nav">
+        <a class="ra-nav-link" href="dashboard.html"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+        <a class="ra-nav-link" href="candidates.html"><i class="bi bi-people"></i> Candidates</a>
+        <a class="ra-nav-link active" href="jobs.html"><i class="bi bi-briefcase"></i> Jobs</a>
+        <a class="ra-nav-link is-soon" href="#"><i class="bi bi-calendar-event"></i> Interviews</a>
+        <a class="ra-nav-link is-soon" href="#"><i class="bi bi-bar-chart"></i> Analytics</a>
+        <a class="ra-nav-link is-soon" href="#"><i class="bi bi-bell"></i> Notifications</a>
+        <a class="ra-nav-link is-soon" href="#"><i class="bi bi-gear"></i> Settings</a>
+      </nav>
+
+      <div class="ra-sidebar__foot">
+        <a href="post-job.html" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Post New Job</a>
+        <a class="ra-nav-link" href="#" data-ra-toast="Help Center opens in the full product." data-ra-toast-variant="info"><i class="bi bi-question-circle"></i> Help Center</a>
+        <a class="ra-nav-link ra-nav-link--danger" href="../login.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+      </div>
+    </aside>
+
+    <!-- ================================= Main ================================ -->
+    <div class="ra-main">
+
+      <!-- Topbar -->
+      <header class="ra-topbar">
+        <button class="ra-icon-btn d-lg-none" data-ra-sidebar-toggle type="button" aria-label="Open menu">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="ra-topbar__title">
+          <h1 class="ra-page-title">Post a New Job</h1>
+          <p class="text-sm ra-muted mb-0 d-none d-sm-block">Describe the role and RecruitAI will start screening applicants automatically.</p>
+        </div>
+
+        <button class="ra-icon-btn" data-ra-theme-toggle type="button" aria-label="Toggle dark mode">
+          <i class="bi bi-moon-stars" data-ra-theme-icon></i>
+        </button>
+        <a href="jobs.html" class="btn btn-outline-neutral"><i class="bi bi-arrow-left me-1"></i> Back to Jobs</a>
+        <button class="ra-avatar-btn" type="button" aria-label="Account">
+          <img src="../assets/img/avatars/sarah-jenkins.svg" alt="Sarah Jenkins" class="ra-avatar ra-avatar--sm">
+        </button>
+      </header>
+
+      <!-- Content -->
+      <main class="ra-content">
+        <form class="needs-validation" novalidate data-ra-next="jobs.html" data-ra-success="Job posted — screening starts now.">
+          <div class="row g-4">
+
+            <!-- ========================= Form column ========================= -->
+            <div class="col-xl-8">
+
+              <!-- Role details -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h2 class="ra-title mb-0">Role Details</h2>
+                </div>
+                <div class="card-body">
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <label class="form-label" for="jobTitle">Job title</label>
+                      <input type="text" class="form-control" id="jobTitle" placeholder="e.g. Lead UI/UX Designer" required>
+                      <div class="invalid-feedback">Give the role a title.</div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="jobDept">Department</label>
+                      <select class="form-select" id="jobDept" required>
+                        <option value="">Choose a department…</option>
+                        <option>Design</option><option>Engineering</option><option>Data</option>
+                        <option>Marketing</option><option>Product</option><option>Operations</option>
+                      </select>
+                      <div class="invalid-feedback">Pick a department.</div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="jobType">Employment type</label>
+                      <select class="form-select" id="jobType" required>
+                        <option value="">Choose a type…</option>
+                        <option>Full-time</option><option>Contract</option><option>Internship</option>
+                      </select>
+                      <div class="invalid-feedback">Pick an employment type.</div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="jobLocation">Location</label>
+                      <input type="text" class="form-control" id="jobLocation" placeholder="San Francisco, CA" required>
+                      <div class="invalid-feedback">Where is this role based?</div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="jobWorkplace">Workplace</label>
+                      <select class="form-select" id="jobWorkplace">
+                        <option>Remote</option><option>Hybrid</option><option>On-site</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="salaryMin">Salary minimum (annual)</label>
+                      <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control" id="salaryMin" placeholder="140000" min="0" required>
+                        <div class="invalid-feedback">Enter a minimum.</div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="salaryMax">Salary maximum (annual)</label>
+                      <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control" id="salaryMax" placeholder="185000" min="0" required>
+                        <div class="invalid-feedback">Enter a maximum.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div class="card mb-4">
+                <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
+                  <h2 class="ra-title mb-0">Description</h2>
+                  <button type="button" class="btn btn-outline-neutral btn-sm"
+                          data-ra-toast="AI drafted a description from the role details." data-ra-toast-variant="info">
+                    <i class="bi bi-stars me-1 text-primary"></i> Draft with AI
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="form-label" for="jobSummary">Role summary</label>
+                    <textarea class="form-control" id="jobSummary" rows="4" placeholder="What will this person own, and who will they work with?" required></textarea>
+                    <div class="invalid-feedback">Add a short summary of the role.</div>
+                  </div>
+                  <div class="mb-0">
+                    <label class="form-label" for="jobRequirements">Requirements</label>
+                    <textarea class="form-control" id="jobRequirements" rows="4" placeholder="One requirement per line."></textarea>
+                    <div class="form-text text-xs">One per line. These feed the ATS keyword matcher.</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Skills & screening -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h2 class="ra-title mb-0">Skills &amp; Screening</h2>
+                </div>
+                <div class="card-body">
+                  <div class="mb-4">
+                    <label class="form-label" for="jobSkills">Required skills</label>
+                    <input type="text" class="form-control" id="jobSkills" placeholder="Figma, Design Systems, Prototyping">
+                    <div class="form-text text-xs">Comma separated. Weighted highest in the match score.</div>
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                      <span class="ra-chip ra-chip--success">Figma</span>
+                      <span class="ra-chip ra-chip--success">Design Systems</span>
+                      <span class="ra-chip ra-chip--success">Prototyping</span>
+                      <span class="ra-chip">User Research</span>
+                    </div>
+                  </div>
+
+                  <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                      <label class="form-label" for="minExperience">Minimum experience</label>
+                      <select class="form-select" id="minExperience">
+                        <option>Any level</option><option>2+ years</option>
+                        <option selected>5+ years</option><option>8+ years</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="atsThreshold">Auto-shortlist above ATS score</label>
+                      <select class="form-select" id="atsThreshold">
+                        <option>Off</option><option>70%</option>
+                        <option selected>80%</option><option>90%</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="anonScreen" checked>
+                    <label class="form-check-label text-sm" for="anonScreen">
+                      Anonymize candidate profiles during initial screening
+                      <span class="d-block text-xs ra-muted">Hides name, photo and school to reduce bias.</span>
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="autoReject">
+                    <label class="form-check-label text-sm" for="autoReject">
+                      Auto-reject below 40% match
+                      <span class="d-block text-xs ra-muted">Sends a polite rejection email immediately.</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ========================= Side column ========================= -->
+            <div class="col-xl-4">
+
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h2 class="ra-title mb-0">Publishing</h2>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="form-label" for="hiringManager">Hiring manager</label>
+                    <select class="form-select" id="hiringManager">
+                      <option>Sarah Jenkins — Head of Talent</option>
+                      <option>David Miller — Engineering Manager</option>
+                      <option>Elena Rodriguez — Product Manager</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="closeDate">Applications close</label>
+                    <input type="date" class="form-control" id="closeDate">
+                  </div>
+                  <div class="ra-eyebrow mb-2">Publish to</div>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="chCareers" checked>
+                    <label class="form-check-label text-sm" for="chCareers">Company careers page</label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="chLinkedin" checked>
+                    <label class="form-check-label text-sm" for="chLinkedin">LinkedIn</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chBoard">
+                    <label class="form-check-label text-sm" for="chBoard">Partner job boards</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ra-ai-panel mb-4">
+                <div class="ra-ai-panel__title"><i class="bi bi-stars"></i> AI Posting Tips</div>
+                <p class="mb-3">
+                  Postings with a salary range receive 2.4&times; more qualified applicants. Listing
+                  4–6 required skills scores best — beyond that, match quality drops.
+                </p>
+                <div class="d-flex align-items-center gap-2 text-sm fw-semibold text-primary">
+                  <i class="bi bi-lightbulb"></i> Expected reach: 3,200 candidates
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-body d-grid gap-2">
+                  <button type="submit" class="btn btn-primary btn-lg">Publish Job</button>
+                  <button type="button" class="btn btn-outline-neutral" data-ra-toast="Draft saved." data-ra-toast-variant="success">
+                    Save as Draft
+                  </button>
+                  <a href="jobs.html" class="btn btn-link ra-muted text-decoration-none">Cancel</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </main>
+
+      <!-- =============================== Footer =============================== -->
+      <footer class="ra-footer">
+        <div class="container-fluid px-lg-4">
+          <div class="row g-4">
+            <div class="col-lg-4">
+              <div class="ra-footer__brand"><img src="../assets/img/logo.svg" alt="" width="26" height="26"> RecruitAI</div>
+              <p class="ra-footer__blurb">
+                The world's most advanced AI resume screening and talent matching platform.
+                Empowering human potential through intelligent automation.
+              </p>
+              <div class="mt-3">
+                <a href="#" class="ra-footer__social" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+                <a href="#" class="ra-footer__social" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+              </div>
+            </div>
+            <div class="col-6 col-lg-2 offset-lg-1">
+              <h6>Product</h6>
+              <ul class="ra-footer__links">
+                <li><a href="../index.html#features">Features</a></li>
+                <li><a href="../index.html#features">Integrations</a></li>
+                <li><a href="../index.html#cta">Pricing</a></li>
+                <li><a href="../index.html#audience">Enterprise</a></li>
+              </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+              <h6>Resources</h6>
+              <ul class="ra-footer__links">
+                <li><a href="#">Documentation</a></li>
+                <li><a href="#">API Reference</a></li>
+                <li><a href="#">Community</a></li>
+                <li><a href="#">Marketplace</a></li>
+              </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+              <h6>Company</h6>
+              <ul class="ra-footer__links">
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="ra-footer__bar">
+            <span>&copy; 2024 RecruitAI Inc. All rights reserved.</span>
+            <span class="ra-footer__status">System Status: All Systems Operational</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+</div>
+
+<div class="ra-toast-stack"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

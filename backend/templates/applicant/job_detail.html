@@ -1,0 +1,229 @@
+{% extends "applicant/base_applicant.html" %}
+{% load static ra_extras %}
+{% block title %}{{ job.title }} &middot; RecruitAI Pro{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'applicant_browse_jobs' %}" class="fw-semibold text-sm d-inline-flex align-items-center gap-2 mb-3">
+  <i class="bi bi-arrow-left"></i> Back to jobs
+</a>
+
+<div class="card mb-4" style="border-left:4px solid var(--ra-success);">
+  <div class="card-body">
+    <div class="d-flex flex-wrap align-items-start gap-3">
+      <span class="ra-logo-tile text-primary"><i class="bi bi-briefcase-fill fs-4"></i></span>
+      <div class="flex-grow-1" style="min-width:15rem;">
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <h1 class="mb-0" style="font-size:1.75rem;">{{ job.title }}</h1>
+          {% if job.organization.is_verified %}<i class="bi bi-patch-check-fill text-primary" data-bs-toggle="tooltip" title="Verified employer"></i>{% endif %}
+        </div>
+        <p class="ra-muted mb-3">{{ job.organization.name }} &bull; {{ job.get_workplace_display }} &bull; Posted {{ posted_days_ago }} day{{ posted_days_ago|pluralize }} ago</p>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="ra-badge ra-badge--neutral">{{ job.get_workplace_display }}</span>
+          <span class="ra-badge ra-badge--neutral">{{ job.get_employment_type_display }}</span>
+          <span class="ra-badge ra-badge--neutral">{{ job.min_experience_years }}+ Years</span>
+          {% if match_pct != None %}<span class="ra-badge ra-badge--{% if match_pct >= 75 %}success{% else %}neutral{% endif %}"><i class="bi bi-stars"></i> {{ match_pct }}% Match</span>{% endif %}
+        </div>
+      </div>
+      <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-outline-neutral ra-save-btn{% if is_saved %} is-saved{% endif %}" type="button" data-save-url="{% url 'applicant_saved_job_toggle' job.pk %}">
+          <i class="bi bi-bookmark{% if is_saved %}-fill{% endif %} me-1"></i> Save
+        </button>
+        {% if already_applied %}
+        <button class="btn btn-primary btn-lg" disabled><i class="bi bi-check-circle me-1"></i> Applied</button>
+        {% else %}
+        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#applyModal">Apply Now</button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+
+  <div class="col-lg-8">
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h2 class="ra-title mb-3">About the role</h2>
+        <p class="ra-muted" style="line-height:1.8;">{{ job.summary }}</p>
+
+        {% if job.responsibilities.all %}
+        <h3 class="ra-title mt-4 mb-3" style="font-size:1.0625rem;">What you'll do</h3>
+        <ul class="ra-muted" style="line-height:2;">
+          {% for item in job.responsibilities.all %}<li>{{ item.text }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if job.requirements.all %}
+        <h3 class="ra-title mt-4 mb-3" style="font-size:1.0625rem;">Requirements</h3>
+        <ul class="ra-muted" style="line-height:2;">
+          {% for item in job.requirements.all %}<li>{{ item.text }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if job.benefits.all %}
+        <h3 class="ra-title mt-4 mb-3" style="font-size:1.0625rem;">Benefits</h3>
+        <div class="row g-3">
+          {% for item in job.benefits.all %}<div class="col-sm-6 d-flex align-items-center gap-2 text-sm"><i class="bi bi-check-circle text-success"></i> {{ item.text }}</div>{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h2 class="ra-title mb-3">Skills</h2>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <i class="bi bi-check-circle text-success"></i>
+              <span class="ra-eyebrow mb-0" style="color:var(--ra-success);">You have these</span>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+              {% for name in have_skills %}<span class="ra-chip ra-chip--success">{{ name }}</span>{% empty %}<span class="ra-muted text-sm">None yet</span>{% endfor %}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <i class="bi bi-slash-circle" style="color:var(--ra-warning);"></i>
+              <span class="ra-eyebrow mb-0" style="color:var(--ra-warning);">Worth adding</span>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+              {% for name in worth_adding %}<span class="ra-chip ra-chip--warning">{{ name }}</span>{% empty %}<span class="ra-muted text-sm">You're fully covered</span>{% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+
+    <div class="card mb-4">
+      <div class="card-body text-center">
+        <div class="ra-eyebrow mb-3">Your Match</div>
+        <div class="ra-donut mx-auto mb-3">
+          <svg width="140" height="140" viewBox="0 0 140 140" aria-hidden="true">
+            <circle class="ra-donut__track" cx="70" cy="70" r="60" stroke-width="9"></circle>
+            <circle class="ra-donut__value{% if match_pct >= 75 %} ra-donut__value--success{% endif %}" cx="70" cy="70" r="60" stroke-width="9" data-value="{{ match_pct|default:0 }}"></circle>
+          </svg>
+          <div class="ra-donut__center">
+            <div class="ra-donut__number" style="color:var(--ra-success);"><span data-count="{{ match_pct|default:0 }}" data-suffix="%">{{ match_pct|default:0 }}%</span></div>
+            <div class="ra-donut__caption">{{ match_pct|match_label }} Match</div>
+          </div>
+        </div>
+
+        {% if analysis %}
+        <div class="text-start">
+          <div class="ra-meter ra-meter--thin">
+            <div class="ra-meter__head"><span class="ra-meter__label">Skills</span><span class="ra-meter__value">{{ analysis.technical_skills_match_pct }}%</span></div>
+            <div class="ra-meter__track"><span class="ra-meter__fill ra-meter__fill--success" data-value="{{ analysis.technical_skills_match_pct }}"></span></div>
+          </div>
+          <div class="ra-meter ra-meter--thin">
+            <div class="ra-meter__head"><span class="ra-meter__label">Experience</span><span class="ra-meter__value">{{ analysis.experience_relevancy_pct }}%</span></div>
+            <div class="ra-meter__track"><span class="ra-meter__fill ra-meter__fill--success" data-value="{{ analysis.experience_relevancy_pct }}"></span></div>
+          </div>
+          <div class="ra-meter ra-meter--thin mb-0">
+            <div class="ra-meter__head"><span class="ra-meter__label">Keywords</span><span class="ra-meter__value">{{ analysis.keyword_density_pct }}%</span></div>
+            <div class="ra-meter__track"><span class="ra-meter__fill" data-value="{{ analysis.keyword_density_pct }}"></span></div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h3 class="ra-title mb-3">Job Overview</h3>
+        <div class="mb-3">
+          <div class="ra-fact__label">Salary</div>
+          <div class="ra-fact__value">{{ job.salary_min|currency_k }} - {{ job.salary_max|currency_k }}</div>
+        </div>
+        <div class="mb-3">
+          <div class="ra-fact__label">Experience</div>
+          <div class="ra-fact__value">{{ job.min_experience_years }}+ Years</div>
+        </div>
+        <div class="mb-3">
+          <div class="ra-fact__label">Location</div>
+          <div class="ra-fact__value">{{ job.location }}</div>
+        </div>
+        {% if job.team_name %}
+        <div class="mb-3">
+          <div class="ra-fact__label">Team</div>
+          <div class="ra-fact__value">{{ job.team_name }}{% if job.team_size %}, {{ job.team_size }} people{% endif %}</div>
+        </div>
+        {% endif %}
+        {% if job.applications_close_at %}
+        <div>
+          <div class="ra-fact__label">Applications close</div>
+          <div class="ra-fact__value">{{ job.applications_close_at|date:"M d, Y" }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h3 class="ra-title mb-3">About {{ job.organization.name }}</h3>
+        {% if job.organization.description %}<p class="text-sm ra-muted" style="line-height:1.7;">{{ job.organization.description }}</p>{% endif %}
+        <div class="d-flex flex-wrap gap-2">
+          {% if job.organization.employee_count %}<span class="ra-badge ra-badge--neutral">{{ job.organization.employee_count }} employees</span>{% endif %}
+          {% if job.organization.funding_stage %}<span class="ra-badge ra-badge--neutral">{{ job.organization.funding_stage }}</span>{% endif %}
+          {% if job.organization.industry %}<span class="ra-badge ra-badge--neutral">{{ job.organization.industry }}</span>{% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% if analysis and analysis.ai_insight %}
+    <div class="ra-ai-panel">
+      <div class="ra-ai-panel__title"><i class="bi bi-stars"></i> AI Tip</div>
+      <p>{{ analysis.ai_insight }}</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="modal fade" id="applyModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title ra-navy">Apply &mdash; {{ job.title }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form class="needs-validation" novalidate method="post" action="{% url 'applicant_apply' job.pk %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          {% if resumes %}
+          <div class="mb-3">
+            <label class="form-label" for="applyResume">Resume</label>
+            <select class="form-select" id="applyResume" name="resume_id" required>
+              <option value="">Choose a resume…</option>
+              {% for resume, score in resumes %}<option value="{{ resume.pk }}">{{ resume.filename }} — ATS {{ score }}</option>{% endfor %}
+            </select>
+            <div class="invalid-feedback">Pick which resume to send.</div>
+          </div>
+          {% else %}
+          <p class="ra-muted">You haven't uploaded a resume yet — <a href="{% url 'applicant_dashboard' %}">upload one from your dashboard</a> first.</p>
+          {% endif %}
+          <div class="mb-3">
+            <label class="form-label" for="applyNote">Note to the hiring team <span class="ra-faint fw-normal">(optional)</span></label>
+            <textarea class="form-control" id="applyNote" name="note" rows="4" placeholder="Why this role, in two or three sentences…"></textarea>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="applyConsent" name="consent" required>
+            <label class="form-check-label text-sm" for="applyConsent">
+              I allow {{ job.organization.name }} to process my profile for this application.
+            </label>
+            <div class="invalid-feedback">Consent is required to apply.</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-neutral" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary"{% if not resumes %} disabled{% endif %}>Submit Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

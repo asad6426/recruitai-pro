@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}RecruitAI — Hire Smarter. Get Hired Faster.{% endblock %}
+{% block meta_description %}<meta name="description" content="AI-powered ATS and resume screening platform. Match talent with precision, eliminate bias and cut time-to-hire by 70%.">{% endblock %}
+
+{% block body %}
+
+<nav class="navbar navbar-expand-lg ra-topnav">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
+      <img src="{% static 'assets/img/logo.svg' %}" alt="" width="28" height="28">
+      RecruitAI
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#marketingNav" aria-controls="marketingNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="marketingNav">
+      <ul class="navbar-nav ms-3 me-auto">
+        <li class="nav-item"><a class="nav-link active" href="#features">Product</a></li>
+        <li class="nav-item"><a class="nav-link" href="#audience">Solutions</a></li>
+        <li class="nav-item"><a class="nav-link" href="#cta">Pricing</a></li>
+      </ul>
+      <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+        <button class="ra-icon-btn" data-ra-theme-toggle type="button" aria-label="Toggle dark mode">
+          <i class="bi bi-moon-stars" data-ra-theme-icon></i>
+        </button>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'login_redirect' %}" class="btn btn-primary">Go to Dashboard</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-link ra-muted fw-semibold text-decoration-none">Login</a>
+        <a href="{% url 'signup' %}" class="btn btn-primary">Get Started</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<header class="ra-hero">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <span class="ra-badge ra-badge--info mb-4"><i class="bi bi-stars"></i> AI-POWERED RECRUITMENT 2.0</span>
+        <h1 class="mb-3">
+          Hire Smarter.<br>
+          <span class="text-primary">Get Hired Faster.</span>
+        </h1>
+        <p class="ra-hero__lead mb-4">
+          The industry's most advanced ATS-integrated screening system. Using neural
+          language models to match talent with precision, eliminating bias and reducing
+          time-to-hire by 70%.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{% url 'signup' %}" class="btn btn-primary btn-lg">Get Started Free <i class="bi bi-arrow-right ms-1"></i></a>
+          <a href="{% url 'applicant_browse_jobs' %}" class="btn btn-outline-neutral btn-lg">Explore Jobs</a>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="ra-hero__mock">
+          <div class="ra-hero__mock-bar">
+            <span class="ra-hero__mock-dot"></span>
+            <span class="ra-hero__mock-dot"></span>
+            <span class="ra-hero__mock-dot"></span>
+            <span class="ms-auto ra-eyebrow">RecruitAI Engine v4.2</span>
+          </div>
+          <div class="p-3 p-sm-4">
+            <div class="card border-0 shadow-none ra-border mb-3" style="border-left:4px solid var(--ra-success) !important;">
+              <div class="card-body d-flex align-items-center gap-3 flex-wrap">
+                <img src="{% static 'assets/img/avatars/alex-thompson.svg' %}" alt="" class="ra-avatar ra-avatar--md">
+                <div class="flex-grow-1" style="min-width:9rem;">
+                  <div class="fw-bold ra-navy">Alex Thompson</div>
+                  <div class="text-xs ra-muted">Senior Cloud Architect &bull; 8+ Yrs Exp</div>
+                  <div class="d-flex flex-wrap gap-1 mt-2">
+                    <span class="ra-badge ra-badge--info">Kubernetes</span>
+                    <span class="ra-badge ra-badge--info">Node.js</span>
+                    <span class="ra-badge ra-badge--info">Team Lead</span>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <span class="ra-badge ra-badge--success ra-badge--caps mb-2 d-inline-flex">Top Match</span>
+                  <div class="ra-donut">
+                    <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">
+                      <circle class="ra-donut__track" cx="32" cy="32" r="27" stroke-width="6"></circle>
+                      <circle class="ra-donut__value" cx="32" cy="32" r="27" stroke-width="6" data-value="82"></circle>
+                    </svg>
+                    <div class="ra-donut__center">
+                      <div class="ra-donut__number" style="font-size:1.125rem;">82%</div>
+                    </div>
+                  </div>
+                  <div class="ra-eyebrow mt-1">ATS Score</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-sm-7">
+                <div class="ra-note h-100">
+                  <div class="ra-eyebrow mb-2">Skill Detection</div>
+                  <div class="ra-meter ra-meter--thin mb-2">
+                    <div class="ra-meter__track"><span class="ra-meter__fill ra-meter__fill--success" data-value="88"></span></div>
+                  </div>
+                  <div class="ra-meter ra-meter--thin mb-0">
+                    <div class="ra-meter__track"><span class="ra-meter__fill" data-value="64"></span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-5">
+                <div class="ra-note h-100 d-flex align-items-center gap-2">
+                  <i class="bi bi-bar-chart-fill text-primary"></i>
+                  <span class="fw-semibold text-sm">Market Analysis</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="ra-stat-strip">
+  <div class="container">
+    <div class="row text-center g-4">
+      <div class="col-6 col-lg-3">
+        <div class="ra-stat-strip__value"><span data-count="{{ resumes_analyzed }}">{{ resumes_analyzed }}</span></div>
+        <div class="ra-stat-strip__label">Resumes Analyzed</div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="ra-stat-strip__value"><span data-count="{{ avg_accuracy }}" data-decimals="1" data-suffix="%">{{ avg_accuracy }}%</span></div>
+        <div class="ra-stat-strip__label">Matching Accuracy</div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="ra-stat-strip__value"><span data-count="45" data-suffix="min">45min</span></div>
+        <div class="ra-stat-strip__label">Avg. Time Saved / Job</div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="ra-stat-strip__value"><span data-count="{{ enterprise_clients }}" data-suffix="+">{{ enterprise_clients }}+</span></div>
+        <div class="ra-stat-strip__label">Enterprise Clients</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ra-section ra-section--alt" id="features">
+  <div class="container">
+    <h2 class="ra-section__title">Precision Engineering for Hiring</h2>
+    <p class="ra-section__sub mb-5">
+      Experience the power of a screening engine that doesn't just read keywords,
+      but understands human career trajectories.
+    </p>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="ra-feature">
+          <div class="ra-feature__icon"><i class="bi bi-bullseye"></i></div>
+          <h5>Semantic AI Parsing</h5>
+          <p>Extract data with contextual understanding. Our AI identifies experience quality beyond simple keywords.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="ra-feature">
+          <div class="ra-feature__icon"><i class="bi bi-sliders"></i></div>
+          <h5>Dynamic Matching</h5>
+          <p>Custom scoring weights allow recruiters to prioritize specific certifications, years of experience, or soft skills.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="ra-feature">
+          <div class="ra-feature__icon"><i class="bi bi-shield-check"></i></div>
+          <h5>Bias Elimination</h5>
+          <p>Privacy-first screening. Anonymize candidate profiles during initial screening to ensure merit-based hiring.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="ra-feature">
+          <div class="ra-feature__icon"><i class="bi bi-arrow-repeat"></i></div>
+          <h5>ATS Integration</h5>
+          <p>Seamlessly sync with Greenhouse, Lever, Workday and more. No workflow disruption required.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="ra-feature">
+          <div class="ra-feature__icon"><i class="bi bi-graph-up-arrow"></i></div>
+          <h5>Predictive Analytics</h5>
+          <p>Forecast candidate retention and performance based on historical career pathing and industry trends.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="ra-feature">
+          <div class="ra-feature__icon"><i class="bi bi-robot"></i></div>
+          <h5>Auto-Pilot Engagement</h5>
+          <p>Automated scheduling and feedback loops keep candidates warm without manual recruiter intervention.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ra-section">
+  <div class="container">
+    <h2 class="ra-section__title mb-5">Three Steps to Better Hiring</h2>
+    <div class="row g-4 text-center">
+      <div class="col-md-4">
+        <div class="ra-step__num">1</div>
+        <h6 class="fw-bold ra-navy">Upload &amp; Connect</h6>
+        <p class="text-sm ra-muted mb-0">Upload CSVs or connect your existing ATS in minutes. Our engine begins ingestion immediately.</p>
+      </div>
+      <div class="col-md-4">
+        <div class="ra-step__num">2</div>
+        <h6 class="fw-bold ra-navy">AI Processing</h6>
+        <p class="text-sm ra-muted mb-0">RecruitAI scans and scores every resume against your specific job requirements and cultural markers.</p>
+      </div>
+      <div class="col-md-4">
+        <div class="ra-step__num">3</div>
+        <h6 class="fw-bold ra-navy">Rank &amp; Interview</h6>
+        <p class="text-sm ra-muted mb-0">Receive a stack-ranked list of top talent. Invite candidates to interview with one single click.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ra-section ra-section--alt" id="audience">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="ra-audience ra-audience--light">
+          <div class="ra-eyebrow mb-2">For Applicants</div>
+          <h4>Landing Your Dream Job</h4>
+          <p class="text-sm ra-muted mb-0">Get instant ATS feedback, optimize your resume for AI parsers, and find the roles where you truly shine.</p>
+          <ul class="ra-audience__list">
+            <li><i class="bi bi-check-circle-fill text-success"></i> Resume Score Card</li>
+            <li><i class="bi bi-check-circle-fill text-success"></i> Skill Gap Analysis</li>
+          </ul>
+          <a href="{% url 'signup' %}" class="btn btn-dark">Improve My Resume</a>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="ra-audience ra-audience--dark">
+          <div class="ra-eyebrow mb-2">For HR Recruiters</div>
+          <h4>Accelerate Your Pipeline</h4>
+          <p class="text-sm mb-0" style="color:rgba(255,255,255,.85);">Screen thousands of candidates in seconds. Build high-performing teams with data-backed hiring decisions.</p>
+          <ul class="ra-audience__list">
+            <li><i class="bi bi-check-circle-fill"></i> Batch Screening Engine</li>
+            <li><i class="bi bi-check-circle-fill"></i> Collaborative Ranking</li>
+          </ul>
+          <a href="{% url 'signup' %}" class="btn btn-light fw-semibold">Screen Resumes Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ra-section">
+  <div class="container">
+    <h2 class="ra-section__title mb-5">Loved by Industry Leaders</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="ra-quote">
+          <p>"RecruitAI transformed our hiring process. We reduced our time-to-hire by 60% while increasing candidate quality significantly."</p>
+          <div class="d-flex align-items-center gap-2 mt-3">
+            <img src="{% static 'assets/img/avatars/sarah-jenkins.svg' %}" alt="" class="ra-avatar ra-avatar--xs">
+            <div>
+              <div class="fw-bold text-sm ra-navy">Sarah Jenkins</div>
+              <div class="text-xs ra-muted">HR Director at NexGen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="ra-quote">
+          <p>"The most accurate parsing engine I've ever used. It actually understands the nuances of technical roles."</p>
+          <div class="d-flex align-items-center gap-2 mt-3">
+            <img src="{% static 'assets/img/avatars/david-chen.svg' %}" alt="" class="ra-avatar ra-avatar--xs">
+            <div>
+              <div class="fw-bold text-sm ra-navy">David Chen</div>
+              <div class="text-xs ra-muted">Lead Recruiter at TechScale</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="ra-quote">
+          <p>"Our recruiters finally spend their day talking to people instead of scrolling through hundreds of PDFs."</p>
+          <div class="d-flex align-items-center gap-2 mt-3">
+            <img src="{% static 'assets/img/avatars/elena-rodriguez.svg' %}" alt="" class="ra-avatar ra-avatar--xs">
+            <div>
+              <div class="fw-bold text-sm ra-navy">Elena Rodriguez</div>
+              <div class="text-xs ra-muted">Talent Partner at Horizon Data</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pb-5" id="cta">
+  <div class="container">
+    <div class="ra-cta">
+      <h2 class="mb-3">Ready to Build Your Dream Team?</h2>
+      <p class="mx-auto mb-4" style="max-width:36rem;color:rgba(255,255,255,.85);">
+        Join our growing network of companies using RecruitAI to automate their hiring and find
+        perfect-fit candidates faster than ever before.
+      </p>
+      <div class="d-flex flex-wrap justify-content-center gap-3">
+        <a href="{% url 'signup' %}" class="btn btn-light btn-lg fw-semibold">Start Your Free Trial</a>
+        <a href="#" class="btn btn-outline-light btn-lg" data-ra-toast="Demo request sent — our team will reach out shortly." data-ra-toast-variant="info">Schedule Demo</a>
+      </div>
+      <p class="text-sm mt-4 mb-0" style="color:rgba(255,255,255,.7);">No credit card required &bull; 14-day free trial &bull; Cancel anytime</p>
+    </div>
+  </div>
+</section>
+
+{% include "partials/_footer.html" with footer_container_class="container" %}
+
+{% endblock %}

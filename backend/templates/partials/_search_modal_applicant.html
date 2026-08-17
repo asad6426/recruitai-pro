@@ -1,0 +1,29 @@
+<div class="modal fade" id="globalSearchModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="ra-search w-100" style="width:100% !important;">
+          <i class="bi bi-search"></i>
+          <input type="search" class="form-control" placeholder="Search jobs, applications…" data-ra-search-input aria-label="Global search">
+        </div>
+      </div>
+      <div class="modal-body pt-2">
+        <div class="ra-eyebrow mb-2">Quick links</div>
+        <div class="list-group list-group-flush">
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="{% url 'applicant_browse_jobs' %}" data-ra-search-item><i class="bi bi-briefcase me-2 text-primary"></i>Browse jobs</a>
+          {% for job in search_jobs %}
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="{% url 'applicant_job_detail' job.pk %}" data-ra-search-item><i class="bi bi-file-earmark-text me-2 text-primary"></i>{{ job.title }} — {{ job.organization.name }}</a>
+          {% endfor %}
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="{% url 'applicant_dashboard' %}" data-ra-search-item><i class="bi bi-grid-1x2 me-2 text-primary"></i>Dashboard</a>
+        </div>
+        <div class="ra-empty d-none" data-ra-search-empty>
+          <i class="bi bi-search"></i>
+          No results for that search.
+        </div>
+      </div>
+      <div class="modal-footer justify-content-start text-xs ra-muted">
+        Press <span class="ra-kbd">Ctrl</span> + <span class="ra-kbd">K</span> anywhere to open this.
+      </div>
+    </div>
+  </div>
+</div>
