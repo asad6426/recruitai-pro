@@ -26,6 +26,11 @@
       </div>
     </div>
     <div class="d-flex flex-wrap gap-2">
+      {% if application.resume.file %}
+      <a href="{{ application.resume.file.url }}" target="_blank" rel="noopener" class="btn btn-outline-neutral">
+        <i class="bi bi-eye me-1"></i> View Resume
+      </a>
+      {% endif %}
       <button class="btn btn-outline-neutral" data-ra-toast="Analysis report downloaded." data-ra-toast-variant="success">
         <i class="bi bi-download me-1"></i> Download Report
       </button>

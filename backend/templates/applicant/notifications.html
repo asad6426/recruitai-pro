@@ -1,0 +1,34 @@
+{% extends "applicant/base_applicant.html" %}
+{% load static %}
+{% block title %}Notifications &middot; RecruitAI Pro{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+  <h2 class="mb-1" style="font-size:1.875rem;">Notifications</h2>
+  <p class="ra-muted mb-0">Updates on your applications, interviews, and messages from recruiters.</p>
+</div>
+
+<div class="card">
+  <div class="card-body p-0">
+    {% for n in notifications %}
+    <div class="d-flex gap-3 p-3{% if not forloop.last %} border-bottom{% endif %}{% if not n.is_read %} ra-notification--unread{% endif %}">
+      <span class="ra-logo-tile ra-logo-tile--sm text-primary">
+        <i class="bi {% if n.verb == 'interview_scheduled' %}bi-camera-video{% elif n.verb == 'message' %}bi-chat-dots{% elif n.verb == 'stage_changed' %}bi-arrow-repeat{% else %}bi-bell{% endif %}"></i>
+      </span>
+      <div class="flex-grow-1">
+        <div class="d-flex align-items-center justify-content-between gap-2">
+          <span class="fw-semibold text-sm">{% if n.sender %}{{ n.sender.get_full_name|default:n.sender.email }}{% else %}RecruitAI{% endif %}</span>
+          <span class="text-xs ra-muted">{{ n.created_at|timesince }} ago</span>
+        </div>
+        <p class="text-sm mb-0">{{ n.message }}</p>
+        {% if n.application %}<a href="{% url 'applicant_job_detail' n.application.job.pk %}" class="text-xs fw-semibold">View application</a>{% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <p class="ra-muted text-sm text-center py-4 mb-0">You're all caught up — no notifications yet.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

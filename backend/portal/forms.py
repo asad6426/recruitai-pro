@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import PasswordChangeForm as DjangoPasswordChangeForm
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
@@ -65,6 +66,36 @@ class ApplyForm(forms.Form):
 class ResumeUploadForm(forms.Form):
     file = forms.FileField()
     filename = forms.CharField(max_length=255, required=False)
+
+
+class ApplicantProfileForm(forms.Form):
+    first_name = forms.CharField(max_length=150)
+    last_name = forms.CharField(max_length=150)
+    headline = forms.CharField(max_length=150, required=False)
+    current_employer = forms.CharField(max_length=150, required=False)
+    location = forms.CharField(max_length=120, required=False)
+    avatar = forms.ImageField(required=False)
+
+
+class RecruiterProfileForm(forms.Form):
+    first_name = forms.CharField(max_length=150)
+    last_name = forms.CharField(max_length=150)
+    title = forms.CharField(max_length=120, required=False)
+    avatar = forms.ImageField(required=False)
+
+
+class MessageCandidateForm(forms.Form):
+    body = forms.CharField(widget=forms.Textarea, min_length=1)
+
+
+class PasswordChangeForm(DjangoPasswordChangeForm):
+    """Same fields/validation as Django's PasswordChangeForm, just styled
+    to match the rest of the hand-authored templates."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({"class": "form-control"})
 
 
 class JobForm(forms.Form):

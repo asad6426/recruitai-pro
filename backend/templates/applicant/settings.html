@@ -1,0 +1,52 @@
+{% extends "applicant/base_applicant.html" %}
+{% load static %}
+{% block title %}Settings &middot; RecruitAI Pro{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+  <h2 class="mb-1" style="font-size:1.875rem;">Settings</h2>
+  <p class="ra-muted mb-0">Manage your account security.</p>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <form method="post" class="card">
+      {% csrf_token %}
+      <div class="card-header"><h3 class="ra-title mb-0">Change Password</h3></div>
+      <div class="card-body">
+        {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors.0 }}</div>{% endif %}
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.old_password.id_for_label }}">Current password</label>
+          {{ form.old_password }}
+          {% if form.old_password.errors %}<div class="text-danger text-xs mt-1">{{ form.old_password.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.new_password1.id_for_label }}">New password</label>
+          {{ form.new_password1 }}
+          {% if form.new_password1.errors %}<div class="text-danger text-xs mt-1">{{ form.new_password1.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="mb-1">
+          <label class="form-label" for="{{ form.new_password2.id_for_label }}">Confirm new password</label>
+          {{ form.new_password2 }}
+          {% if form.new_password2.errors %}<div class="text-danger text-xs mt-1">{{ form.new_password2.errors.0 }}</div>{% endif %}
+        </div>
+      </div>
+      <div class="card-footer d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary">Update Password</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header"><h3 class="ra-title mb-0">Account</h3></div>
+      <div class="card-body">
+        <p class="text-sm mb-2"><span class="ra-muted">Email</span><br>{{ request.user.email }}</p>
+        <p class="text-sm mb-0"><span class="ra-muted">Role</span><br>Applicant</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

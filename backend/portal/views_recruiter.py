@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -8,12 +10,20 @@ from accounts.models import ApplicantProfile, RecruiterGoal, User
 from applications.models import Application, Interview, Note
 from candidates.models import CandidateSkill
 from jobs.models import Job, JobBenefit, JobRequirement, JobResponsibility, JobSkill
+from notifications.models import Notification
 from resumes.models import OptimizationSuggestion, ResumeAnalysis, ResumeSkillMatch
 from taxonomy.models import Skill
 
 from . import services
 from .decorators import role_required
-from .forms import InterviewForm, JobForm, NoteForm
+from .forms import (
+    InterviewForm,
+    JobForm,
+    MessageCandidateForm,
+    NoteForm,
+    PasswordChangeForm,
+    RecruiterProfileForm,
+)
 
 
 def _org(request):
@@ -408,6 +418,7 @@ def application_stage_update(request, application_id):
     if stage in Application.Stage.values:
         application.stage = stage
         application.save(update_fields=["stage"])
+        services.notify_stage_changed(application, request.user)
         messages.success(request, f"Candidate marked as {application.get_stage_display()}.")
     return redirect(request.POST.get("next") or "recruiter_candidates")
 
@@ -418,16 +429,118 @@ def interview_schedule(request, application_id):
     application = get_object_or_404(Application, pk=application_id, job__organization=_org(request))
     form = InterviewForm(request.POST)
     if form.is_valid():
-        Interview.objects.create(
+        interview = Interview.objects.create(
             application=application,
             interviewer=request.user,
             scheduled_at=form.cleaned_data["scheduled_at"],
             mode=form.cleaned_data["mode"],
         )
+        services.notify_interview_scheduled(interview)
         messages.success(request, "Interview scheduled.")
     else:
         messages.error(request, "Could not schedule interview — check the date/time.")
     return redirect("recruiter_candidate_profile", application_id=application.pk)
+
+
+@role_required("recruiter")
+@require_POST
+def message_candidate(request, application_id):
+    application = get_object_or_404(Application, pk=application_id, job__organization=_org(request))
+    form = MessageCandidateForm(request.POST)
+    if form.is_valid():
+        Notification.objects.create(
+            recipient=application.candidate.user,
+            sender=request.user,
+            application=application,
+            verb=Notification.Verb.MESSAGE,
+            message=form.cleaned_data["body"],
+        )
+        messages.success(request, f"Message sent to {application.candidate.user.get_full_name()}.")
+    else:
+        messages.error(request, "Write a message before sending.")
+
+    next_url = request.POST.get("next")
+    if next_url:
+        return redirect(next_url)
+    return redirect("recruiter_candidate_profile", application_id=application.pk)
+
+
+@role_required("recruiter")
+def interviews_list(request):
+    org = _org(request)
+    interviews = (
+        Interview.objects.filter(application__job__organization=org)
+        .select_related("application__candidate__user", "application__job")
+        .order_by("scheduled_at")
+    )
+    now = timezone.now()
+    context = {
+        "active_nav": "interviews",
+        "page_title": "Interviews",
+        "upcoming": interviews.filter(scheduled_at__gte=now),
+        "past": interviews.filter(scheduled_at__lt=now).order_by("-scheduled_at"),
+    }
+    return render(request, "recruiter/interviews.html", context)
+
+
+@role_required("recruiter")
+def analytics(request):
+    org = _org(request)
+    applications = Application.objects.filter(job__organization=org)
+    jobs = Job.objects.filter(organization=org)
+
+    stage_breakdown = [
+        {"label": label, "count": applications.filter(stage=value).count()}
+        for value, label in Application.Stage.choices
+    ]
+    source_breakdown = [
+        {"label": label, "count": applications.filter(source=value).count()}
+        for value, label in Application.Source.choices
+        if applications.filter(source=value).exists()
+    ]
+    top_jobs = jobs.annotate(applicant_count=Count("applications")).order_by("-applicant_count")[:5]
+
+    context = {
+        "active_nav": "analytics",
+        "page_title": "Analytics",
+        "total_applications": applications.count(),
+        "applications_trend": services.period_trend_pct(applications, "applied_at"),
+        "avg_time_to_hire": services.avg_time_to_hire(applications),
+        "active_jobs": jobs.filter(status=Job.Status.OPEN).count(),
+        "hired_count": applications.filter(stage=Application.Stage.HIRED).count(),
+        "stage_breakdown": stage_breakdown,
+        "stage_max": max((s["count"] for s in stage_breakdown), default=0) or 1,
+        "source_breakdown": source_breakdown,
+        "top_jobs": top_jobs,
+        "top_jobs_max": max((j.applicant_count for j in top_jobs), default=0) or 1,
+    }
+    return render(request, "recruiter/analytics.html", context)
+
+
+@role_required("recruiter")
+def notifications_list(request):
+    notifications = list(
+        Notification.objects.filter(recipient=request.user).select_related("sender", "application__job")
+    )
+    Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
+    context = {"active_nav": "notifications", "page_title": "Notifications", "notifications": notifications}
+    return render(request, "recruiter/notifications.html", context)
+
+
+@role_required("recruiter")
+def settings_view(request):
+    if request.method == "POST":
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "Password updated.")
+            return redirect("recruiter_settings")
+    else:
+        form = PasswordChangeForm(request.user)
+
+    context = {"active_nav": "settings", "page_title": "Settings", "form": form}
+    return render(request, "recruiter/settings.html", context)
 
 
 @role_required("recruiter")
@@ -451,6 +564,31 @@ def job_delete_draft(request, job_id):
     job.delete()
     messages.success(request, "Draft deleted.")
     return redirect("recruiter_jobs")
+
+
+@role_required("recruiter")
+def profile_edit(request):
+    profile = request.user.recruiter_profile
+    user = request.user
+    if request.method == "POST":
+        form = RecruiterProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            user.first_name = form.cleaned_data["first_name"]
+            user.last_name = form.cleaned_data["last_name"]
+            if form.cleaned_data["avatar"]:
+                user.avatar = form.cleaned_data["avatar"]
+            user.save()
+            profile.title = form.cleaned_data["title"]
+            profile.save()
+            messages.success(request, "Profile updated.")
+            return redirect("recruiter_profile_edit")
+    else:
+        form = RecruiterProfileForm(
+            initial={"first_name": user.first_name, "last_name": user.last_name, "title": profile.title}
+        )
+
+    context = {"active_nav": "profile", "page_title": "Your Profile", "profile": profile, "form": form}
+    return render(request, "recruiter/profile.html", context)
 
 
 @role_required("recruiter")

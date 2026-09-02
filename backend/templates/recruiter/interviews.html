@@ -1,0 +1,67 @@
+{% extends "recruiter/base_recruiter.html" %}
+{% load static %}
+{% block title %}Interviews &middot; RecruitAI Pro{% endblock %}
+
+{% block topbar_actions %}
+<div class="ra-search">
+  <i class="bi bi-search"></i>
+  <input type="search" class="form-control" placeholder="Global search…" data-ra-search-open aria-label="Global search">
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header"><h2 class="ra-title mb-0">Upcoming</h2></div>
+      <div class="card-body">
+        {% for interview in upcoming %}
+        <div class="ra-interview-card mb-3">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="ra-badge ra-badge--neutral">{{ interview.scheduled_at|date:"M d, Y — g:i A" }}</span>
+            <i class="bi {% if interview.mode == 'video' %}bi-camera-video{% elif interview.mode == 'panel' %}bi-people{% else %}bi-geo-alt{% endif %} ra-muted"></i>
+          </div>
+          <div class="d-flex align-items-center gap-2 mb-3">
+            {% if interview.application.candidate.user.avatar %}<img src="{{ interview.application.candidate.user.avatar.url }}" alt="" class="ra-avatar ra-avatar--sm">
+            {% else %}<img src="{% static 'assets/img/avatars/placeholder.svg' %}" alt="" class="ra-avatar ra-avatar--sm">{% endif %}
+            <div>
+              <div class="fw-bold ra-navy text-sm">{{ interview.application.candidate.user.get_full_name }}</div>
+              <div class="text-xs ra-muted">{{ interview.application.job.title }}</div>
+            </div>
+          </div>
+          <a href="{% url 'recruiter_candidate_profile' interview.application.pk %}" class="btn btn-outline-neutral w-100">View Profile</a>
+        </div>
+        {% empty %}
+        <p class="ra-muted text-sm mb-0">No upcoming interviews scheduled.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header"><h2 class="ra-title mb-0">Past</h2></div>
+      <div class="ra-table-wrap">
+        <table class="ra-table">
+          <thead><tr><th>Candidate</th><th>Role</th><th>Date</th><th>Mode</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for interview in past %}
+            <tr>
+              <td><a href="{% url 'recruiter_candidate_profile' interview.application.pk %}">{{ interview.application.candidate.user.get_full_name }}</a></td>
+              <td>{{ interview.application.job.title }}</td>
+              <td class="text-sm ra-muted">{{ interview.scheduled_at|date:"M d, Y" }}</td>
+              <td class="text-sm">{{ interview.get_mode_display }}</td>
+              <td><span class="ra-badge ra-badge--{% if interview.status == 'completed' %}success{% elif interview.status == 'cancelled' %}danger{% else %}neutral{% endif %}">{{ interview.get_status_display }}</span></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center ra-muted py-4">No past interviews.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

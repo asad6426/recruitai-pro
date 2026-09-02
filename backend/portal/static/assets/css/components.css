@@ -760,3 +760,7 @@
   color: var(--ra-text-muted);
   background: var(--ra-surface-alt);
 }
+
+.ra-notification--unread {
+  background: var(--ra-info-bg);
+}

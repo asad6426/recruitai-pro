@@ -24,13 +24,13 @@
         <button class="ra-icon-btn" data-ra-search-open type="button" aria-label="Search">
           <i class="bi bi-search"></i>
         </button>
-        <button class="ra-icon-btn" type="button" aria-label="Notifications" data-ra-toast="You're all caught up." data-ra-toast-variant="info">
-          <i class="bi bi-bell"></i><span class="ra-icon-btn__dot"></span>
-        </button>
-        <button class="ra-avatar-btn" type="button" aria-label="Account">
+        <a class="ra-icon-btn" href="{% url 'recruiter_notifications' %}" aria-label="Notifications">
+          <i class="bi bi-bell"></i>{% if unread_notifications_count %}<span class="ra-icon-btn__dot"></span>{% endif %}
+        </a>
+        <a href="{% url 'recruiter_profile_edit' %}" class="ra-avatar-btn" aria-label="Account">
           {% if request.user.avatar %}<img src="{{ request.user.avatar.url }}" alt="{{ request.user.get_full_name }}" class="ra-avatar ra-avatar--sm">
           {% else %}<img src="{% static 'assets/img/avatars/placeholder.svg' %}" alt="{{ request.user.get_full_name }}" class="ra-avatar ra-avatar--sm">{% endif %}
-        </button>
+        </a>
       </header>
 
       {% block main_wrapper %}

@@ -13,10 +13,10 @@
     <a class="ra-nav-link{% if active_nav == 'dashboard' %} active{% endif %}" href="{% url 'recruiter_dashboard' %}"><i class="bi bi-grid-1x2"></i> Dashboard</a>
     <a class="ra-nav-link{% if active_nav == 'candidates' %} active{% endif %}" href="{% url 'recruiter_candidates' %}"><i class="bi bi-people"></i> Candidates</a>
     <a class="ra-nav-link{% if active_nav == 'jobs' %} active{% endif %}" href="{% url 'recruiter_jobs' %}"><i class="bi bi-briefcase"></i> Jobs</a>
-    <a class="ra-nav-link is-soon" href="#"><i class="bi bi-calendar-event"></i> Interviews</a>
-    <a class="ra-nav-link is-soon" href="#"><i class="bi bi-bar-chart"></i> Analytics</a>
-    <a class="ra-nav-link is-soon" href="#"><i class="bi bi-bell"></i> Notifications</a>
-    <a class="ra-nav-link is-soon" href="#"><i class="bi bi-gear"></i> Settings</a>
+    <a class="ra-nav-link{% if active_nav == 'interviews' %} active{% endif %}" href="{% url 'recruiter_interviews' %}"><i class="bi bi-calendar-event"></i> Interviews</a>
+    <a class="ra-nav-link{% if active_nav == 'analytics' %} active{% endif %}" href="{% url 'recruiter_analytics' %}"><i class="bi bi-bar-chart"></i> Analytics</a>
+    <a class="ra-nav-link{% if active_nav == 'notifications' %} active{% endif %}" href="{% url 'recruiter_notifications' %}"><i class="bi bi-bell"></i> Notifications{% if unread_notifications_count %}<span class="ra-badge ra-badge--danger ms-auto">{{ unread_notifications_count }}</span>{% endif %}</a>
+    <a class="ra-nav-link{% if active_nav == 'settings' %} active{% endif %}" href="{% url 'recruiter_settings' %}"><i class="bi bi-gear"></i> Settings</a>
   </nav>
 
   <div class="ra-sidebar__foot">

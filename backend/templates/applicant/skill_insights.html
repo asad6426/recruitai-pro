@@ -1,0 +1,57 @@
+{% extends "applicant/base_applicant.html" %}
+{% load static %}
+{% block title %}Skill Insights &middot; RecruitAI Pro{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+  <h2 class="mb-1" style="font-size:1.875rem;">Skill Insights</h2>
+  <p class="ra-muted mb-0">How your profile stacks up, and what's worth adding next.</p>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card mb-4">
+      <div class="card-header"><h3 class="ra-title mb-0">Technical Skills</h3></div>
+      <div class="card-body">
+        {% for cs in technical_skills %}
+        <div class="ra-meter mb-3">
+          <div class="ra-meter__head">
+            <span class="ra-meter__label">{{ cs.skill.name }}</span>
+            <span class="ra-meter__value">{{ cs.proficiency_pct|default:"—" }}%</span>
+          </div>
+          <div class="ra-meter__track"><span class="ra-meter__fill" data-value="{{ cs.proficiency_pct|default:0 }}"></span></div>
+        </div>
+        {% empty %}
+        <p class="ra-muted text-sm mb-0">No technical skills on file yet — add them from your resume.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h3 class="ra-title mb-0">Soft Skills</h3></div>
+      <div class="card-body d-flex flex-wrap gap-2">
+        {% for cs in soft_skills %}<span class="ra-chip ra-chip--success">{{ cs.skill.name }}</span>{% empty %}<span class="ra-muted text-sm">None on file.</span>{% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-header"><h3 class="ra-title mb-0">Worth Adding</h3></div>
+      <div class="card-body">
+        <p class="ra-muted text-sm">Skills that keep showing up as gaps across your resume analyses — the more jobs a skill appears in, the higher it's ranked.</p>
+        {% for name, count in worth_adding %}
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="fw-semibold text-sm">{{ name }}</span>
+          <span class="ra-badge ra-badge--warning">Missing in {{ count }} job{{ count|pluralize }}</span>
+        </div>
+        {% empty %}
+        <p class="ra-muted text-sm mb-0">No gaps found yet — apply to a few jobs to get personalized suggestions.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

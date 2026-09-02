@@ -1,3 +1,14 @@
+def notifications_context(request):
+    """Feeds the topbar bell icon's unread badge on every recruiter/applicant page."""
+    user = getattr(request, "user", None)
+    if not user or not user.is_authenticated:
+        return {}
+
+    from notifications.models import Notification
+
+    return {"unread_notifications_count": Notification.objects.filter(recipient=user, is_read=False).count()}
+
+
 def search_quicklinks(request):
     """Feeds the global-search-modal quick-links list with real recent
     candidates/jobs instead of a few hardcoded names."""

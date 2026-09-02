@@ -65,6 +65,11 @@ urlpatterns = [
         name="recruiter_interview_schedule",
     ),
     path(
+        "recruiter/candidates/<int:application_id>/message/",
+        views_recruiter.message_candidate,
+        name="recruiter_message_candidate",
+    ),
+    path(
         "recruiter/suggestions/<int:suggestion_id>/toggle/",
         views_recruiter.suggestion_toggle,
         name="recruiter_suggestion_toggle",
@@ -74,6 +79,11 @@ urlpatterns = [
     path("recruiter/jobs/<int:job_id>/edit/", views_recruiter.post_job, name="recruiter_edit_job"),
     path("recruiter/jobs/<int:job_id>/status/", views_recruiter.job_status_update, name="recruiter_job_status"),
     path("recruiter/jobs/<int:job_id>/delete-draft/", views_recruiter.job_delete_draft, name="recruiter_job_delete"),
+    path("recruiter/profile/", views_recruiter.profile_edit, name="recruiter_profile_edit"),
+    path("recruiter/interviews/", views_recruiter.interviews_list, name="recruiter_interviews"),
+    path("recruiter/analytics/", views_recruiter.analytics, name="recruiter_analytics"),
+    path("recruiter/notifications/", views_recruiter.notifications_list, name="recruiter_notifications"),
+    path("recruiter/settings/", views_recruiter.settings_view, name="recruiter_settings"),
     # --- applicant --------------------------------------------------------
     path("applicant/", views_applicant.dashboard, name="applicant_dashboard"),
     path("applicant/jobs/", views_applicant.browse_jobs, name="applicant_browse_jobs"),
@@ -81,4 +91,10 @@ urlpatterns = [
     path("applicant/jobs/<int:job_id>/apply/", views_applicant.apply, name="applicant_apply"),
     path("applicant/jobs/<int:job_id>/save/", views_applicant.saved_job_toggle, name="applicant_saved_job_toggle"),
     path("applicant/resumes/upload/", views_applicant.resume_upload, name="applicant_resume_upload"),
+    path("applicant/profile/", views_applicant.profile_edit, name="applicant_profile_edit"),
+    path("applicant/applications/", views_applicant.applications_list, name="applicant_applications"),
+    path("applicant/interviews/", views_applicant.interviews_list, name="applicant_interviews"),
+    path("applicant/skills/", views_applicant.skill_insights, name="applicant_skill_insights"),
+    path("applicant/notifications/", views_applicant.notifications_list, name="applicant_notifications"),
+    path("applicant/settings/", views_applicant.settings_view, name="applicant_settings"),
 ]

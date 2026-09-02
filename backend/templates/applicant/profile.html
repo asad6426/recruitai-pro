@@ -1,0 +1,64 @@
+{% extends "applicant/base_applicant.html" %}
+{% load static %}
+{% block title %}Profile &middot; RecruitAI Pro{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+  <h2 class="mb-1" style="font-size:2rem;">Your Profile</h2>
+  <p class="ra-muted mb-0">Update the details recruiters see on your applications.</p>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <form class="needs-validation card" novalidate method="post" action="{% url 'applicant_profile_edit' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label" for="first_name">First name</label>
+            <input type="text" class="form-control{% if form.first_name.errors %} is-invalid{% endif %}" id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}" required>
+            <div class="invalid-feedback">Enter your first name.</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="last_name">Last name</label>
+            <input type="text" class="form-control{% if form.last_name.errors %} is-invalid{% endif %}" id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}" required>
+            <div class="invalid-feedback">Enter your last name.</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="headline">Headline</label>
+            <input type="text" class="form-control" id="headline" name="headline" placeholder="e.g. Senior Product Designer" value="{{ form.headline.value|default:'' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="current_employer">Current employer</label>
+            <input type="text" class="form-control" id="current_employer" name="current_employer" value="{{ form.current_employer.value|default:'' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="location">Location</label>
+            <input type="text" class="form-control" id="location" name="location" placeholder="City, Country" value="{{ form.location.value|default:'' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="avatar">Profile photo</label>
+            <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+          </div>
+        </div>
+      </div>
+      <div class="card-footer d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-body text-center">
+        {% if request.user.avatar %}<img src="{{ request.user.avatar.url }}" alt="{{ request.user.get_full_name }}" class="ra-avatar ra-avatar--xl mb-3">
+        {% else %}<img src="{% static 'assets/img/avatars/placeholder.svg' %}" alt="{{ request.user.get_full_name }}" class="ra-avatar ra-avatar--xl mb-3">{% endif %}
+        <h3 class="mb-1" style="font-size:1.25rem;">{{ request.user.get_full_name }}</h3>
+        <p class="ra-muted text-sm mb-0">{{ request.user.email }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

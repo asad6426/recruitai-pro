@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.db import IntegrityError
 from django.db.models import Q
 from django.http import JsonResponse
@@ -7,12 +8,14 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from applications.models import Application, Interview
+from candidates.models import CandidateSkill
 from jobs.models import Job, SavedJob
+from notifications.models import Notification
 from resumes.models import OptimizationSuggestion, Resume, ResumeAnalysis, ResumeSkillMatch
 
 from . import services
 from .decorators import role_required
-from .forms import ApplyForm, ResumeUploadForm
+from .forms import ApplicantProfileForm, ApplyForm, PasswordChangeForm, ResumeUploadForm
 
 
 def _candidate(request):
@@ -151,7 +154,7 @@ def apply(request, job_id):
 
     resume = get_object_or_404(Resume, pk=form.cleaned_data["resume_id"], candidate=candidate)
     try:
-        Application.objects.create(
+        application = Application.objects.create(
             candidate=candidate,
             job=job,
             resume=resume,
@@ -163,6 +166,7 @@ def apply(request, job_id):
         )
         if not ResumeAnalysis.objects.filter(resume=resume, job=job).exists():
             services.run_resume_analysis(resume, job)
+        services.notify_new_application(application)
         messages.success(request, f"Application submitted to {job.organization.name}.")
     except IntegrityError:
         messages.info(request, "You've already applied to this job.")
@@ -182,6 +186,39 @@ def saved_job_toggle(request, job_id):
 
 
 @role_required("applicant")
+def profile_edit(request):
+    candidate = _candidate(request)
+    user = request.user
+    if request.method == "POST":
+        form = ApplicantProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            user.first_name = form.cleaned_data["first_name"]
+            user.last_name = form.cleaned_data["last_name"]
+            if form.cleaned_data["avatar"]:
+                user.avatar = form.cleaned_data["avatar"]
+            user.save()
+            candidate.headline = form.cleaned_data["headline"]
+            candidate.current_employer = form.cleaned_data["current_employer"]
+            candidate.location = form.cleaned_data["location"]
+            candidate.save()
+            messages.success(request, "Profile updated.")
+            return redirect("applicant_profile_edit")
+    else:
+        form = ApplicantProfileForm(
+            initial={
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "headline": candidate.headline,
+                "current_employer": candidate.current_employer,
+                "location": candidate.location,
+            }
+        )
+
+    context = {"active_nav": "profile", "candidate": candidate, "form": form}
+    return render(request, "applicant/profile.html", context)
+
+
+@role_required("applicant")
 @require_POST
 def resume_upload(request):
     candidate = _candidate(request)
@@ -198,3 +235,91 @@ def resume_upload(request):
     else:
         messages.error(request, "Could not upload that file.")
     return redirect("applicant_dashboard")
+
+
+@role_required("applicant")
+def applications_list(request):
+    candidate = _candidate(request)
+    applications = (
+        Application.objects.filter(candidate=candidate)
+        .select_related("job__organization")
+        .order_by("-applied_at")
+    )
+    stage = request.GET.get("stage")
+    if stage:
+        applications = applications.filter(stage=stage)
+
+    context = {
+        "active_nav": "applications",
+        "applications": applications,
+        "total_count": Application.objects.filter(candidate=candidate).count(),
+        "stage_choices": Application.Stage.choices,
+        "selected_stage": stage or "",
+    }
+    return render(request, "applicant/applications.html", context)
+
+
+@role_required("applicant")
+def interviews_list(request):
+    candidate = _candidate(request)
+    interviews = (
+        Interview.objects.filter(application__candidate=candidate)
+        .select_related("application__job__organization")
+        .order_by("scheduled_at")
+    )
+    now = timezone.now()
+    context = {
+        "active_nav": "interviews",
+        "upcoming": interviews.filter(scheduled_at__gte=now),
+        "past": interviews.filter(scheduled_at__lt=now).order_by("-scheduled_at"),
+    }
+    return render(request, "applicant/interviews.html", context)
+
+
+@role_required("applicant")
+def skill_insights(request):
+    candidate = _candidate(request)
+    technical_skills = candidate.skills.filter(category=CandidateSkill.Category.TECHNICAL).select_related("skill")
+    soft_skills = candidate.skills.filter(category=CandidateSkill.Category.SOFT).select_related("skill")
+
+    gap_counts = {}
+    matches = ResumeSkillMatch.objects.filter(analysis__resume__candidate=candidate).exclude(
+        status=ResumeSkillMatch.MatchStatus.MATCHED
+    ).select_related("skill")
+    for match in matches:
+        gap_counts[match.skill.name] = gap_counts.get(match.skill.name, 0) + 1
+    worth_adding = sorted(gap_counts.items(), key=lambda pair: -pair[1])[:8]
+
+    context = {
+        "active_nav": "skills",
+        "technical_skills": technical_skills,
+        "soft_skills": soft_skills,
+        "worth_adding": worth_adding,
+    }
+    return render(request, "applicant/skill_insights.html", context)
+
+
+@role_required("applicant")
+def notifications_list(request):
+    notifications = list(
+        Notification.objects.filter(recipient=request.user).select_related("sender", "application__job")
+    )
+    Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
+    context = {"active_nav": "notifications", "notifications": notifications}
+    return render(request, "applicant/notifications.html", context)
+
+
+@role_required("applicant")
+def settings_view(request):
+    if request.method == "POST":
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "Password updated.")
+            return redirect("applicant_settings")
+    else:
+        form = PasswordChangeForm(request.user)
+
+    context = {"active_nav": "settings", "form": form}
+    return render(request, "applicant/settings.html", context)

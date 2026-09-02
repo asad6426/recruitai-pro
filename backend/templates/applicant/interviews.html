@@ -1,0 +1,59 @@
+{% extends "applicant/base_applicant.html" %}
+{% load static %}
+{% block title %}Interviews &middot; RecruitAI Pro{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+  <h2 class="mb-1" style="font-size:1.875rem;">Interviews</h2>
+  <p class="ra-muted mb-0">Everything scheduled with recruiters, upcoming and past.</p>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header"><h3 class="ra-title mb-0">Upcoming</h3></div>
+      <div class="card-body">
+        {% for interview in upcoming %}
+        <div class="ra-interview-card mb-3">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="ra-badge ra-badge--neutral">{{ interview.scheduled_at|date:"M d, Y — g:i A" }}</span>
+            <i class="bi {% if interview.mode == 'video' %}bi-camera-video{% elif interview.mode == 'panel' %}bi-people{% else %}bi-geo-alt{% endif %} ra-muted"></i>
+          </div>
+          <div class="fw-bold ra-navy text-sm mb-1">{{ interview.application.job.title }}</div>
+          <div class="text-xs ra-muted mb-3">{{ interview.application.job.organization.name }} &bull; {{ interview.get_mode_display }}</div>
+          <a href="{% url 'applicant_job_detail' interview.application.job.pk %}" class="btn btn-outline-neutral w-100">View Job</a>
+        </div>
+        {% empty %}
+        <p class="ra-muted text-sm mb-0">No upcoming interviews.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header"><h3 class="ra-title mb-0">Past</h3></div>
+      <div class="ra-table-wrap">
+        <table class="ra-table">
+          <thead><tr><th>Role</th><th>Company</th><th>Date</th><th>Mode</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for interview in past %}
+            <tr>
+              <td>{{ interview.application.job.title }}</td>
+              <td>{{ interview.application.job.organization.name }}</td>
+              <td class="text-sm ra-muted">{{ interview.scheduled_at|date:"M d, Y" }}</td>
+              <td class="text-sm">{{ interview.get_mode_display }}</td>
+              <td><span class="ra-badge ra-badge--{% if interview.status == 'completed' %}success{% elif interview.status == 'cancelled' %}danger{% else %}neutral{% endif %}">{{ interview.get_status_display }}</span></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center ra-muted py-4">No past interviews.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

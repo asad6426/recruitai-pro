@@ -1,0 +1,106 @@
+{% extends "recruiter/base_recruiter.html" %}
+{% load static %}
+{% block title %}Analytics &middot; RecruitAI Pro{% endblock %}
+
+{% block topbar_actions %}
+<div class="ra-search">
+  <i class="bi bi-search"></i>
+  <input type="search" class="form-control" placeholder="Global search…" data-ra-search-open aria-label="Global search">
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="ra-stat">
+      <div class="ra-stat__top">
+        <span class="ra-stat__icon"><i class="bi bi-people-fill"></i></span>
+        {% if applications_trend != None %}<span class="ra-badge {% if applications_trend >= 0 %}ra-badge--success{% else %}ra-badge--danger{% endif %}">{{ applications_trend|stringformat:"+d" }}%</span>{% endif %}
+      </div>
+      <div class="ra-stat__label">Total Applications</div>
+      <div class="ra-stat__value"><span data-count="{{ total_applications }}">{{ total_applications }}</span></div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="ra-stat">
+      <div class="ra-stat__top"><span class="ra-stat__icon ra-stat__icon--warning"><i class="bi bi-briefcase-fill"></i></span></div>
+      <div class="ra-stat__label">Active Jobs</div>
+      <div class="ra-stat__value"><span data-count="{{ active_jobs }}">{{ active_jobs }}</span></div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="ra-stat">
+      <div class="ra-stat__top"><span class="ra-stat__icon ra-stat__icon--success"><i class="bi bi-patch-check-fill"></i></span></div>
+      <div class="ra-stat__label">Hired</div>
+      <div class="ra-stat__value"><span data-count="{{ hired_count }}">{{ hired_count }}</span></div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="ra-stat">
+      <div class="ra-stat__top"><span class="ra-stat__icon ra-stat__icon--neutral"><i class="bi bi-clock-history"></i></span></div>
+      <div class="ra-stat__label">Avg Time to Hire</div>
+      <div class="ra-stat__value">{% if avg_time_to_hire != None %}<span data-count="{{ avg_time_to_hire }}">{{ avg_time_to_hire }}</span> <small>days</small>{% else %}<small class="ra-muted">No hires yet</small>{% endif %}</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-xl-6">
+    <div class="card mb-4">
+      <div class="card-header"><h2 class="ra-title mb-0">Pipeline by Stage</h2></div>
+      <div class="card-body">
+        {% for stage in stage_breakdown %}
+        <div class="ra-meter mb-3">
+          <div class="ra-meter__head">
+            <span class="ra-meter__label">{{ stage.label }}</span>
+            <span class="ra-meter__value">{{ stage.count }}</span>
+          </div>
+          <div class="ra-meter__track"><span class="ra-meter__fill" data-value="{% widthratio stage.count stage_max 100 %}"></span></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h2 class="ra-title mb-0">Application Sources</h2></div>
+      <div class="card-body">
+        {% for source in source_breakdown %}
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="text-sm fw-semibold">{{ source.label }}</span>
+          <span class="ra-badge ra-badge--neutral">{{ source.count }}</span>
+        </div>
+        {% empty %}
+        <p class="ra-muted text-sm mb-0">No applications yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6">
+    <div class="card">
+      <div class="card-header"><h2 class="ra-title mb-0">Top Jobs by Applicants</h2></div>
+      <div class="ra-table-wrap">
+        <table class="ra-table">
+          <thead><tr><th>Role</th><th>Status</th><th>Applicants</th><th></th></tr></thead>
+          <tbody>
+            {% for job in top_jobs %}
+            <tr>
+              <td><a href="{% url 'recruiter_jobs' %}">{{ job.title }}</a></td>
+              <td><span class="ra-badge ra-badge--{% if job.status == 'open' %}success{% elif job.status == 'paused' %}warning{% else %}neutral{% endif %}">{{ job.get_status_display }}</span></td>
+              <td class="fw-semibold">{{ job.applicant_count }}</td>
+              <td style="min-width:8rem;">
+                <div class="ra-meter__track"><span class="ra-meter__fill" data-value="{% widthratio job.applicant_count top_jobs_max 100 %}"></span></div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-center ra-muted py-4">No jobs posted yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

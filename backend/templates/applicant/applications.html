@@ -1,0 +1,65 @@
+{% extends "applicant/base_applicant.html" %}
+{% load static ra_extras %}
+{% block title %}My Applications &middot; RecruitAI Pro{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+  <div>
+    <h2 class="mb-1" style="font-size:1.875rem;">My Applications</h2>
+    <p class="ra-muted mb-0">{{ total_count }} application{{ total_count|pluralize }} total.</p>
+  </div>
+  <form method="get" class="d-flex gap-2">
+    <select class="form-select form-select-sm" name="stage" onchange="this.form.submit()">
+      <option value="">All stages</option>
+      {% for value, label in stage_choices %}
+      <option value="{{ value }}"{% if selected_stage == value %} selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </form>
+</div>
+
+<div class="card">
+  <div class="ra-table-wrap">
+    <table class="ra-table">
+      <thead>
+        <tr>
+          <th>Company &amp; Job</th>
+          <th>Applied</th>
+          <th>Match</th>
+          <th>ATS Score</th>
+          <th>Stage</th>
+          <th class="text-end">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for application in applications %}
+        <tr>
+          <td>
+            <div class="ra-cell-person">
+              <span class="ra-logo-tile ra-logo-tile--sm text-primary">{{ application.job.organization.name|initials }}</span>
+              <div>
+                <div class="ra-cell-person__name">{{ application.job.organization.name }}</div>
+                <div class="ra-cell-person__meta">{{ application.job.title }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="text-sm ra-muted">{{ application.applied_at|date:"M d, Y" }}</td>
+          <td>
+            <span class="fw-bold text-sm" style="color:var(--ra-{% if application.match_pct >= 85 %}success{% elif application.match_pct >= 60 %}blue{% else %}danger{% endif %});">
+              <span class="d-inline-block me-1" style="width:8px;height:8px;border-radius:50%;background:var(--ra-{% if application.match_pct >= 85 %}success{% elif application.match_pct >= 60 %}blue{% else %}danger{% endif %});"></span>{{ application.match_pct|default:"—" }}%
+            </span>
+          </td>
+          <td class="text-sm">{{ application.ats_score|default:"—" }}</td>
+          <td><span class="ra-badge ra-badge--{{ application.stage|stage_variant }} ra-badge--caps">{{ application.get_stage_display }}</span></td>
+          <td class="text-end"><a href="{% url 'applicant_job_detail' application.job.pk %}" class="fw-semibold text-sm">Details</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center ra-muted py-4">No applications yet — <a href="{% url 'applicant_browse_jobs' %}">browse jobs</a> to get started.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

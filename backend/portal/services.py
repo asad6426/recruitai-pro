@@ -6,8 +6,10 @@ from datetime import date, timedelta
 from django.db.models import Avg, F
 from django.utils import timezone
 
+from accounts.models import User
 from applications.models import Application, Interview
 from candidates.models import CandidateSkill
+from notifications.models import Notification
 from resumes.models import OptimizationSuggestion, ResumeAnalysis, ResumeSkillMatch
 
 
@@ -267,6 +269,50 @@ def period_trend_pct(queryset, date_field="applied_at", days=30):
     if not previous:
         return None
     return round((current - previous) / previous * 100)
+
+
+def notify_new_application(application):
+    """Tells the hiring manager (or every recruiter at the org, if none is
+    set) that a candidate just applied."""
+    job = application.job
+    if job.hiring_manager_id:
+        recipients = User.objects.filter(pk=job.hiring_manager_id)
+    else:
+        recipients = User.objects.filter(role="recruiter", recruiter_profile__organization=job.organization)
+
+    candidate_name = application.candidate.user.get_full_name() or application.candidate.user.email
+    for recruiter in recipients:
+        Notification.objects.create(
+            recipient=recruiter,
+            sender=application.candidate.user,
+            application=application,
+            verb=Notification.Verb.NEW_APPLICATION,
+            message=f"{candidate_name} applied for {job.title}.",
+        )
+
+
+def notify_interview_scheduled(interview):
+    application = interview.application
+    Notification.objects.create(
+        recipient=application.candidate.user,
+        sender=interview.interviewer,
+        application=application,
+        verb=Notification.Verb.INTERVIEW_SCHEDULED,
+        message=(
+            f"Interview scheduled for {application.job.title} on "
+            f"{timezone.localtime(interview.scheduled_at):%b %d, %Y at %I:%M %p}."
+        ),
+    )
+
+
+def notify_stage_changed(application, actor):
+    Notification.objects.create(
+        recipient=application.candidate.user,
+        sender=actor,
+        application=application,
+        verb=Notification.Verb.STAGE_CHANGED,
+        message=f"Your application for {application.job.title} is now marked as {application.get_stage_display()}.",
+    )
 
 
 def ats_trend_pct(candidate):

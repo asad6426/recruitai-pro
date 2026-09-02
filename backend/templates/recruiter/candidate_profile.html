@@ -42,6 +42,16 @@
                   {% else %}Low Priority<span class="d-inline-block ms-1" style="width:8px;height:8px;border-radius:50%;background:var(--ra-danger);"></span>{% endif %}
                 </div>
               </div>
+              <div>
+                <div class="ra-eyebrow mb-1">Resume</div>
+                {% if application.resume.file %}
+                <a href="{{ application.resume.file.url }}" target="_blank" rel="noopener" class="fw-bold text-sm">
+                  <i class="bi bi-file-earmark-pdf text-danger me-1"></i>{{ application.resume.filename }}
+                </a>
+                {% else %}
+                <div class="text-sm ra-muted">No resume on file</div>
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
@@ -60,6 +70,13 @@
           <div class="col-6">
             <button class="btn btn-outline-neutral w-100" type="button" data-bs-toggle="collapse" data-bs-target="#scheduleForm">
               <i class="bi bi-calendar-event me-1"></i> Schedule
+            </button>
+          </div>
+        </div>
+        <div class="row g-2 mb-2">
+          <div class="col-12">
+            <button class="btn btn-outline-neutral w-100" type="button" data-bs-toggle="collapse" data-bs-target="#messageForm">
+              <i class="bi bi-chat-dots me-1"></i> Message Candidate
             </button>
           </div>
         </div>
@@ -82,6 +99,16 @@
               <option value="panel">Panel</option>
             </select>
             <button type="submit" class="btn btn-primary btn-sm w-100">Confirm Interview</button>
+          </form>
+        </div>
+
+        <div class="collapse mt-3" id="messageForm">
+          <form method="post" action="{% url 'recruiter_message_candidate' application.pk %}" class="card ra-border shadow-none p-3">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <label class="form-label text-sm" for="messageBody">Message to {{ candidate.user.get_full_name }}</label>
+            <textarea class="form-control form-control-sm mb-2" id="messageBody" name="body" rows="3" required placeholder="e.g. Thanks for applying — we'd like to move you to the next round…"></textarea>
+            <button type="submit" class="btn btn-primary btn-sm w-100">Send Message</button>
           </form>
         </div>
       </div>
