@@ -1,7 +1,13 @@
-# RecruitAI Pro — Backend Schema
+# RecruitAI Pro — Backend
 
-Django project modeling the data behind the `recruitai-pro/` frontend prototype.
-Schema only — no views/APIs wired up yet.
+The real, working application: a Django project with the full data model *and* the
+views/templates/URLs that serve it — signup through applying for a job, recruiter
+screening, interviews, notifications, the works. It was originally scaffolded as a
+schema-only companion to the `recruitai-pro/` frontend prototype, but the `portal` app
+below now implements the product for real, independent of that prototype.
+
+See the root [`README.md`](../README.md) for the full feature list and how this
+relates to `recruitai-pro/`.
 
 ## Run it
 
@@ -10,11 +16,12 @@ cd backend
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py createsuperuser
+python manage.py seed_demo      # optional — demo org, jobs, candidates
 python manage.py runserver
 ```
 
-Then open `/admin/` to browse and create data through Django admin (every model
-is registered).
+Then open `/` for the real app, or `/admin/` to browse and edit data directly through
+Django admin (every model is registered).
 
 ## App layout
 
@@ -26,7 +33,9 @@ is registered).
 | `jobs` | `Job`, `JobSkill`, `JobRequirement`, `JobResponsibility`, `JobBenefit`, `SavedJob` | post-job.html, jobs.html, browse-jobs.html, job-details.html |
 | `candidates` | `WorkExperience`, `Education`, `CandidateSkill`, `Certification` | candidate-profile.html Overview/Experience/Skills tabs |
 | `resumes` | `Resume`, `ResumeAnalysis`, `ResumeSkillMatch`, `OptimizationSuggestion` | resume-analysis.html |
-| `applications` | `Application`, `Note`, `Interview` | candidates.html table + drawer, candidate-profile.html Notes tab, dashboard "Interviews Today" |
+| `applications` | `Application`, `Note`, `Interview` | candidates.html table + drawer, candidate-profile.html Notes tab, dashboard "Interviews Today", the Interviews list pages |
+| `notifications` | `Notification` | the bell icon + Notifications page on both sides; new-application alerts, interview-scheduled alerts, stage-change alerts, and recruiter → candidate direct messages |
+| `portal` | *(no models)* | every view, form, URL, and template — the app itself. Split into `views_marketing.py`, `views_auth.py`, `views_recruiter.py`, `views_applicant.py`, with shared computed-value logic in `services.py` |
 
 `User.role` (`recruiter` / `applicant`) decides which of `RecruiterProfile` /
 `ApplicantProfile` is attached — mirrors the `role-select.html` split.
@@ -52,10 +61,14 @@ refer to; there's no separate `Candidate` model.
   `PositiveInteger`/`PositiveSmallInteger` fields, not derived — the frontend
   displays them as-is rather than computing them client-side, so the backend
   is the source of truth.
-- Sidebar items marked "Soon" in the frontend (Interviews list beyond
-  today, Analytics, Notifications, Settings, Skill Insights) have no models
-  yet — `Interview` exists because it's already used by the dashboard's
-  "Interviews Today" card, but there's no notification/analytics schema.
+- **Resume/ATS scoring (`services.run_resume_analysis`) is deterministic**, computed
+  from real `CandidateSkill` vs `JobSkill` overlap and work-experience duration — not
+  an external AI/LLM call. It reads as "AI insight" in the UI but costs nothing to run
+  and needs no API key.
+- **Notifications are a thin, generic model** (`recipient`, `sender`, optional
+  `application`, `verb`, `message`) rather than one table per event type — every
+  trigger (`services.notify_*`) just creates a row with the right `verb`, so adding a
+  new notification type later doesn't need a migration.
 
 ## Verified
 
@@ -63,4 +76,7 @@ Ran `makemigrations` + `migrate` against a real SQLite db and a full
 create-one-of-everything smoke test exercising every FK, M2M (through table),
 and reverse relation (`job.job_skills`, `candidate.applications`,
 `application.interviews`, `resume.analyses.skill_matches`, etc.) — all pass.
-`python manage.py check` reports zero issues.
+`python manage.py check` reports zero issues, and the request flow for apply →
+recruiter-notified, schedule-interview → candidate-notified, message → candidate-
+notified, and stage-change → candidate-notified has been exercised end-to-end through
+Django's test client, not just checked for template errors.
