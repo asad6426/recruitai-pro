@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Candidates &middot; RecruitAI Pro</title>
+<link rel="icon" href="../assets/img/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="../assets/css/theme.css" rel="stylesheet">
+<link href="../assets/css/layout.css" rel="stylesheet">
+<link href="../assets/css/components.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="ra-app">
+  <div class="ra-app-body">
+
+    <!-- =============================== Sidebar =============================== -->
+    <div class="ra-sidebar-backdrop d-lg-none"></div>
+    <aside class="ra-sidebar">
+      <div class="ra-sidebar__brand">
+        <img src="../assets/img/logo.svg" alt="" width="34" height="34">
+        <div>
+          <div class="ra-sidebar__brand-name">RecruitAI Pro</div>
+          <div class="ra-sidebar__brand-sub">Enterprise HR Portal</div>
+        </div>
+      </div>
+
+      <nav class="ra-sidebar__nav">
+        <a class="ra-nav-link" href="dashboard.html"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+        <a class="ra-nav-link active" href="candidates.html"><i class="bi bi-people"></i> Candidates</a>
+        <a class="ra-nav-link" href="jobs.html"><i class="bi bi-briefcase"></i> Jobs</a>
+        <a class="ra-nav-link is-soon" href="#"><i class="bi bi-calendar-event"></i> Interviews</a>
+        <a class="ra-nav-link is-soon" href="#"><i class="bi bi-bar-chart"></i> Analytics</a>
+        <a class="ra-nav-link is-soon" href="#"><i class="bi bi-bell"></i> Notifications</a>
+        <a class="ra-nav-link is-soon" href="#"><i class="bi bi-gear"></i> Settings</a>
+      </nav>
+
+      <div class="ra-sidebar__foot">
+        <a href="post-job.html" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Post New Job</a>
+        <a class="ra-nav-link" href="#" data-ra-toast="Help Center opens in the full product." data-ra-toast-variant="info"><i class="bi bi-question-circle"></i> Help Center</a>
+        <a class="ra-nav-link ra-nav-link--danger" href="../login.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+      </div>
+    </aside>
+
+    <!-- ================================= Main ================================ -->
+    <div class="ra-main">
+
+      <!-- Topbar -->
+      <header class="ra-topbar">
+        <button class="ra-icon-btn d-lg-none" data-ra-sidebar-toggle type="button" aria-label="Open menu">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="ra-topbar__title d-flex align-items-center gap-3">
+          <h1 class="ra-page-title">Candidates</h1>
+          <span class="ra-badge ra-badge--info">1,240 Total</span>
+        </div>
+
+        <div class="ra-search">
+          <i class="bi bi-search"></i>
+          <input type="search" class="form-control" id="candidateSearch" placeholder="Search across all candidates…" aria-label="Search candidates">
+        </div>
+
+        <button class="ra-icon-btn" data-ra-theme-toggle type="button" aria-label="Toggle dark mode">
+          <i class="bi bi-moon-stars" data-ra-theme-icon></i>
+        </button>
+        <button class="ra-icon-btn" type="button" aria-label="Notifications" data-ra-toast="3 unread notifications." data-ra-toast-variant="info">
+          <i class="bi bi-bell"></i><span class="ra-icon-btn__dot"></span>
+        </button>
+        <button class="ra-icon-btn d-none d-sm-inline-flex" data-ra-search-open type="button" aria-label="Quick search">
+          <i class="bi bi-question-circle"></i>
+        </button>
+        <button class="ra-avatar-btn" type="button" aria-label="Account">
+          <img src="../assets/img/avatars/sarah-jenkins.svg" alt="Sarah Jenkins" class="ra-avatar ra-avatar--sm">
+        </button>
+      </header>
+
+      <div class="ra-split">
+
+        <!-- ============================ Table column ========================= -->
+        <main class="ra-content">
+
+          <!-- Filter bar -->
+          <div class="card mb-4">
+            <div class="card-body d-flex flex-wrap align-items-center gap-3">
+              <button class="btn btn-outline-neutral" type="button" data-bs-toggle="collapse" data-bs-target="#advancedFilters">
+                <i class="bi bi-funnel me-1"></i> Filter
+              </button>
+
+              <select class="form-select w-auto" id="roleFilter" aria-label="Filter by role">
+                <option value="all">All Roles</option>
+                <option value="designer">Product Designer</option>
+                <option value="fullstack">Full Stack Dev</option>
+                <option value="marketing">Marketing Lead</option>
+                <option value="devops">DevOps Engineer</option>
+                <option value="data">Data Analyst</option>
+                <option value="pm">Product Manager</option>
+              </select>
+
+              <select class="form-select w-auto" id="scoreFilter" aria-label="Filter by ATS score">
+                <option value="0">ATS Score: Any</option>
+                <option value="60">ATS Score: 60%+</option>
+                <option value="80">ATS Score: 80%+</option>
+                <option value="90">ATS Score: 90%+</option>
+              </select>
+
+              <button class="btn btn-outline-neutral ms-auto" data-ra-toast="Import started — 0 of 120 resumes parsed." data-ra-toast-variant="info">
+                <i class="bi bi-upload me-1"></i> Import
+              </button>
+
+              <div class="collapse w-100" id="advancedFilters">
+                <div class="pt-3 mt-3 border-top">
+                  <div class="row g-3">
+                    <div class="col-sm-6 col-lg-3">
+                      <label class="form-label" for="filterStage">Stage</label>
+                      <select class="form-select" id="filterStage">
+                        <option>Any stage</option><option>Review</option><option>Interview</option><option>Shortlisted</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                      <label class="form-label" for="filterLocation">Location</label>
+                      <input class="form-control" id="filterLocation" placeholder="City or remote">
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                      <label class="form-label" for="filterExp">Experience</label>
+                      <select class="form-select" id="filterExp">
+                        <option>Any level</option><option>2+ years</option><option>5+ years</option><option>8+ years</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                      <label class="form-label" for="filterSource">Source</label>
+                      <select class="form-select" id="filterSource">
+                        <option>All sources</option><option>Careers page</option><option>LinkedIn</option><option>Referral</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Candidate table -->
+          <div class="card mb-4">
+            <div class="ra-table-wrap">
+              <table class="ra-table" id="candidateTable">
+                <thead>
+                  <tr>
+                    <th style="width:44px;">
+                      <input class="form-check-input" type="checkbox" id="selectAllCandidates" aria-label="Select all candidates">
+                    </th>
+                    <th class="is-sortable" data-sort-key="name">Candidate</th>
+                    <th class="is-sortable" data-sort-key="role">Job Role</th>
+                    <th class="is-sortable" data-sort-key="score">ATS Score</th>
+                    <th>Match</th>
+                    <th>Stage</th>
+                    <th class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <tr data-name="Alexandria Moore" data-email="alex.moore@gmail.com" data-role="Sr. Product Designer" data-role-key="designer"
+                      data-score="94" data-match="98" data-location="New York, NY" data-work="Remote"
+                      data-avatar="../assets/img/avatars/alexandria.svg"
+                      data-skills="Figma|Design Systems|React|Product Strategy|User Research"
+                      data-insight="Alexandria has led design systems at two Fortune 500 companies. Her portfolio demonstrates exceptional visual polish and a deep understanding of accessibility. Highly recommended for the current opening.">
+                    <td><input class="form-check-input row-check" type="checkbox" checked aria-label="Select Alexandria Moore"></td>
+                    <td>
+                      <div class="ra-cell-person">
+                        <img src="../assets/img/avatars/alexandria.svg" alt="" class="ra-avatar ra-avatar--sm">
+                        <div>
+                          <div class="ra-cell-person__name">Alexandria Moore</div>
+                          <div class="ra-cell-person__meta">alex.moore@gmail.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Sr. Product Designer</td>
+                    <td>
+                      <div class="ra-score">
+                        <span class="ra-score__track"><span class="ra-score__fill" data-value="94"></span></span>
+                        <span class="ra-score__value">94</span>
+                      </div>
+                    </td>
+                    <td><span class="ra-badge ra-badge--success ra-badge--caps">Excellent</span></td>
+                    <td><span class="ra-badge ra-badge--info ra-badge--caps">Shortlisted</span></td>
+                    <td class="text-end">
+                      <div class="dropdown">
+                        <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                          <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                          <li><a class="dropdown-item" href="#" data-ra-toast="Interview invitation sent."><i class="bi bi-calendar-plus me-2"></i>Schedule interview</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-name="David Chen" data-email="d.chen@technova.com" data-role="Full Stack Dev" data-role-key="fullstack"
+                      data-score="88" data-match="91" data-location="Austin, TX" data-work="Hybrid"
+                      data-avatar="../assets/img/avatars/david-chen.svg"
+                      data-skills="Node.js|React|PostgreSQL|AWS|GraphQL"
+                      data-insight="David ships production systems end to end and has scaled a payments API to 40k requests per minute. Strong fit for senior individual-contributor work.">
+                    <td><input class="form-check-input row-check" type="checkbox" aria-label="Select David Chen"></td>
+                    <td>
+                      <div class="ra-cell-person">
+                        <img src="../assets/img/avatars/david-chen.svg" alt="" class="ra-avatar ra-avatar--sm">
+                        <div>
+                          <div class="ra-cell-person__name">David Chen</div>
+                          <div class="ra-cell-person__meta">d.chen@technova.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Full Stack Dev</td>
+                    <td>
+                      <div class="ra-score">
+                        <span class="ra-score__track"><span class="ra-score__fill ra-score__fill--success" data-value="88"></span></span>
+                        <span class="ra-score__value">88</span>
+                      </div>
+                    </td>
+                    <td><span class="ra-badge ra-badge--success ra-badge--caps">Strong</span></td>
+                    <td><span class="ra-badge ra-badge--warning ra-badge--caps">Interview</span></td>
+                    <td class="text-end">
+                      <div class="dropdown">
+                        <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                          <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                          <li><a class="dropdown-item" href="#" data-ra-toast="Interview invitation sent."><i class="bi bi-calendar-plus me-2"></i>Schedule interview</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-name="Sarah Jenkins" data-email="s.jenkins@media.net" data-role="Marketing Lead" data-role-key="marketing"
+                      data-score="42" data-match="38" data-location="Chicago, IL" data-work="On-site"
+                      data-avatar="../assets/img/avatars/sarah-jenkins.svg"
+                      data-skills="Content Strategy|SEO|Brand|Paid Social|Analytics"
+                      data-insight="Sarah's background is strongest in brand marketing rather than the growth and lifecycle work this role centres on. Consider for the brand opening instead.">
+                    <td><input class="form-check-input row-check" type="checkbox" aria-label="Select Sarah Jenkins"></td>
+                    <td>
+                      <div class="ra-cell-person">
+                        <img src="../assets/img/avatars/sarah-jenkins.svg" alt="" class="ra-avatar ra-avatar--sm">
+                        <div>
+                          <div class="ra-cell-person__name">Sarah Jenkins</div>
+                          <div class="ra-cell-person__meta">s.jenkins@media.net</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Marketing Lead</td>
+                    <td>
+                      <div class="ra-score">
+                        <span class="ra-score__track"><span class="ra-score__fill ra-score__fill--danger" data-value="42"></span></span>
+                        <span class="ra-score__value">42</span>
+                      </div>
+                    </td>
+                    <td><span class="ra-badge ra-badge--danger ra-badge--caps">Low Fit</span></td>
+                    <td><span class="ra-badge ra-badge--info ra-badge--caps">Review</span></td>
+                    <td class="text-end">
+                      <div class="dropdown">
+                        <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                          <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-name="Elena Rodriguez" data-email="e.rodriguez@horizon.io" data-role="Product Manager" data-role-key="pm"
+                      data-score="91" data-match="94" data-location="Boston, MA" data-work="Remote"
+                      data-avatar="../assets/img/avatars/elena-rodriguez.svg"
+                      data-skills="Roadmapping|Discovery|SQL|Experimentation|Stakeholder Mgmt"
+                      data-insight="Elena has taken two B2B products from zero to first revenue and writes unusually clear product specs. Recommended for the platform PM opening.">
+                    <td><input class="form-check-input row-check" type="checkbox" aria-label="Select Elena Rodriguez"></td>
+                    <td>
+                      <div class="ra-cell-person">
+                        <img src="../assets/img/avatars/elena-rodriguez.svg" alt="" class="ra-avatar ra-avatar--sm">
+                        <div>
+                          <div class="ra-cell-person__name">Elena Rodriguez</div>
+                          <div class="ra-cell-person__meta">e.rodriguez@horizon.io</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Product Manager</td>
+                    <td>
+                      <div class="ra-score">
+                        <span class="ra-score__track"><span class="ra-score__fill" data-value="91"></span></span>
+                        <span class="ra-score__value">91</span>
+                      </div>
+                    </td>
+                    <td><span class="ra-badge ra-badge--success ra-badge--caps">Excellent</span></td>
+                    <td><span class="ra-badge ra-badge--info ra-badge--caps">Shortlisted</span></td>
+                    <td class="text-end">
+                      <div class="dropdown">
+                        <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                          <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                          <li><a class="dropdown-item" href="#" data-ra-toast="Interview invitation sent."><i class="bi bi-calendar-plus me-2"></i>Schedule interview</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-name="Li Wei" data-email="li.wei@datapeak.com" data-role="Data Analyst" data-role-key="data"
+                      data-score="84" data-match="86" data-location="Seattle, WA" data-work="Hybrid"
+                      data-avatar="../assets/img/avatars/li-wei.svg"
+                      data-skills="SQL|Python|dbt|Looker|Statistics"
+                      data-insight="Li Wei built the analytics layer for a marketplace with 3M monthly users and mentors junior analysts. Passed the technical test in the top decile.">
+                    <td><input class="form-check-input row-check" type="checkbox" aria-label="Select Li Wei"></td>
+                    <td>
+                      <div class="ra-cell-person">
+                        <img src="../assets/img/avatars/li-wei.svg" alt="" class="ra-avatar ra-avatar--sm">
+                        <div>
+                          <div class="ra-cell-person__name">Li Wei</div>
+                          <div class="ra-cell-person__meta">li.wei@datapeak.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Data Analyst</td>
+                    <td>
+                      <div class="ra-score">
+                        <span class="ra-score__track"><span class="ra-score__fill ra-score__fill--success" data-value="84"></span></span>
+                        <span class="ra-score__value">84</span>
+                      </div>
+                    </td>
+                    <td><span class="ra-badge ra-badge--success ra-badge--caps">Strong</span></td>
+                    <td><span class="ra-badge ra-badge--warning ra-badge--caps">Interview</span></td>
+                    <td class="text-end">
+                      <div class="dropdown">
+                        <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                          <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-name="David Miller" data-email="d.miller@cloudsphere.co" data-role="Cloud Architect" data-role-key="devops"
+                      data-score="88" data-match="90" data-location="Denver, CO" data-work="Remote"
+                      data-avatar="../assets/img/avatars/david-miller.svg"
+                      data-skills="Kubernetes|Terraform|AWS|Go|Observability"
+                      data-insight="David has run multi-region Kubernetes for a fintech under SOC 2. Deep on cost optimisation — cut cloud spend 38% at his last role.">
+                    <td><input class="form-check-input row-check" type="checkbox" aria-label="Select David Miller"></td>
+                    <td>
+                      <div class="ra-cell-person">
+                        <img src="../assets/img/avatars/david-miller.svg" alt="" class="ra-avatar ra-avatar--sm">
+                        <div>
+                          <div class="ra-cell-person__name">David Miller</div>
+                          <div class="ra-cell-person__meta">d.miller@cloudsphere.co</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Cloud Architect</td>
+                    <td>
+                      <div class="ra-score">
+                        <span class="ra-score__track"><span class="ra-score__fill ra-score__fill--success" data-value="88"></span></span>
+                        <span class="ra-score__value">88</span>
+                      </div>
+                    </td>
+                    <td><span class="ra-badge ra-badge--success ra-badge--caps">Strong</span></td>
+                    <td><span class="ra-badge ra-badge--warning ra-badge--caps">Interview</span></td>
+                    <td class="text-end">
+                      <div class="dropdown">
+                        <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                          <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-name="Alex Rivera" data-email="alex.rivera@mail.com" data-role="Sr. Frontend Developer" data-role-key="fullstack"
+                      data-score="82" data-match="84" data-location="San Diego, CA" data-work="Remote"
+                      data-avatar="../assets/img/avatars/alex-rivera.svg"
+                      data-skills="React.js|JavaScript (ES6+)|Tailwind CSS|Redux|TypeScript"
+                      data-insight="Alex shows strong alignment with modern React architectures. Senior-level experience at tech-forward companies matches InnovateTech's engineering culture.">
+                    <td><input class="form-check-input row-check" type="checkbox" aria-label="Select Alex Rivera"></td>
+                    <td>
+                      <div class="ra-cell-person">
+                        <img src="../assets/img/avatars/alex-rivera.svg" alt="" class="ra-avatar ra-avatar--sm">
+                        <div>
+                          <div class="ra-cell-person__name">Alex Rivera</div>
+                          <div class="ra-cell-person__meta">alex.rivera@mail.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Sr. Frontend Developer</td>
+                    <td>
+                      <div class="ra-score">
+                        <span class="ra-score__track"><span class="ra-score__fill ra-score__fill--success" data-value="82"></span></span>
+                        <span class="ra-score__value">82</span>
+                      </div>
+                    </td>
+                    <td><span class="ra-badge ra-badge--success ra-badge--caps">Strong</span></td>
+                    <td><span class="ra-badge ra-badge--info ra-badge--caps">Review</span></td>
+                    <td class="text-end">
+                      <div class="dropdown">
+                        <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                          <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-name="Alex Thompson" data-email="a.thompson@aether.dev" data-role="Sr. Cloud Architect" data-role-key="devops"
+                      data-score="79" data-match="81" data-location="Portland, OR" data-work="Hybrid"
+                      data-avatar="../assets/img/avatars/alex-thompson.svg"
+                      data-skills="Kubernetes|Node.js|Team Lead|CI/CD|Azure"
+                      data-insight="Eight years of platform work with two years leading a team of six. Slightly light on the security tooling this role expects.">
+                    <td><input class="form-check-input row-check" type="checkbox" aria-label="Select Alex Thompson"></td>
+                    <td>
+                      <div class="ra-cell-person">
+                        <img src="../assets/img/avatars/alex-thompson.svg" alt="" class="ra-avatar ra-avatar--sm">
+                        <div>
+                          <div class="ra-cell-person__name">Alex Thompson</div>
+                          <div class="ra-cell-person__meta">a.thompson@aether.dev</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Sr. Cloud Architect</td>
+                    <td>
+                      <div class="ra-score">
+                        <span class="ra-score__track"><span class="ra-score__fill" data-value="79"></span></span>
+                        <span class="ra-score__value">79</span>
+                      </div>
+                    </td>
+                    <td><span class="ra-badge ra-badge--neutral ra-badge--caps">Average</span></td>
+                    <td><span class="ra-badge ra-badge--info ra-badge--caps">Review</span></td>
+                    <td class="text-end">
+                      <div class="dropdown">
+                        <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                          <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-name="Marcus Thorne" data-email="m.thorne@cloudbase.com" data-role="DevOps Engineer" data-role-key="devops"
+                      data-score="76" data-match="74" data-location="Miami, FL" data-work="On-site"
+                      data-avatar="../assets/img/avatars/marcus-thorne.svg"
+                      data-skills="Docker|Jenkins|Linux|Ansible|Python"
+                      data-insight="Solid automation fundamentals from a mid-size shop. Would need ramp-up time on managed Kubernetes before owning production.">
+                    <td><input class="form-check-input row-check" type="checkbox" aria-label="Select Marcus Thorne"></td>
+                    <td>
+                      <div class="ra-cell-person">
+                        <img src="../assets/img/avatars/marcus-thorne.svg" alt="" class="ra-avatar ra-avatar--sm">
+                        <div>
+                          <div class="ra-cell-person__name">Marcus Thorne</div>
+                          <div class="ra-cell-person__meta">m.thorne@cloudbase.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>DevOps Engineer</td>
+                    <td>
+                      <div class="ra-score">
+                        <span class="ra-score__track"><span class="ra-score__fill" data-value="76"></span></span>
+                        <span class="ra-score__value">76</span>
+                      </div>
+                    </td>
+                    <td><span class="ra-badge ra-badge--neutral ra-badge--caps">Average</span></td>
+                    <td><span class="ra-badge ra-badge--info ra-badge--caps">Review</span></td>
+                    <td class="text-end">
+                      <div class="dropdown">
+                        <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                          <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr data-name="Alexandria Sterling" data-email="a.sterling@fintechflow.com" data-role="Sr. Product Designer" data-role-key="designer"
+                      data-score="94" data-match="96" data-location="San Francisco, CA" data-work="Hybrid"
+                      data-avatar="../assets/img/avatars/alexandria-sterling.svg"
+                      data-skills="Figma / Adobe XD|Prototyping|Design Systems|HTML/CSS/JS|User Research"
+                      data-insight="Led a team of 4 designers to modernise a core banking dashboard, lifting engagement 32%. Systematic thinker — worth moving to the final stage.">
+                    <td><input class="form-check-input row-check" type="checkbox" aria-label="Select Alexandria Sterling"></td>
+                    <td>
+                      <div class="ra-cell-person">
+                        <img src="../assets/img/avatars/alexandria-sterling.svg" alt="" class="ra-avatar ra-avatar--sm">
+                        <div>
+                          <div class="ra-cell-person__name">Alexandria Sterling</div>
+                          <div class="ra-cell-person__meta">a.sterling@fintechflow.com</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Sr. Product Designer</td>
+                    <td>
+                      <div class="ra-score">
+                        <span class="ra-score__track"><span class="ra-score__fill" data-value="94"></span></span>
+                        <span class="ra-score__value">94</span>
+                      </div>
+                    </td>
+                    <td><span class="ra-badge ra-badge--success ra-badge--caps">Excellent</span></td>
+                    <td><span class="ra-badge ra-badge--warning ra-badge--caps">Interview</span></td>
+                    <td class="text-end">
+                      <div class="dropdown">
+                        <button class="ra-icon-btn" data-bs-toggle="dropdown" aria-label="Row actions"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li><a class="dropdown-item" href="candidate-profile.html"><i class="bi bi-person me-2"></i>View profile</a></li>
+                          <li><a class="dropdown-item" href="resume-analysis.html"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger"><i class="bi bi-x-circle me-2"></i>Reject</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr id="candidateEmpty" class="d-none">
+                    <td colspan="7">
+                      <div class="ra-empty">
+                        <i class="bi bi-people"></i>
+                        No candidates match these filters. Try widening the ATS score or clearing the search.
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="card">
+            <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+              <span class="text-sm ra-muted">Showing <span id="candidateCount">10</span> of 1,240 candidates</span>
+              <nav aria-label="Candidate pages">
+                <ul class="pagination ra-pagination mb-0">
+                  <li class="page-item disabled"><a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a></li>
+                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item disabled"><a class="page-link" href="#">…</a></li>
+                  <li class="page-item"><a class="page-link" href="#">124</a></li>
+                  <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </main>
+
+        <!-- ========================== Detail drawer ========================== -->
+        <aside class="ra-drawer" id="candidateDrawer" aria-label="Candidate details">
+          <div class="ra-drawer__scroll">
+
+            <div class="d-flex justify-content-end">
+              <button class="ra-icon-btn" data-drawer-close type="button" aria-label="Close details"><i class="bi bi-x-lg"></i></button>
+            </div>
+
+            <div class="text-center mb-4">
+              <img src="../assets/img/avatars/alexandria.svg" alt="Alexandria Moore" class="ra-avatar ra-avatar--xl mb-3" data-drawer-avatar>
+              <h2 class="ra-title mb-1" data-drawer-name>Alexandria Moore</h2>
+              <div class="text-primary fw-semibold mb-3" data-drawer-role>Sr. Product Designer</div>
+              <div class="d-flex justify-content-center gap-2 flex-wrap">
+                <span class="ra-badge ra-badge--info" data-drawer-location>New York, NY</span>
+                <span class="ra-badge ra-badge--info" data-drawer-work>Remote</span>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-6">
+                <div class="ra-drawer-metric ra-drawer-metric--info">
+                  <div class="ra-drawer-metric__label mb-1">ATS Score</div>
+                  <div class="ra-drawer-metric__value"><span data-drawer-score>94</span><span class="text-sm ra-muted">/100</span></div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="ra-drawer-metric ra-drawer-metric--success">
+                  <div class="ra-drawer-metric__label mb-1">Skill Match</div>
+                  <div class="ra-drawer-metric__value" data-drawer-match>98%</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ra-eyebrow mb-2">Key Skills Match</div>
+            <div class="d-flex flex-wrap gap-2 mb-4" data-drawer-skills>
+              <span class="ra-chip ra-chip--success"><i class="bi bi-check-circle"></i>Figma</span>
+              <span class="ra-chip ra-chip--success"><i class="bi bi-check-circle"></i>Design Systems</span>
+              <span class="ra-chip ra-chip--success"><i class="bi bi-check-circle"></i>React</span>
+              <span class="ra-chip">Product Strategy</span>
+              <span class="ra-chip">User Research</span>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="ra-eyebrow">Resume Preview</span>
+              <a href="resume-analysis.html" class="text-sm fw-semibold">Full View</a>
+            </div>
+            <div class="ra-resume-preview mb-4">
+              <span class="ra-resume-preview__line" style="width:55%;"></span>
+              <span class="ra-resume-preview__line"></span>
+              <span class="ra-resume-preview__line" style="width:80%;"></span>
+              <span class="ra-resume-preview__line"></span>
+              <a href="resume-analysis.html" class="btn btn-outline-neutral btn-sm"><i class="bi bi-eye me-1"></i> View Resume</a>
+            </div>
+
+            <div class="ra-ai-panel ra-ai-panel--bordered">
+              <div class="ra-ai-panel__title"><i class="bi bi-stars"></i> AI Recruiter Insight</div>
+              <p data-drawer-insight>
+                Alexandria has led design systems at two Fortune 500 companies. Her portfolio
+                demonstrates exceptional visual polish and a deep understanding of accessibility.
+                Highly recommended for the current opening.
+              </p>
+            </div>
+          </div>
+
+          <div class="ra-drawer__foot">
+            <button class="btn btn-outline-danger" data-ra-toast="Candidate rejected." data-ra-toast-variant="danger">
+              <i class="bi bi-x-lg me-1"></i> Reject
+            </button>
+            <button class="btn btn-primary" data-ra-toast="Candidate shortlisted." data-ra-toast-variant="success">
+              <i class="bi bi-check-lg me-1"></i> Shortlist
+            </button>
+          </div>
+        </aside>
+      </div>
+
+      <!-- =============================== Footer =============================== -->
+      <footer class="ra-footer">
+        <div class="container-fluid px-lg-4">
+          <div class="row g-4">
+            <div class="col-lg-4">
+              <div class="ra-footer__brand"><img src="../assets/img/logo.svg" alt="" width="26" height="26"> RecruitAI</div>
+              <p class="ra-footer__blurb">
+                The world's most advanced AI resume screening and talent matching platform.
+                Empowering human potential through intelligent automation.
+              </p>
+              <div class="mt-3">
+                <a href="#" class="ra-footer__social" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+                <a href="#" class="ra-footer__social" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+              </div>
+            </div>
+            <div class="col-6 col-lg-2 offset-lg-1">
+              <h6>Product</h6>
+              <ul class="ra-footer__links">
+                <li><a href="../index.html#features">Features</a></li>
+                <li><a href="../index.html#features">Integrations</a></li>
+                <li><a href="../index.html#cta">Pricing</a></li>
+                <li><a href="../index.html#audience">Enterprise</a></li>
+              </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+              <h6>Resources</h6>
+              <ul class="ra-footer__links">
+                <li><a href="#">Documentation</a></li>
+                <li><a href="#">API Reference</a></li>
+                <li><a href="#">Community</a></li>
+                <li><a href="#">Marketplace</a></li>
+              </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+              <h6>Company</h6>
+              <ul class="ra-footer__links">
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="ra-footer__bar">
+            <span>&copy; 2024 RecruitAI Inc. All rights reserved.</span>
+            <span class="ra-footer__status">System Status: All Systems Operational</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+</div>
+
+<!-- ========================== Global search modal ========================== -->
+<div class="modal fade" id="globalSearchModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="ra-search w-100" style="width:100% !important;">
+          <i class="bi bi-search"></i>
+          <input type="search" class="form-control" placeholder="Search candidates, jobs, interviews…" data-ra-search-input aria-label="Global search">
+        </div>
+      </div>
+      <div class="modal-body pt-2">
+        <div class="ra-eyebrow mb-2">Quick links</div>
+        <div class="list-group list-group-flush">
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="dashboard.html" data-ra-search-item><i class="bi bi-grid-1x2 me-2 text-primary"></i>Recruiter dashboard</a>
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="candidate-profile.html" data-ra-search-item><i class="bi bi-person-badge me-2 text-primary"></i>Alexandria Sterling — Candidate profile</a>
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="resume-analysis.html" data-ra-search-item><i class="bi bi-file-earmark-text me-2 text-primary"></i>Resume analysis — Senior Frontend Developer</a>
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="jobs.html" data-ra-search-item><i class="bi bi-briefcase me-2 text-primary"></i>Job postings</a>
+          <a class="list-group-item list-group-item-action bg-transparent border-0 px-2 rounded" href="post-job.html" data-ra-search-item><i class="bi bi-plus-circle me-2 text-primary"></i>Post a new job</a>
+        </div>
+        <div class="ra-empty d-none" data-ra-search-empty>
+          <i class="bi bi-search"></i>
+          No results for that search.
+        </div>
+      </div>
+      <div class="modal-footer justify-content-start text-xs ra-muted">
+        Press <span class="ra-kbd">Ctrl</span> + <span class="ra-kbd">K</span> anywhere to open this.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ra-toast-stack"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/candidates.js"></script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+/* ==========================================================================
+   RecruitAI Pro — theme.css
+   Design tokens + Bootstrap 5.3 variable overrides + dark theme.
+   Every page inherits from here; do not hard-code colours in page markup.
+   ========================================================================== */
+
+:root {
+  /* Brand ---------------------------------------------------------------- */
+  --ra-blue: #1f5fe0;
+  --ra-blue-600: #1a53c9;
+  --ra-blue-700: #1546ab;
+  --ra-blue-050: #e8eefc;
+  --ra-navy: #0b2a5b;
+  --ra-navy-deep: #0f172a;
+
+  /* Surfaces ------------------------------------------------------------- */
+  --ra-bg: #f7f8fc;
+  --ra-surface: #ffffff;
+  --ra-surface-alt: #f9fafe;
+  --ra-border: #e8eaf0;
+  --ra-border-strong: #d8dce6;
+
+  /* Text ----------------------------------------------------------------- */
+  --ra-text: #1c2434;
+  --ra-text-muted: #667085;
+  --ra-text-faint: #98a2b3;
+
+  /* Status pairs (fg / bg) ---------------------------------------------- */
+  --ra-success: #0e9f6e;
+  --ra-success-bg: #e7f7f0;
+  --ra-warning: #b45309;
+  --ra-warning-bg: #fef3c7;
+  --ra-danger: #dc2626;
+  --ra-danger-bg: #fee2e2;
+  --ra-info: #1f5fe0;
+  --ra-info-bg: #e8eefc;
+  --ra-neutral: #475467;
+  --ra-neutral-bg: #f2f4f7;
+
+  /* Shape & depth -------------------------------------------------------- */
+  --ra-radius-sm: 8px;
+  --ra-radius: 12px;
+  --ra-radius-lg: 16px;
+  --ra-shadow-sm: 0 1px 2px rgba(16, 24, 40, .05);
+  --ra-shadow: 0 1px 3px rgba(16, 24, 40, .06), 0 1px 2px rgba(16, 24, 40, .04);
+  --ra-shadow-lg: 0 12px 32px rgba(16, 24, 40, .10);
+
+  /* Layout metrics ------------------------------------------------------- */
+  --ra-sidebar-w: 260px;
+  --ra-topbar-h: 68px;
+
+  /* Bootstrap overrides -------------------------------------------------- */
+  --bs-primary: var(--ra-blue);
+  --bs-primary-rgb: 31, 95, 224;
+  --bs-body-bg: var(--ra-bg);
+  --bs-body-color: var(--ra-text);
+  --bs-border-color: var(--ra-border);
+  --bs-border-radius: var(--ra-radius);
+  --bs-body-font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --bs-link-color: var(--ra-blue);
+  --bs-link-hover-color: var(--ra-blue-700);
+  --bs-secondary-color: var(--ra-text-muted);
+}
+
+/* Dark theme — remap the same tokens, everything downstream follows. ------ */
+[data-bs-theme="dark"] {
+  --ra-blue-050: #16233f;
+  --ra-navy: #e6edfb;
+  --ra-navy-deep: #05080f;
+
+  --ra-bg: #0b1120;
+  --ra-surface: #131c30;
+  --ra-surface-alt: #182238;
+  --ra-border: #23304b;
+  --ra-border-strong: #31405f;
+
+  --ra-text: #e6ebf5;
+  --ra-text-muted: #9aa6bd;
+  --ra-text-faint: #75839d;
+
+  --ra-success-bg: #10362a;
+  --ra-warning-bg: #3b2a0d;
+  --ra-danger-bg: #3d1a1a;
+  --ra-info-bg: #16233f;
+  --ra-neutral: #b6c0d4;
+  --ra-neutral-bg: #1d2841;
+
+  --ra-shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+  --ra-shadow: 0 1px 3px rgba(0, 0, 0, .45);
+  --ra-shadow-lg: 0 12px 32px rgba(0, 0, 0, .55);
+
+  --bs-body-bg: var(--ra-bg);
+  --bs-body-color: var(--ra-text);
+  --bs-border-color: var(--ra-border);
+  --bs-secondary-color: var(--ra-text-muted);
+  --bs-emphasis-color: var(--ra-text);
+}
+
+/* Base --------------------------------------------------------------------- */
+body {
+  font-family: var(--bs-body-font-family);
+  background: var(--ra-bg);
+  color: var(--ra-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 { color: var(--ra-navy); font-weight: 700; letter-spacing: -.015em; }
+
+a { text-decoration: none; }
+a:hover { text-decoration: none; }
+
+hr { border-color: var(--ra-border); opacity: 1; }
+
+::selection { background: rgba(31, 95, 224, .18); }
+
+:focus-visible {
+  outline: 2px solid var(--ra-blue);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Typography helpers ------------------------------------------------------- */
+.ra-page-title { font-size: 1.75rem; font-weight: 700; color: var(--ra-blue); margin: 0; }
+.ra-title      { font-size: 1.25rem; font-weight: 700; color: var(--ra-navy); }
+.ra-eyebrow {
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ra-text-faint);
+}
+.ra-muted  { color: var(--ra-text-muted) !important; }
+.ra-faint  { color: var(--ra-text-faint) !important; }
+.ra-navy   { color: var(--ra-navy) !important; }
+.text-xs   { font-size: .75rem; }
+.text-sm   { font-size: .875rem; }
+
+/* Buttons ------------------------------------------------------------------ */
+.btn { font-weight: 600; border-radius: var(--ra-radius-sm); padding: .5625rem 1.125rem; }
+.btn-lg { padding: .75rem 1.5rem; font-size: 1rem; }
+.btn-sm { padding: .375rem .75rem; font-size: .8125rem; }
+
+.btn-primary {
+  --bs-btn-bg: var(--ra-blue);
+  --bs-btn-border-color: var(--ra-blue);
+  --bs-btn-hover-bg: var(--ra-blue-600);
+  --bs-btn-hover-border-color: var(--ra-blue-600);
+  --bs-btn-active-bg: var(--ra-blue-700);
+  --bs-btn-active-border-color: var(--ra-blue-700);
+  --bs-btn-disabled-bg: #9db7ee;
+  --bs-btn-disabled-border-color: #9db7ee;
+  --bs-btn-disabled-opacity: 1;
+}
+
+.btn-outline-neutral {
+  --bs-btn-color: var(--ra-text);
+  --bs-btn-border-color: var(--ra-border-strong);
+  --bs-btn-bg: var(--ra-surface);
+  --bs-btn-hover-color: var(--ra-text);
+  --bs-btn-hover-bg: var(--ra-surface-alt);
+  --bs-btn-hover-border-color: var(--ra-border-strong);
+  --bs-btn-active-bg: var(--ra-surface-alt);
+  --bs-btn-active-color: var(--ra-text);
+  --bs-btn-active-border-color: var(--ra-border-strong);
+}
+
+.btn-outline-danger {
+  --bs-btn-color: var(--ra-danger);
+  --bs-btn-border-color: #f3b9b9;
+  --bs-btn-hover-bg: var(--ra-danger-bg);
+  --bs-btn-hover-color: var(--ra-danger);
+  --bs-btn-hover-border-color: #f3b9b9;
+  --bs-btn-active-bg: var(--ra-danger-bg);
+  --bs-btn-active-color: var(--ra-danger);
+  --bs-btn-active-border-color: #f3b9b9;
+}
+
+/* Forms -------------------------------------------------------------------- */
+.form-control, .form-select {
+  border-color: var(--ra-border-strong);
+  border-radius: var(--ra-radius-sm);
+  padding: .625rem .875rem;
+  background-color: var(--ra-surface);
+  color: var(--ra-text);
+  font-size: .9375rem;
+}
+.form-control::placeholder { color: var(--ra-text-faint); }
+.form-control:focus, .form-select:focus {
+  border-color: var(--ra-blue);
+  box-shadow: 0 0 0 3px rgba(31, 95, 224, .12);
+  background-color: var(--ra-surface);
+  color: var(--ra-text);
+}
+.form-label { font-size: .875rem; font-weight: 600; color: var(--ra-text); margin-bottom: .375rem; }
+.form-check-input { border-color: var(--ra-border-strong); }
+.form-check-input:checked { background-color: var(--ra-blue); border-color: var(--ra-blue); }
+.form-check-input:focus { box-shadow: 0 0 0 3px rgba(31, 95, 224, .12); }
+.input-group-text {
+  background: var(--ra-surface);
+  border-color: var(--ra-border-strong);
+  color: var(--ra-text-faint);
+}
+
+/* Cards -------------------------------------------------------------------- */
+.card {
+  --bs-card-bg: var(--ra-surface);
+  --bs-card-border-color: var(--ra-border);
+  --bs-card-border-radius: var(--ra-radius);
+  box-shadow: var(--ra-shadow);
+}
+.card-header {
+  background: transparent;
+  border-bottom-color: var(--ra-border);
+  padding: 1.125rem 1.25rem;
+}
+.card-body { padding: 1.25rem; }
+
+/* Dropdown / modal / offcanvas surfaces ------------------------------------ */
+.dropdown-menu {
+  --bs-dropdown-bg: var(--ra-surface);
+  --bs-dropdown-border-color: var(--ra-border);
+  --bs-dropdown-link-color: var(--ra-text);
+  --bs-dropdown-link-hover-bg: var(--ra-surface-alt);
+  --bs-dropdown-link-active-bg: var(--ra-blue-050);
+  --bs-dropdown-link-active-color: var(--ra-blue);
+  --bs-dropdown-border-radius: var(--ra-radius-sm);
+  box-shadow: var(--ra-shadow-lg);
+  font-size: .9375rem;
+}
+.modal-content, .offcanvas {
+  background: var(--ra-surface);
+  color: var(--ra-text);
+  border-color: var(--ra-border);
+}
+.modal-header, .modal-footer { border-color: var(--ra-border); }
+
+/* Utility surfaces --------------------------------------------------------- */
+.ra-surface { background: var(--ra-surface); }
+.ra-surface-alt { background: var(--ra-surface-alt); }
+.ra-border { border: 1px solid var(--ra-border) !important; }
+.rounded-ra { border-radius: var(--ra-radius) !important; }
+.shadow-ra { box-shadow: var(--ra-shadow) !important; }
+
+/* Reduced motion ----------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+}

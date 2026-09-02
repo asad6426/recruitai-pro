@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tell us about yourself &middot; RecruitAI</title>
+<link rel="icon" href="assets/img/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="assets/css/theme.css" rel="stylesheet">
+<link href="assets/css/layout.css" rel="stylesheet">
+<link href="assets/css/components.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="ra-center-shell">
+
+  <header class="d-flex align-items-center justify-content-between p-4">
+    <a href="index.html" class="d-flex align-items-center gap-2 text-decoration-none">
+      <img src="assets/img/logo.svg" alt="" width="28" height="28">
+      <span class="fs-5 fw-bold text-primary">RecruitAI</span>
+    </a>
+    <button class="ra-icon-btn" data-ra-theme-toggle type="button" aria-label="Toggle dark mode">
+      <i class="bi bi-moon-stars" data-ra-theme-icon></i>
+    </button>
+  </header>
+
+  <main class="ra-center-shell__body">
+    <div class="container" style="max-width:60rem;">
+
+      <div class="text-center mb-5">
+        <h1 class="mb-3" style="font-size:clamp(1.9rem,4vw,2.75rem);">Tell us about yourself</h1>
+        <p class="ra-muted mx-auto mb-0" style="max-width:32rem;line-height:1.7;">
+          Welcome to Aura. To personalize your experience, please select how you'll be
+          using the platform.
+        </p>
+      </div>
+
+      <div class="row g-4 mb-5" id="roleCards">
+        <div class="col-md-6">
+          <div class="ra-role-card" role="button" tabindex="0" data-role="applicant" data-target="applicant/dashboard.html">
+            <div class="ra-role-card__icon ra-role-card__icon--blue"><i class="bi bi-file-earmark-person"></i></div>
+            <h4 class="mb-2" style="font-size:1.25rem;">I am an Applicant</h4>
+            <p class="ra-muted text-sm mb-0">I want to manage my career path and apply for jobs.</p>
+            <ul class="ra-role-card__list">
+              <li><i class="bi bi-stars text-primary"></i> Optimize my resume with AI</li>
+              <li><i class="bi bi-search text-primary"></i> Find matching job opportunities</li>
+              <li><i class="bi bi-check-circle text-primary"></i> Track application status</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="ra-role-card" role="button" tabindex="0" data-role="recruiter" data-target="recruiter/dashboard.html">
+            <div class="ra-role-card__icon ra-role-card__icon--green"><i class="bi bi-people"></i></div>
+            <h4 class="mb-2" style="font-size:1.25rem;">I am a Recruiter</h4>
+            <p class="ra-muted text-sm mb-0">I am looking to hire talent and manage job pipelines.</p>
+            <ul class="ra-role-card__list">
+              <li><i class="bi bi-bullseye text-success"></i> Screen candidates with AI-match</li>
+              <li><i class="bi bi-briefcase text-success"></i> Manage job postings</li>
+              <li><i class="bi bi-bar-chart text-success"></i> Access hiring analytics</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <button class="btn btn-primary btn-lg px-5 mb-3" id="continueBtn" disabled style="min-width:24rem;max-width:100%;">Continue</button>
+        <div><a href="login.html" class="fw-semibold">Back to login</a></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="ra-toast-stack"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+  // Role picker: select a card, then Continue routes to that persona's dashboard.
+  (function () {
+    var cards = document.querySelectorAll('#roleCards .ra-role-card');
+    var continueBtn = document.getElementById('continueBtn');
+    var target = null;
+
+    function select(card) {
+      cards.forEach(function (c) { c.classList.remove('is-selected'); });
+      card.classList.add('is-selected');
+      target = card.dataset.target;
+      continueBtn.disabled = false;
+    }
+
+    cards.forEach(function (card) {
+      card.addEventListener('click', function () { select(card); });
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(card); }
+      });
+    });
+
+    continueBtn.addEventListener('click', function () {
+      if (target) window.location.href = target;
+    });
+  })();
+</script>
+</body>
+</html>
