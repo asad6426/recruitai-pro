@@ -1,0 +1,964 @@
+            B.Sc. in Computer Science and Engineering
+Internship Report on Full Stack Software Development
+
+                                Submitted by
+                                Sazzad Jelani
+                             0692220005101003
+                                Supervised by
+                              Poly Rani Ghosh
+
+                                                                           .
+
+   Department of Computer Science and Engineering
+              Notre Dame University Bangladesh
+                            Dhaka, Bangladesh
+                                  July 2026
+         Candidate's Declaration
+
+This is to certify that the presented report of internship titled "Internship Report on Full Stack
+Software Development" of "Pridesys IT Limited, Kawran Bazar, Dhaka" is uniquely prepared
+by me after the completion of three months' work.
+I also confirm that the report is only prepared for my academic requirement, not for any other
+purpose. It might not be used with the interest of the opposite party of the corporation.
+
+Sazzad Jelani
+0692220005101003
+
+                                                              i
+Commercial Certification
+
+                                         ii
+          Academic Certification
+
+This internship report titled, "Internship Report on Full Stack Software Development",
+submitted by the student as mentioned below has been accepted as satisfactory in partial
+fulfillment of the requirements for the degree B.Sc. in Computer Science and Engineering in
+July 2026.
+
+Student Name:
+       Sazzad Jelani
+
+Supervisor:
+
+           Poly Rani Ghosh
+           Assistant Professor
+           Department of Computer Science and Engineering
+           Notre Dame University Bangladesh
+
+                                                             iii
+              Acknowledgement
+
+In the begining, I would like to thank Almighty for everything. I, MD. Sazzad Jelani, bearing ID:
+0692220005101003, prepeared this report for Department of Computer Science and Engineering
+at Notre Dame University Bangladesh. I would like to express my gratitude to my supervisor,
+Poly Rani Ghosh, an Assistant Professor at the Department of Computer Science Engineering
+at Notre Dame University Bangladesh. My supervisor gave me a lot of time and effort to
+finish the internship program. I would also want to thank Sumanur Rahman, the team lead
+of Business Solutions division of Pridesys IT Limited. Without his assistance, I would have
+been unable to complete my company's internship program. For their generous assistance in
+helping me complete my internship, I would like to convey my appreciation to my fellow faculty
+members at the Department of Computer Science and Engineering at Notre Dame University
+Bangladesh. Last but not least, I must sincerely acknowledge the inspiration and continuous
+support of my parents.
+
+                                                             iv
+            Executive Summary
+
+This internship report has been prepared as a partial fulfillment of the Bachelor of Science
+(B.Sc.) in Computer Science and Engineering degree requirements. The report is based on my
+internship experience at Pridesys IT Limited, where I worked as a Software Developer Intern
+(Full Stack). The report presents an overview of the organization, the technologies used, and the
+knowledge and practical experience I gained during the internship. Initially, I completed training
+on Angular 15, TypeScript, Bootstrap, SCSS, and modern frontend development practices.
+After the training, I developed a Task Management System, a Shohoj.com Frontend Clone, and
+a Library Management System using Angular. Later, I had the opportunity to contribute to the
+company's live Enterprise Resource Planning (ERP) project, which provided valuable exposure
+to real-world software development and team collaboration. This report consists of six chapters
+covering the introduction, company profile, internship activities, learning outcomes, challenges,
+and conclusion. Overall, the internship enhanced my technical knowledge, problem-solving
+skills, professional communication, and understanding of enterprise software development.
+
+                                                             v
+Contents
+
+Candidate's Declaration       i
+
+Commercial Certification      ii
+
+Academic Certification        iii
+
+Acknowledgements              iv
+
+Executive Summery             v
+
+List of Figures               viii
+
+1 Introduction                1
+
+1.1 Background of the study . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+
+1.2 Origin of the report . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+
+1.3 Scope of the Study . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+
+1.4 Objectives of the Report . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+
+1.5 Book Organization . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+
+2 Organization                4
+
+2.1 Introduction of the Organization . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+
+2.2 History of the Organization . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+
+2.3 Products and Services . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+
+3 Tools                       9
+
+3.1 Angular 15 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+
+3.2 TypeScript . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+
+                          vi
+CONTENTS                                    CONTENTS
+
+3.3 HTML5 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+3.4 CSS3 and SCSS . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+3.5 BootStrap 5 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+3.6 RxJS . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+3.7 Angular CLI . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+3.8 Visual Studio Code . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+3.9 Git and GitHub . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+3.10 npm (Node Package Manager) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+3.11 Enterprise Resource Planning (ERP) System . . . . . . . . . . . . . . . . . . . . 13
+
+4 Internship Activities                     14
+
+4.1 Developing a Task Management System using Angular . . . . . . . . . . . . . . . 14
+
+4.2 Developing a Shohoj.com Frontend Clone . . . . . . . . . . . . . . . . . . . . . . 15
+
+4.3 Developing a Library Management System . . . . . . . . . . . . . . . . . . . . . . 19
+
+4.4 Working on the Live ERP Project . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+
+5 Skills, Challenges and Learning Outcomes  22
+
+5.1 Technical Skills Acquired . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+
+5.2 Soft Skills Developed . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+
+5.3 Challenges Faced During the Internship . . . . . . . . . . . . . . . . . . . . . . . 24
+
+5.4 Learning Outcomes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+
+5.5 Career Opportunities . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+
+6 Conclusion and Recommendations            26
+
+6.1 Conclusion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+
+6.2 Recommendations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+
+References                                  28
+
+A Appendix Chapter                          29
+
+                                  vii
+List of Figures
+
+    2.1 Pridesys IT Limited . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+    2.2 The Champion of BASIS National ICT Award 2022 . . . . . . . . . . . . . . . . 6
+    2.3 Products and Services of Pridesys IT Limited . . . . . . . . . . . . . . . . . . . . 8
+    4.1 Task Management System Interface . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+    4.2 Component Architecture of Shohoj.com (clone)[1] . . . . . . . . . . . . . . . . . . 16
+    4.3 ADMIN Bus Schedule Management Interface . . . . . . . . . . . . . . . . . . . . 17
+    4.4 User Bus Booking Interface . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+    4.5 ERP forms . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+    A.1 Source Code . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+    A.2 Source Code . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+
+                                                            viii
+Chapter 1
+
+Introduction
+
+This internship report has been prepared as a partial fulfillment of the Bachelor of Science
+(B.Sc.) in Computer Science and Engineering degree requirements. The report is based on my
+internship experience at Pridesys IT Limited, where I worked as a Software Developer Intern
+(Full Stack). The report presents an overview of the organization, the technologies used, and the
+knowledge and practical experience I gained during the internship. Initially, I completed training
+on Angular 15, TypeScript, Bootstrap, SCSS, and modern frontend development practices.
+After the training, I developed a Task Management System, a Shohoj.com Frontend Clone, and
+a Library Management System using Angular. Later, I had the opportunity to contribute to the
+company's live Enterprise Resource Planning (ERP) project, which provided valuable exposure
+to real-world software development and team collaboration. This report consists of six chapters
+covering the introduction, company profile, internship activities, learning outcomes, challenges,
+and conclusion. Overall, the internship enhanced my technical knowledge, problem-solving
+skills, professional communication, and understanding of enterprise software development.
+
+1.1 Background of the study
+
+The Department of Computer Science and Engineering requires every undergraduate student
+to complete an internship program as part of the Bachelor of Science (B.Sc.) degree. The
+internship enables students to apply their academic knowledge in a professional environment
+and gain practical experience in software development. To fulfill this academic requirement, I
+completed my internship at Pridesys IT Limited, where I worked as a Software Developer Intern
+
+                                                             1
+1.2. Origin of the report     Chapter 1. Introduction
+(Full Stack).
+
+1.2 Origin of the report
+
+This internship report has been prepared as a mandatory academic requirement after the suc-
+cessful completion of my internship at Pridesys IT Limited. The report presents the practical
+knowledge, technical skills, and professional experience I gained while working on Angular-based
+web applications and the company's live ERP project.
+
+1.3 Scope of the Study
+
+This report provides an overview of Pridesys IT Limited and describes the knowledge and
+experience I gained throughout the internship. It covers Angular training, frontend development
+using modern technologies, the development of the Task Management System, Shohoj.com
+Frontend Clone, Library Management System, and my contribution to the live ERP project.
+The report also highlights the professional software development workflow followed within the
+organization.
+
+1.4 Objectives of the Report
+
+The main objectives of this internship report are:
+    · To provide an overview of Pridesys IT Limited.
+    · To describe my internship activities and learning experiences.
+    · To understand the software development lifecycle followed in the organization.
+    · To gain practical knowledge of Angular, TypeScript, API, Functions, Bootstrap, and
+       frontend development.
+    · To understand enterprise application development through real-world projects.
+    · To improve problem-solving, debugging, and teamwork skills.
+    · To understand professional coding standards, Git workflow, and project collaboration.
+    · To develop professional ethics and workplace communication skills.
+
+                           2
+1.5. Book Organization     Chapter 1. Introduction
+
+1.5 Book Organization
+
+This report is organized into six chapters, each covering a specific aspect of my internship
+experience:
+
+    · Chapter 1 presents the introduction, background of the study, objectives, scope, and
+       organization of the report.
+
+    · Chapter 2 provides an overview of Pridesys IT Limited, including the company's profile,
+       mission, vision, products, services, technologies, and working environment.
+
+    · Chapter 3 describes my internship activities, including Angular and TypeScript training,
+       the development of the Task Management System, Shohoj.com Frontend Clone, Library
+       Management System, and my
+
+    · Chapter 4 discusses the knowledge, technical skills, and professional experience I gained
+       throughout the internship, along with the challenges I encountered and the lessons learned.
+
+    · Chapter 5 presents the overall outcomes of the internship, highlighting the impact of the
+       experience on my technical, professional, and personal development.
+
+    · Chapter 6 concludes the report by summarizing the internship experience and providing
+       final remarks and future career perspectives.
+
+                        3
+Chapter 2
+
+Organization
+
+2.1 Introduction of the Organization
+
+The digital age has changed the way businesses operate. In order to stay competitive, businesses
+need to automate their processes, analyze their data, and make informed decisions. Pridesys IT
+Limited [2] is a leading IT company in Bangladesh that provides businesses with the solutions
+they need to succeed in the digital age. Pridesys IT Limited offers a wide range of services,
+including enterprise resource planning (ERP), business process automation (BPA), cloud com-
+puting, mobile app development, and IT consulting. The company's solutions are designed to
+help businesses improve their efficiency, reduce their costs, and gain a competitive advantage.
+Pridesys IT Limited understands that every business is different, and the company tailors its
+solutions to meet the specific needs of its clients. The company works with businesses of all
+sizes, from small startups to large enterprises. Pridesys IT Limited is committed to providing
+its clients with the highest quality service and support.
+Figure 2.1 shows the logo of Pridesys IT Limited company. A logo is the identity of the company.
+Here are some of the ways that Pridesys IT Limited can help businesses:
+
+    · Improve efficiency: Pridesys IT Limited's ERP solutions can help businesses automate
+       their business processes and streamline their operations. This can free up businesses' time
+       and resources so that they can focus on growing their businesses.
+
+    · Reduce costs: Pridesys IT Limited's BPA solutions can help businesses identify and
+       eliminate waste in their businesses. This can save businesses money and improve their
+
+                                                             4
+2.2. History of the Organization  Chapter 2. Organization
+
+                                         Figure 2.1: Pridesys IT Limited
+
+       bottom lines.
+    · Gain a competitive advantage: Pridesys IT Limited's cloud computing solutions
+
+       can help businesses access the latest technologies and stay ahead of the competition. The
+       company also offers mobile app development services that can help businesses reach new
+       customers and boost their sales.
+
+2.2 History of the Organization
+
+Pridesys IT Limited was founded in 2013 by Monuwar Iqbal, a software engineer with over 10
+years of experience. The company was originally focused on providing IT consulting services,
+but it quickly expanded its offerings to include enterprise resource planning (ERP), business
+process automation (BPA), cloud computing, and mobile app development. Pridesys IT Limited
+has grown rapidly in recent years, and it now has a team of over 200 employees. The company
+has worked with a wide range of clients, including Fortune 500 companies and government
+agencies. In 2021, Pridesys IT Limited was awarded the Daily Star ICT Solution Provider of
+the Year award. Pridesys IT Limited is committed to providing its clients with the best possible
+service. The company has a strong focus on quality, and it is always looking for new ways to
+improve its products and services. Pridesys IT Limited is a leading IT company in Bangladesh,
+and it is well-positioned to continue to grow in the years to come.
+Here are some of the company's notable achievements:
+
+    · Founded in 2013
+    · Team of over 200 employees
+
+                                                             5
+2.3. Products and Services  Chapter 2. Organization
+
+                    Figure 2.2: The Champion of BASIS National ICT Award 2022
+
+    · Worked with a wide range of clients, including Fortune 500 companies and government
+       agencies
+
+    · Receives ASOCIO Outstanding Digital Transformation Organization Award 2025
+    · Awarded the champion title of BASIS National ICT Award in 2022
+    · Awarded the Daily Star ICT Solution Provider of the Year award in 2021
+    · APICTA MERIT Award Winner 2019
+    · Always looking for new ways to improve its products and services
+Figure 2.2, presents an image of Pridesys IT Limited receiving the prestigious champion award
+at the BASIS National ICT Award in 2022. This remarkable achievement stands as one of the
+biggest milestones for our company. Following this significant recognition, Pridesys IT Limited
+continued to garner numerous national and international awards, further solidifying its position
+as a leader in the industry.
+
+2.3 Products and Services
+
+Pridesys IT Limited offers a wide range of products and services, including:
+                                                             6
+2.3. Products and Services     Chapter 2. Organization
+
+    · Enterprise resource planning (ERP): ERP solutions help businesses automate their
+       business processes and streamline their operations. This can free up businesses' time and
+       resources so that they can focus on growing their businesses.
+
+    · Business process automation (BPA): BPA solutions help businesses identify and
+       eliminate waste in their businesses. This can save businesses money and improve their
+       bottom lines. · Cloud computing: Cloud computing solutions help businesses access the
+       latest technologies and stay ahead of the competition. Pridesys IT Limited offers a variety
+       of cloud computing services, including Infrastructure as a Service (IaaS), Platform as a
+       Service (PaaS), and Software as a Service (SaaS).
+
+    · Mobile app development: Pridesys IT Limited offers mobile app development services
+       for businesses of all sizes. The company has a team of experienced mobile app developers
+       who can create custom mobile apps that meet the specific needs of your business.
+
+    · IT consulting: Pridesys IT Limited offers IT consulting services to help businesses im-
+       prove their IT infrastructure and operations. The company's consultants have a wealth of
+       experience in the IT industry, and they can help you make the most of your IT investment.
+
+Figure 4.2 shows the top products and services of Pridesys IT Limited. The company offers
+a wide range of products and services for businesses of all sizes, including enterprise resource
+planning (ERP) software, accounting software, business intelligence (BI) software, garment cut-
+ting software, video conferencing software, project management software, learning management
+system (LMS), value-added tax (VAT) software, point of sale (POS) software, customer rela-
+tionship management (CRM) software, textile manufacturing software, government automation
+software, healthcare management software, education management software, helpdesk software,
+telecommunications management software, booking software, human resources management
+(HRM) software, and hotel management software. Pridesys IT Limited also offers a variety of
+other services, such as e-learning solutions, custom software development, and cloud migration.
+
+                            7
+2.3. Products and Services  Chapter 2. Organization
+
+Figure 2.3: Products and Services of Pridesys IT Limited
+                                     8
+Chapter 3
+
+Tools
+
+3.1 Angular 15
+
+Angular 15 is an open-source frontend framework developed by Google for building dynamic and
+responsive single-page web applications. During my internship at Pridesys IT Limited, Angular
+15 was the primary framework used to develop enterprise-level web applications. It enabled me
+to create reusable components, maintain clean project architecture, and build responsive user
+interfaces efficiently.[3]
+Key Features Learned:
+
+    · Component-Based Architecture: Angular organizes an application into reusable com-
+       ponents, making the code more modular, maintainable, and easier to manage.
+
+    · Routing and Navigation: I learned how to configure Angular Router to navigate be-
+       tween different pages without reloading the application.
+
+    · Services and Dependency Injection: Services were used to separate business logic
+       from UI components, while dependency injection simplified code reusability and main-
+       tainability.
+
+    · Forms and Validation: I implemented Template-driven Forms with input validation to
+       ensure accurate and secure user data entry.
+
+    · State Management: RxJS BehaviorSubject was used to share data between components
+       and maintain application state.
+
+                                                             9
+3.2. TypeScript      Chapter 3. Tools
+
+· Responsive UI Development: Angular was integrated with Bootstrap to create re-
+   sponsive interfaces that work smoothly across desktop and mobile devices.
+
+3.2 TypeScript
+
+TypeScript is a strongly typed programming language developed by Microsoft that extends
+JavaScript with object-oriented programming features. It improves code quality, readability,
+and scalability. Throughout my internship, TypeScript was used to implement the business
+logic of Angular applications.[4]
+
+Topics Covered:
+    · Variables and Data Types: Learned how to declare variables using different data types
+       to write type-safe code.
+    · Functions: Used functions to organize application logic into reusable and manageable
+       blocks.
+    · Classes and Objects: Implemented object-oriented programming concepts to create
+       structured and reusable code.
+    · Interfaces: Interfaces were used to define the structure of objects and improve code
+       consistency.
+    · Async Programming: Used asynchronous programming techniques to handle HTTP
+       requests and other asynchronous operations efficiently.
+
+3.3 HTML5
+
+HTML5 is the standard markup language used to create the structure of web pages. During
+my internship, HTML5 was used to build responsive and well-structured user interfaces for all
+Angular projects.
+Key Applications:
+
+    · Page Structure: HTML5 elements were used to organize the layout of web pages in a
+       clean and semantic manner.
+
+                 10
+3.4. CSS3 and SCSS      Chapter 3. Tools
+
+· Forms: Different input fields, buttons, and form elements were implemented for user
+   interaction.
+
+· Tables: Tables were used to display structured information such as task lists and book
+   records.
+
+· Semantic Elements: Elements like ¡header¿, ¡section¿, and ¡footer¿ improved readability
+   and maintainability.
+
+3.4 CSS3 and SCSS
+
+CSS3 and SCSS were used to design attractive, responsive, and user-friendly interfaces. SCSS
+helped organize styles efficiently by supporting reusable code and better project structure.[?]
+Key Features Used:
+
+    · Responsive Design: Created layouts that automatically adapt to different screen sizes.
+
+3.5 BootStrap 5
+
+Bootstrap 5 is a popular frontend framework used for building responsive web applications
+quickly. During the internship, it was integrated with Angular to create modern user interfaces.[5]
+Components Used:
+
+    · Grid System: Designed responsive layouts using Bootstrap's 12-column grid.
+    · Navigation Bar: Created responsive navigation menus for different projects.
+    · Cards and Tables: Displayed project information using Bootstrap card and table com-
+
+       ponents.
+    · Forms: Styled user input forms with Bootstrap classes.
+
+3.6 RxJS
+
+RxJS is a reactive programming library used in Angular to manage asynchronous operations
+and data flow between components.[6]
+Key Concepts Learned:
+
+                    11
+3.7. Angular CLI      Chapter 3. Tools
+
+· Observable: Used Observables to receive asynchronous data from services.
+· BehaviorSubject: Shared data efficiently between multiple Angular components.
+· Subscription: Managed data updates by subscribing to Observables.
+
+3.7 Angular CLI
+
+Angular CLI is the official command-line tool for Angular development. It simplifies project
+creation and automates repetitive development tasks.
+Activities Performed:
+
+    · Project Creation: Created Angular applications using CLI commands.
+    · Component Generation: Generated components, services, and modules automatically.
+    · Development Server: Ran applications locally for testing and debugging.
+    · Project Build: Built optimized production-ready applications.
+
+3.8 Visual Studio Code
+
+Visual Studio Code (VS Code) was the primary code editor used throughout the internship
+because of its powerful development features.
+Features Used:
+
+    · Debugging: Helped identify and resolve application errors.
+    · Extensions: Improved productivity using Angular, Git, and formatting extensions.
+    · Integrated Terminal: Executed Angular CLI, Git, and npm commands directly inside
+
+       VS Code.
+
+3.9 Git and GitHub
+
+Git and GitHub were used to manage source code and collaborate with team members during
+development.[7]
+Tasks Performed:
+
+                  12
+3.10. npm (Node Package Manager)  Chapter 3. Tools
+
+· Version Control: Tracked every code change throughout the project.
+· Commit Management: Created meaningful commits after completing development
+
+   tasks.
+· Branch Management: Worked with separate branches to implement new features safely.
+· Code Backup: Stored project source code securely on GitHub repositories.
+
+3.10 npm (Node Package Manager)
+
+npm is the default package manager for Node.js and is essential for Angular development.[8]
+Uses of npm:
+
+    · Installing Packages: Installed Angular libraries and third-party dependencies.
+    · Package Updates: Updated project packages to maintain compatibility.
+    · Dependency Management: Managed all required project libraries through the pack-
+
+       age.json file.
+
+3.11 Enterprise Resource Planning (ERP) System
+
+During the final stage of my internship, I had the opportunity to work on the company's live
+Enterprise Resource Planning (ERP) project. This experience provided practical exposure to
+enterprise software development in a professional environment.[9]
+Experience Gained:
+
+    · Requirement Analysis: Understood business requirements before implementing new
+       features.
+
+    · UI Enhancement: Assisted in improving the user interface of ERP modules.
+    · Bug Fixing: Identified and resolved software issues under senior developer supervision.
+    · Team Collaboration: Worked with experienced developers following professional devel-
+
+       opment practices.
+    · Enterprise Development Workflow: Learned how large-scale software projects are
+
+       developed, maintained, and deployed in a corporate environment.
+
+                                                             13
+Chapter 4
+
+Internship Activities
+
+4.1 Developing a Task Management System using Angular
+
+After completing the initial Angular training, I was assigned to develop a Task Management
+System to evaluate my understanding of Angular development. The main objective was to build
+a simple yet well-structured web application following Angular best practices. The application
+included features for creating, viewing, and deleting tasks. The project was developed using
+reusable components, Angular services, routing, template-driven forms, and event communica-
+tion between components. This assignment significantly improved my understanding of Angular
+architecture and frontend development.
+Key Activities:
+
+    · Project Initialization: Created a new Angular project using Angular CLI and organized
+       the project structure.
+
+    · Model Design: Created a Task interface containing task ID, title, status, and priority.
+    · Service Implementation: Developed a TaskService to manage task data and imple-
+
+       mented methods for adding, retrieving, and deleting tasks.
+    · Component Development: Built reusable Angular components such as Task List, Task
+
+       Card, and Add Task Form.
+    · Routing and Navigation: Configured Angular Router to navigate between task listing
+
+       and task creation pages.
+
+                                                             14
+4.2. Developing a Shohoj.com Frontend Clone  Chapter 4. Internship Activities
+
+    · Form Validation: Implemented template-driven forms with basic input validation.
+    · Component Communication: Used @Input(), @Output(), and EventEmitter for com-
+
+       munication between parent and child components.
+Learning Outcomes:
+
+    · Understanding Angular project architecture
+    · Developing reusable components
+    · Service-based application design
+    · Routing and navigation
+    · Form validation
+    · Component communication
+    · Clean coding practices
+
+(a)                                          (b)
+
+Figure 4.1: Task Management System Interface
+
+4.2 Developing a Shohoj.com Frontend Clone
+
+After successfully completing the Task Management project, I was assigned to develop a frontend
+clone of the Shohoj.com ticket booking platform. The objective of this assignment was to
+improve my frontend development skills by implementing a real-world responsive user interface
+using Angular 15. According to the project assignment, I developed the Bus and Train modules
+following modern frontend development standards. The application was built using Angular 15,
+Bootstrap 5, SCSS, RxJS, and TypeScript while maintaining reusable component architecture
+and responsive design.
+Key Activities:
+
+                                                             15
+4.2. Developing a Shohoj.com Frontend Clone              Chapter 4. Internship Activities
+
+· Developed responsive Bus and Train booking pages.
+· Created reusable Angular components.
+· Implemented template-driven forms.
+· Used RxJS BehaviorSubject for state management.
+· Stored booking information using Local Storage.
+· Implemented seat selection functionality.
+· Followed clean folder structure and coding standards.
+· Optimized the UI for desktop and mobile devices.
+
+                     Figure 4.2: Component Architecture of Shohoj.com (clone)[1]
+
+Learning Outcomes:
+    · Responsive UI Development
+    · Component Reusability
+    · State Management using RxJS
+    · Local Storage Integration
+    · Professional Project Structure
+    · Clean Code Practices
+                                                             16
+4.2. Developing a Shohoj.com Frontend Clone       Chapter 4. Internship Activities
+
+                                             (a)
+
+(b)                                               (c)
+
+Figure 4.3: ADMIN Bus Schedule Management Interface
+
+                                             17
+4.2. Developing a Shohoj.com Frontend Clone       Chapter 4. Internship Activities
+
+                                             (a)
+
+(b)                                               (c)
+
+     Figure 4.4: User Bus Booking Interface
+
+                                             18
+4.3. Developing a Library Management System  Chapter 4. Internship Activities
+
+4.3 Developing a Library Management System
+
+As the final development project during my internship, I developed a Library Management
+System using Angular. The purpose of this project was to build a complete web application
+that simulates the workflow of a real library management system. The application supports
+two different user roles: User and Administrator. Users can browse available books, read book
+details, and submit borrowing requests. The administrator reviews the requests and approves or
+rejects them. Once approved, the user can borrow the selected book. The system automatically
+tracks the borrowing period, and if the due date is exceeded, a fine is generated and a notification
+is sent to the user.
+Key Activities:
+
+    · Designed separate User and Admin modules.
+    · Developed book browsing and search functionality.
+    · Implemented borrow request management.
+    · Built admin approval and rejection system.
+    · Added due date calculation.
+    · Implemented automatic fine generation.
+    · Sent overdue notification messages to users.
+    · Created responsive and user-friendly interfaces.
+Learning Outcomes:
+    · Role-Based Access Control
+    · CRUD Operations
+    · Business Logic Implementation
+    · Notification Workflow
+    · Fine Calculation System
+    · Real-world Application Development
+
+19
+4.4. Working on the Live ERP Project      Chapter 4. Internship Activities
+
+4.4 Working on the Live ERP Project
+
+During the final phase of my internship, I was given the opportunity to contribute to the
+company's live Enterprise Resource Planning (ERP) project. This experience allowed me to
+understand how enterprise software is developed, maintained, and improved in a professional en-
+vironment. I worked under the guidance of senior developers, where I observed and contributed
+to UI enhancement, feature implementation, debugging, and software maintenance. Working
+on a live project helped me understand professional development workflows, team collaboration,
+version control using Git, and enterprise coding standards.
+Key Activities:
+
+    · Understanding project requirements.
+    · UI enhancement and frontend implementation.
+    · Debugging existing features.
+    · Collaborating with senior developers.
+    · Following Git-based development workflow.
+    · Maintaining enterprise coding standards.
+Learning Outcomes:
+    · Enterprise Software Development
+    · Team Collaboration
+    · Professional Coding Practices
+    · Debugging Techniques
+    · Requirement Analysis
+    · Software Maintenance
+
+                                      20
+4.4. Working on the Live ERP Project       Chapter 4. Internship Activities
+
+                                      (a)
+
+(b)                                        (c)
+
+     Figure 4.5: ERP forms
+
+                                      21
+Chapter 5
+
+Skills, Challenges and Learning
+
+Outcomes
+
+5.1 Technical Skills Acquired
+
+The internship at Pridesys IT Limited significantly enhanced my technical knowledge and prac-
+tical software development skills. By working on multiple real-world projects, I gained hands-on
+experience in modern frontend development technologies and enterprise software development
+practices. Throughout the internship, I learned how to build scalable web applications, write
+clean and maintainable code, and collaborate effectively within a professional software develop-
+ment team.
+Technical Skills Gained:
+
+    · Angular 15 Development: Learned to build modern single-page web applications using
+       Angular's component-based architecture.
+
+    · TypeScript Programming: Improved programming skills using interfaces, classes, ser-
+       vices, asynchronous programming, and object-oriented concepts.
+
+    · Frontend Development: Developed responsive and user-friendly interfaces using HTML5,
+       CSS3, SCSS, and Bootstrap 5.
+
+    · Angular Routing and Navigation: Implemented routing between multiple pages and
+       managed navigation efficiently.
+
+                                                             22
+5.2. Soft Skills Developed  Chapter 5. Skills, Challenges and Learning Outcomes
+
+· RxJS State Management: Used Observables and BehaviorSubject to share data be-
+   tween Angular components.
+
+· Git and GitHub: Learned version control, repository management, branch handling,
+   and collaborative development.
+
+· Responsive Web Design: Built applications compatible with desktop, tablet, and mo-
+   bile devices.
+
+· Enterprise Development Workflow: Understood professional coding standards, project
+   structure, debugging techniques, and feature implementation while working on the live
+   ERP project.
+
+5.2 Soft Skills Developed
+
+Besides technical knowledge, the internship also improved my professional and interpersonal
+skills. Working in a corporate environment taught me how to communicate effectively, collab-
+orate with team members, and manage responsibilities efficiently. Soft Skills Developed:
+
+    · Communication Skills: Improved communication with mentors and team members
+       during project discussions.
+
+    · Team Collaboration: Learned how to work collaboratively by following organizational
+       development practices.
+
+    · Problem-Solving Ability: Enhanced analytical thinking while identifying and resolving
+       application issues.
+
+    · Time Management: Successfully completed assigned tasks and projects within the
+       given deadlines.
+
+    · Professional Work Ethics: Learned discipline, responsibility, and accountability in a
+       professional workplace.
+
+    · Adaptability: Quickly adapted to new technologies, development environments, and
+       project requirements.
+
+                            23
+5.3. Challenges Faced During the InternshCihpapter 5. Skills, Challenges and Learning Outcomes
+
+5.3 Challenges Faced During the Internship
+
+Every project introduced new challenges that helped me grow as a software developer. These
+challenges improved my confidence and strengthened my technical abilities. Major Chal-
+lenges:
+
+    · Learning Angular in a Short Time: Initially, understanding Angular architecture
+       and project structure was challenging, but continuous practice made it easier.
+
+    · Component Communication: Understanding data sharing between parent and child
+       components using @Input(), @Output(), and services required considerable practice.
+
+    · Responsive UI Development: Designing layouts that worked consistently across dif-
+       ferent screen sizes was one of the major challenges.
+
+    · Managing Large Project Structure: Organizing reusable components and maintain-
+       ing a clean folder structure became increasingly important as project size grew.
+
+    · Working on a Live ERP Project: Understanding enterprise-level business require-
+       ments and existing codebases required careful observation and continuous learning.
+
+    · Debugging Complex Issues: Identifying and fixing UI and application logic issues
+       improved my debugging skills.
+
+5.4 Learning Outcomes
+
+The internship experience significantly contributed to my academic and professional develop-
+ment. It enabled me to apply theoretical concepts to practical software development projects
+and understand industry-standard development practices.
+Key Learning Outcomes:
+
+    · Developed multiple Angular-based web applications.
+    · Learned professional frontend development techniques.
+    · Improved coding standards and software architecture knowledge.
+    · Understood enterprise software development workflow.
+    · Gained experience working on a live ERP project.
+
+                                                             24
+5.5. Career Opportunities  Chapter 5. Skills, Challenges and Learning Outcomes
+
+· Improved debugging and problem-solving skills.
+· Learned Git-based version control and team collaboration.
+· Enhanced confidence in building scalable web applications.
+· Developed professional communication and teamwork skills.
+
+5.5 Career Opportunities
+
+The internship at Pridesys IT Limited has significantly enhanced my technical knowledge and
+professional skills, opening various career opportunities in the software industry. Through
+hands-on experience with Angular, TypeScript, Bootstrap, and enterprise software development,
+I gained the confidence to work on real-world web applications and enterprise solutions. The
+skills acquired during the internship have prepared me for several professional roles, including:
+
+    · Frontend Developer: Developing responsive and interactive web applications using
+       Angular, TypeScript, HTML5, CSS3, SCSS, and Bootstrap.
+
+    · Full Stack Developer: Working on both frontend and backend development by inte-
+       grating modern web technologies with server-side frameworks and databases.
+
+    · ERP Application Developer: Contributing to the development, customization, and
+       maintenance of Enterprise Resource Planning (ERP) systems.
+
+    · Software Engineer: Designing, developing, testing, and maintaining scalable software
+       applications while following industry-standard development practices.
+
+    · Web Application Developer: Building secure, responsive, and user-friendly web ap-
+       plications for business and enterprise environments.
+
+Overall, this internship has strengthened my technical foundation, improved my problem-solving
+abilities, and prepared me to pursue a successful career in software engineering and enterprise
+application development.
+
+                           25
+Chapter 6
+
+Conclusion and Recommendations
+
+6.1 Conclusion
+
+The internship at Pridesys IT Limited was a valuable learning experience that allowed me to
+bridge the gap between academic knowledge and professional software development practices.
+During the internship, I completed intensive training on Angular and TypeScript and success-
+fully developed several real-world web applications, including a Task Management System, a
+Shohoj.com Frontend Clone, and a Library Management System. In addition, I had the oppor-
+tunity to contribute to the company's live Enterprise Resource Planning (ERP) project, where
+I gained practical experience in enterprise software development. Throughout the internship,
+I strengthened my technical knowledge, improved my problem-solving ability, and learned the
+importance of teamwork, communication, and professional work ethics. The experience has
+prepared me to confidently pursue a career as a software engineer and has motivated me to
+continue learning modern web technologies and enterprise software development.
+
+6.2 Recommendations
+
+Based on my internship experience, I would like to provide the following recommendations for
+future internship programs:
+
+    · Continue providing structured technical training for new interns.
+    · Assign real-world projects to improve practical development skills.
+    · Conduct regular code review sessions to enhance code quality.
+
+                                                             26
+6.2. Recommendations      Chapter 6. Conclusion and Recommendations
+
+· Provide more opportunities to work on live enterprise projects.
+· Encourage collaborative learning and knowledge-sharing among interns.
+· Arrange workshops on software architecture, testing, and deployment.
+· Maintain proper technical documentation for every project.
+· Introduce backend development exposure for frontend interns to achieve a better under-
+
+   standing of full-stack development.
+
+                      27
+References
+
+[1] Shohoz. Shohoz official website. https://www.shohoz.com, 2026. Accessed: 28 June 2026.
+[2] Pridesys IT Limited. Official website. https://pridesys.com, 2026. Accessed: 28 June
+
+    2026.
+[3] Angular Team. Angular documentation. https://angular.dev, 2026. Accessed: 28 June
+
+    2026.
+[4] Microsoft. Typescript documentation. https://www.typescriptlang.org/docs/, 2026.
+
+    Accessed: 28 June 2026.
+[5] Bootstrap Team. Bootstrap 5 documentation. https://getbootstrap.com/docs/5.3/,
+
+    2026. Accessed: 28 June 2026.
+[6] RxJS Team. Rxjs documentation. https://rxjs.dev, 2026. Accessed: 28 June 2026.
+[7] Git Project. Git documentation. https://git-scm.com/doc, 2026. Accessed: 28 June
+
+    2026.
+[8] npm Inc. Node package manager (npm) documentation. https://docs.npmjs.com, 2026.
+
+    Accessed: 28 June 2026.
+[9] SAP. What is enterprise resource planning (erp)? https://www.sap.com/products/erp/
+
+    what-is-erp.html, 2026. Accessed: 28 June 2026.
+
+                                                             28
+Appendix A
+
+Appendix Chapter
+
+This appendix presents source code used to build the described projects.
+
+(a)                           (b)
+
+     Figure A.1: Source Code
+
+     29
+                              Chapter A. Appendix Chapter
+
+(a)                           (b)
+
+                     (c)
+     Figure A.2: Source Code
+
+     30
+

@@ -1,9 +1,0 @@
-{% if messages %}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  {% for message in messages %}
-  window.RA.toast("{{ message|escapejs }}", "{% if message.tags == 'error' or message.tags == 'danger' %}danger{% elif message.tags == 'warning' or message.tags == 'info' %}info{% else %}success{% endif %}");
-  {% endfor %}
-});
-</script>
-{% endif %}
