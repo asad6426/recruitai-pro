@@ -252,6 +252,55 @@ def recent_activity(candidate, limit=5):
     return events[:limit]
 
 
+def profile_ats_tips(candidate):
+    """Actionable, rule-based suggestions to raise a candidate's ATS/match
+    scores — same idea as an OptimizationSuggestion, but computed live from
+    the whole profile instead of one resume+job pair."""
+    tips = []
+    if not candidate.headline:
+        tips.append(
+            'Add a professional headline (e.g. "Senior Product Designer") so recruiters '
+            "immediately understand your role."
+        )
+    if not candidate.location:
+        tips.append("Add your location — many recruiters filter candidates by location.")
+
+    experiences = list(candidate.work_experiences.all())
+    if not experiences:
+        tips.append(
+            "Add at least one work experience entry — experience relevancy is 30% of your "
+            "match score, and candidates with no experience on file score the lowest band."
+        )
+    elif any(len(exp.description.split()) < 15 for exp in experiences):
+        tips.append(
+            "Add measurable achievements to your experience descriptions (metrics, project "
+            "scale, team size) — thin descriptions read worse to recruiters skimming your profile."
+        )
+
+    technical_skills = list(candidate.skills.filter(category=CandidateSkill.Category.TECHNICAL))
+    if len(technical_skills) < 5:
+        tips.append(
+            f"Add more technical skills — you have {len(technical_skills)} on file, aim for "
+            "5-8 relevant ones so you match more job requirements."
+        )
+    if any(s.proficiency_pct is None for s in technical_skills):
+        tips.append(
+            "Set a proficiency % on every technical skill — skills below 60% only count as a "
+            "partial match instead of a full one."
+        )
+
+    if not candidate.certifications.exists():
+        tips.append(
+            "Consider adding relevant certifications — they help turn partial skill matches "
+            "into full matches for jobs that list them."
+        )
+
+    if not candidate.resumes.exists():
+        tips.append("Upload or generate a CV — without one you can't apply to any job.")
+
+    return tips
+
+
 def profile_completion_breakdown(candidate):
     personal_fields = [candidate.headline, candidate.location, candidate.current_employer]
     personal_pct = round(sum(1 for f in personal_fields if f) / len(personal_fields) * 100)

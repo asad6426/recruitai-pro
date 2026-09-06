@@ -2,11 +2,16 @@ from django.db import models
 
 
 class Resume(models.Model):
+    class Source(models.TextChoices):
+        UPLOADED = "uploaded", "Uploaded"
+        GENERATED = "generated", "Generated from profile"
+
     candidate = models.ForeignKey(
         "accounts.ApplicantProfile", on_delete=models.CASCADE, related_name="resumes"
     )
-    file = models.FileField(upload_to="resumes/")
+    file = models.FileField(upload_to="resumes/", blank=True)
     filename = models.CharField(max_length=255, blank=True)
+    source = models.CharField(max_length=10, choices=Source.choices, default=Source.UPLOADED)
     is_primary = models.BooleanField(default=False)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 

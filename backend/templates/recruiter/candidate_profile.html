@@ -48,6 +48,10 @@
                 <a href="{{ application.resume.file.url }}" target="_blank" rel="noopener" class="fw-bold text-sm">
                   <i class="bi bi-file-earmark-pdf text-danger me-1"></i>{{ application.resume.filename }}
                 </a>
+                {% elif application.resume %}
+                <a href="{% url 'resume_print' application.resume.pk %}" class="fw-bold text-sm">
+                  <i class="bi bi-file-earmark-text text-primary me-1"></i>{{ application.resume.filename }}
+                </a>
                 {% else %}
                 <div class="text-sm ra-muted">No resume on file</div>
                 {% endif %}

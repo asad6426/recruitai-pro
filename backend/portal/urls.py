@@ -1,10 +1,11 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path, reverse_lazy
 
-from . import views_applicant, views_auth, views_marketing, views_recruiter
+from . import views, views_applicant, views_auth, views_marketing, views_recruiter
 
 urlpatterns = [
     path("", views_marketing.index, name="index"),
+    path("resumes/<int:resume_id>/print/", views.resume_print, name="resume_print"),
     # --- auth ---------------------------------------------------------
     path("signup/", views_auth.signup, name="signup"),
     path("role-select/", views_auth.role_select, name="role_select"),
@@ -92,6 +93,35 @@ urlpatterns = [
     path("applicant/jobs/<int:job_id>/save/", views_applicant.saved_job_toggle, name="applicant_saved_job_toggle"),
     path("applicant/resumes/upload/", views_applicant.resume_upload, name="applicant_resume_upload"),
     path("applicant/profile/", views_applicant.profile_edit, name="applicant_profile_edit"),
+    path("applicant/profile/experience/add/", views_applicant.work_experience_add, name="applicant_experience_add"),
+    path(
+        "applicant/profile/experience/<int:experience_id>/delete/",
+        views_applicant.work_experience_delete,
+        name="applicant_experience_delete",
+    ),
+    path("applicant/profile/education/add/", views_applicant.education_add, name="applicant_education_add"),
+    path(
+        "applicant/profile/education/<int:education_id>/delete/",
+        views_applicant.education_delete,
+        name="applicant_education_delete",
+    ),
+    path("applicant/profile/skills/add/", views_applicant.skill_add, name="applicant_skill_add"),
+    path(
+        "applicant/profile/skills/<int:skill_id>/delete/",
+        views_applicant.skill_delete,
+        name="applicant_skill_delete",
+    ),
+    path(
+        "applicant/profile/certifications/add/",
+        views_applicant.certification_add,
+        name="applicant_certification_add",
+    ),
+    path(
+        "applicant/profile/certifications/<int:certification_id>/delete/",
+        views_applicant.certification_delete,
+        name="applicant_certification_delete",
+    ),
+    path("applicant/profile/generate-cv/", views_applicant.generate_cv, name="applicant_generate_cv"),
     path("applicant/applications/", views_applicant.applications_list, name="applicant_applications"),
     path("applicant/interviews/", views_applicant.interviews_list, name="applicant_interviews"),
     path("applicant/skills/", views_applicant.skill_insights, name="applicant_skill_insights"),

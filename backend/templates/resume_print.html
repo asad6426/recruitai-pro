@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ candidate.user.get_full_name }} — CV &middot; RecruitAI Pro{% endblock %}
+
+{% block extra_head %}
+<style>
+  body { background: var(--ra-bg); }
+  .cv-toolbar { max-width: 780px; margin: 1.5rem auto 0; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; }
+  .cv-sheet { max-width: 780px; margin: 1rem auto 3rem; background: #fff; border-radius: var(--ra-radius); box-shadow: var(--ra-shadow); padding: 3rem; color: #1c2434; }
+  .cv-sheet h1 { font-size: 1.75rem; margin-bottom: .25rem; }
+  .cv-section + .cv-section { margin-top: 1.75rem; }
+  .cv-section h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--ra-blue); border-bottom: 2px solid var(--ra-blue-050); padding-bottom: .375rem; margin-bottom: .875rem; }
+  .cv-entry + .cv-entry { margin-top: 1rem; }
+  .cv-entry__row { display: flex; justify-content: space-between; gap: 1rem; font-weight: 600; }
+  .cv-entry__meta { color: var(--ra-text-muted); font-size: .8125rem; }
+  .cv-skill-chip { display: inline-block; background: var(--ra-neutral-bg); border-radius: 999px; padding: .2rem .7rem; font-size: .8125rem; margin: 0 .3rem .3rem 0; }
+  @media print {
+    .cv-toolbar { display: none; }
+    body { background: #fff; }
+    .cv-sheet { box-shadow: none; margin: 0; padding: 0; max-width: 100%; }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+
+<div class="cv-toolbar">
+  {% if is_owner %}
+  <a href="{% url 'applicant_profile_edit' %}" class="btn btn-outline-neutral btn-sm"><i class="bi bi-arrow-left me-1"></i> Back to Profile</a>
+  {% else %}
+  <span></span>
+  {% endif %}
+  <button type="button" class="btn btn-primary btn-sm" onclick="window.print()"><i class="bi bi-printer me-1"></i> Print / Save as PDF</button>
+</div>
+
+<div class="cv-sheet">
+  <h1>{{ candidate.user.get_full_name }}</h1>
+  <p class="ra-muted mb-1">{{ candidate.headline }}{% if candidate.current_employer %} &middot; {{ candidate.current_employer }}{% endif %}</p>
+  <p class="text-sm ra-muted mb-0">
+    {{ candidate.user.email }}{% if candidate.location %} &bull; {{ candidate.location }}{% endif %}
+  </p>
+
+  {% if work_experiences %}
+  <div class="cv-section">
+    <h2>Experience</h2>
+    {% for exp in work_experiences %}
+    <div class="cv-entry">
+      <div class="cv-entry__row">
+        <span>{{ exp.title }} — {{ exp.company }}</span>
+        <span class="cv-entry__meta">{{ exp.start_date|date:"M Y" }} – {% if exp.end_date %}{{ exp.end_date|date:"M Y" }}{% else %}Present{% endif %}</span>
+      </div>
+      {% if exp.location %}<div class="cv-entry__meta mb-1">{{ exp.location }}</div>{% endif %}
+      {% if exp.description %}<p class="text-sm mb-0">{{ exp.description }}</p>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if education %}
+  <div class="cv-section">
+    <h2>Education</h2>
+    {% for edu in education %}
+    <div class="cv-entry">
+      <div class="cv-entry__row">
+        <span>{{ edu.degree }} — {{ edu.institution }}</span>
+        {% if edu.start_year %}<span class="cv-entry__meta">{{ edu.start_year }}–{% if edu.end_year %}{{ edu.end_year }}{% else %}Present{% endif %}</span>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if technical_skills %}
+  <div class="cv-section">
+    <h2>Technical Skills</h2>
+    {% for cs in technical_skills %}<span class="cv-skill-chip">{{ cs.skill.name }}{% if cs.proficiency_pct %} — {{ cs.proficiency_pct }}%{% endif %}</span>{% endfor %}
+  </div>
+  {% endif %}
+
+  {% if soft_skills %}
+  <div class="cv-section">
+    <h2>Soft Skills</h2>
+    {% for cs in soft_skills %}<span class="cv-skill-chip">{{ cs.skill.name }}</span>{% endfor %}
+  </div>
+  {% endif %}
+
+  {% if certifications %}
+  <div class="cv-section">
+    <h2>Certifications</h2>
+    {% for cert in certifications %}<span class="cv-skill-chip">{{ cert.name }}</span>{% endfor %}
+  </div>
+  {% endif %}
+
+  {% if not work_experiences and not education and not technical_skills and not soft_skills and not certifications %}
+  <div class="cv-section">
+    <p class="ra-muted text-sm mb-0">This profile doesn't have any experience, education, or skills on file yet — add some from the Profile page to fill out this CV.</p>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

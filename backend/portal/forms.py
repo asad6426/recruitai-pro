@@ -5,6 +5,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
 from applications.models import Interview
+from candidates.models import CandidateSkill
 from jobs.models import Job
 
 User = get_user_model()
@@ -86,6 +87,38 @@ class RecruiterProfileForm(forms.Form):
 
 class MessageCandidateForm(forms.Form):
     body = forms.CharField(widget=forms.Textarea, min_length=1)
+
+
+class WorkExperienceForm(forms.Form):
+    title = forms.CharField(max_length=150)
+    company = forms.CharField(max_length=150)
+    location = forms.CharField(max_length=120, required=False)
+    start_date = forms.DateField()
+    end_date = forms.DateField(required=False)
+    description = forms.CharField(widget=forms.Textarea, required=False)
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get("start_date") and cleaned.get("end_date") and cleaned["start_date"] > cleaned["end_date"]:
+            raise ValidationError("Start date can't be after end date.")
+        return cleaned
+
+
+class EducationForm(forms.Form):
+    degree = forms.CharField(max_length=150)
+    institution = forms.CharField(max_length=150)
+    start_year = forms.IntegerField(required=False, min_value=1950, max_value=2100)
+    end_year = forms.IntegerField(required=False, min_value=1950, max_value=2100)
+
+
+class CandidateSkillForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    category = forms.ChoiceField(choices=CandidateSkill.Category.choices)
+    proficiency_pct = forms.IntegerField(required=False, min_value=0, max_value=100)
+
+
+class CertificationForm(forms.Form):
+    name = forms.CharField(max_length=150)
 
 
 class PasswordChangeForm(DjangoPasswordChangeForm):

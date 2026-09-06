@@ -8,14 +8,24 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from applications.models import Application, Interview
-from candidates.models import CandidateSkill
+from candidates.models import CandidateSkill, Certification, Education, WorkExperience
 from jobs.models import Job, SavedJob
 from notifications.models import Notification
 from resumes.models import OptimizationSuggestion, Resume, ResumeAnalysis, ResumeSkillMatch
+from taxonomy.models import Skill
 
 from . import services
 from .decorators import role_required
-from .forms import ApplicantProfileForm, ApplyForm, PasswordChangeForm, ResumeUploadForm
+from .forms import (
+    ApplicantProfileForm,
+    ApplyForm,
+    CandidateSkillForm,
+    CertificationForm,
+    EducationForm,
+    PasswordChangeForm,
+    ResumeUploadForm,
+    WorkExperienceForm,
+)
 
 
 def _candidate(request):
@@ -154,6 +164,8 @@ def apply(request, job_id):
 
     resume = get_object_or_404(Resume, pk=form.cleaned_data["resume_id"], candidate=candidate)
     try:
+        if not ResumeAnalysis.objects.filter(resume=resume, job=job).exists():
+            services.run_resume_analysis(resume, job)
         application = Application.objects.create(
             candidate=candidate,
             job=job,
@@ -164,8 +176,6 @@ def apply(request, job_id):
             match_pct=services.match_percent_for(candidate, job),
             ats_score=services.resume_score_for(resume),
         )
-        if not ResumeAnalysis.objects.filter(resume=resume, job=job).exists():
-            services.run_resume_analysis(resume, job)
         services.notify_new_application(application)
         messages.success(request, f"Application submitted to {job.organization.name}.")
     except IntegrityError:
@@ -214,8 +224,131 @@ def profile_edit(request):
             }
         )
 
-    context = {"active_nav": "profile", "candidate": candidate, "form": form}
+    context = {
+        "active_nav": "profile",
+        "candidate": candidate,
+        "form": form,
+        "work_experiences": candidate.work_experiences.all(),
+        "education": candidate.education.all(),
+        "technical_skills": candidate.skills.filter(category=CandidateSkill.Category.TECHNICAL).select_related(
+            "skill"
+        ),
+        "soft_skills": candidate.skills.filter(category=CandidateSkill.Category.SOFT).select_related("skill"),
+        "certifications": candidate.certifications.all(),
+        "work_experience_form": WorkExperienceForm(),
+        "education_form": EducationForm(),
+        "skill_form": CandidateSkillForm(),
+        "certification_form": CertificationForm(),
+        "ats_tips": services.profile_ats_tips(candidate),
+        "generated_resume": candidate.resumes.filter(source=Resume.Source.GENERATED).first(),
+    }
     return render(request, "applicant/profile.html", context)
+
+
+@role_required("applicant")
+@require_POST
+def work_experience_add(request):
+    candidate = _candidate(request)
+    form = WorkExperienceForm(request.POST)
+    if form.is_valid():
+        WorkExperience.objects.create(candidate=candidate, **form.cleaned_data)
+        messages.success(request, "Work experience added.")
+    else:
+        messages.error(request, "Couldn't add that work experience — check the dates.")
+    return redirect("applicant_profile_edit")
+
+
+@role_required("applicant")
+@require_POST
+def work_experience_delete(request, experience_id):
+    get_object_or_404(WorkExperience, pk=experience_id, candidate=_candidate(request)).delete()
+    messages.success(request, "Work experience removed.")
+    return redirect("applicant_profile_edit")
+
+
+@role_required("applicant")
+@require_POST
+def education_add(request):
+    candidate = _candidate(request)
+    form = EducationForm(request.POST)
+    if form.is_valid():
+        Education.objects.create(candidate=candidate, **form.cleaned_data)
+        messages.success(request, "Education added.")
+    else:
+        messages.error(request, "Couldn't add that education entry.")
+    return redirect("applicant_profile_edit")
+
+
+@role_required("applicant")
+@require_POST
+def education_delete(request, education_id):
+    get_object_or_404(Education, pk=education_id, candidate=_candidate(request)).delete()
+    messages.success(request, "Education removed.")
+    return redirect("applicant_profile_edit")
+
+
+@role_required("applicant")
+@require_POST
+def skill_add(request):
+    candidate = _candidate(request)
+    form = CandidateSkillForm(request.POST)
+    if form.is_valid():
+        skill, _ = Skill.objects.get_or_create(name=form.cleaned_data["name"].strip())
+        CandidateSkill.objects.update_or_create(
+            candidate=candidate,
+            skill=skill,
+            defaults={
+                "category": form.cleaned_data["category"],
+                "proficiency_pct": form.cleaned_data["proficiency_pct"],
+            },
+        )
+        messages.success(request, "Skill added.")
+    else:
+        messages.error(request, "Couldn't add that skill.")
+    return redirect("applicant_profile_edit")
+
+
+@role_required("applicant")
+@require_POST
+def skill_delete(request, skill_id):
+    get_object_or_404(CandidateSkill, pk=skill_id, candidate=_candidate(request)).delete()
+    messages.success(request, "Skill removed.")
+    return redirect("applicant_profile_edit")
+
+
+@role_required("applicant")
+@require_POST
+def certification_add(request):
+    candidate = _candidate(request)
+    form = CertificationForm(request.POST)
+    if form.is_valid():
+        Certification.objects.create(candidate=candidate, **form.cleaned_data)
+        messages.success(request, "Certification added.")
+    else:
+        messages.error(request, "Couldn't add that certification.")
+    return redirect("applicant_profile_edit")
+
+
+@role_required("applicant")
+@require_POST
+def certification_delete(request, certification_id):
+    get_object_or_404(Certification, pk=certification_id, candidate=_candidate(request)).delete()
+    messages.success(request, "Certification removed.")
+    return redirect("applicant_profile_edit")
+
+
+@role_required("applicant")
+@require_POST
+def generate_cv(request):
+    candidate = _candidate(request)
+    resume, created = Resume.objects.get_or_create(
+        candidate=candidate,
+        source=Resume.Source.GENERATED,
+        defaults={"filename": "My RecruitAI CV", "is_primary": not candidate.resumes.exists()},
+    )
+    if created:
+        messages.success(request, "Your CV is ready — view or print it below.")
+    return redirect("resume_print", resume_id=resume.pk)
 
 
 @role_required("applicant")
