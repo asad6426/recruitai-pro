@@ -31,8 +31,8 @@ Django admin (every model is registered).
 | `organizations` | `Organization` | the company on a job posting / "About [Company]" card on job-details.html |
 | `taxonomy` | `Skill` | shared skill vocabulary reused by jobs, candidates, and resume analysis |
 | `jobs` | `Job`, `JobSkill`, `JobRequirement`, `JobResponsibility`, `JobBenefit`, `SavedJob` | post-job.html, jobs.html, browse-jobs.html, job-details.html |
-| `candidates` | `WorkExperience`, `Education`, `CandidateSkill`, `Certification` | candidate-profile.html Overview/Experience/Skills tabs |
-| `resumes` | `Resume`, `ResumeAnalysis`, `ResumeSkillMatch`, `OptimizationSuggestion` | resume-analysis.html |
+| `candidates` | `WorkExperience`, `Education`, `CandidateSkill`, `Certification` | candidate-profile.html Overview/Experience/Skills tabs, and the Profile page's CV builder (add/edit/delete these directly, no upload needed) |
+| `resumes` | `Resume`, `ResumeAnalysis`, `ResumeSkillMatch`, `OptimizationSuggestion` | resume-analysis.html. `Resume.source` (`uploaded`/`generated`) distinguishes a real uploaded file from one rendered live from profile data via `resume_print.html` — a generated resume has `file` empty by design |
 | `applications` | `Application`, `Note`, `Interview` | candidates.html table + drawer, candidate-profile.html Notes tab, dashboard "Interviews Today", the Interviews list pages |
 | `notifications` | `Notification` | the bell icon + Notifications page on both sides; new-application alerts, interview-scheduled alerts, stage-change alerts, and recruiter → candidate direct messages |
 | `portal` | *(no models)* | every view, form, URL, and template — the app itself. Split into `views_marketing.py`, `views_auth.py`, `views_recruiter.py`, `views_applicant.py`, with shared computed-value logic in `services.py` |

@@ -66,7 +66,9 @@ Reduced-motion preferences are respected: animations collapse to instant rather 
 ## Architecture — `backend/` (the real application)
 
 `backend/portal/` is where the actual app lives — not just data models. It's split by
-role/purpose rather than one `views.py`:
+role/purpose rather than one `views.py` — the one exception is `views.py` itself, kept
+for the rare view neither role owns exclusively (`resume_print`, viewable by a
+candidate or the recruiter reviewing them):
 - `views_marketing.py` — the public landing page.
 - `views_auth.py` — signup, role-select, login-redirect (Django's built-in
   `LoginView`/`LogoutView`/password-reset views are wired directly in `urls.py`).
@@ -78,7 +80,11 @@ role/purpose rather than one `views.py`:
 - `services.py` — all computed values that don't map 1:1 to a model field (match %,
   resume score, funnel percentages, profile completion, notification triggers) as
   plain functions over real querysets. `run_resume_analysis()` is the deterministic,
-  rule-based "AI" scorer — real computation, not an external API call.
+  rule-based "AI" scorer — real computation, not an external API call, and it reads
+  `JobSkill.weight` when weighing matched/partial skills, so a recruiter's `Figma:3`
+  syntax in the post-job skills field actually changes the score. `profile_ats_tips()`
+  is the same idea applied to a whole profile rather than one resume+job pair — the
+  rule-based tips shown on the applicant Profile page.
 - `forms.py` — plain `forms.Form` subclasses (not `ModelForm`) so field names can be
   hand-matched to the prototype's existing input `id`s/`name`s.
 - `context_processors.py` — `search_quicklinks` (global-search modal data) and
@@ -94,6 +100,18 @@ trigger goes through a `services.notify_*` helper called from the relevant view 
 Viewing the Notifications page marks everything unread as read; there is no per-item
 read toggle. Add a new event type by adding a `Verb` choice + a `notify_*` helper, not
 a new model.
+
+**CV builder / generated resumes**: `Resume.source` is `uploaded` or `generated`. A
+generated resume has `file` empty on purpose — `views_applicant.generate_cv()` just
+`get_or_create`s the row, and `templates/resume_print.html` (extends bare `base.html`,
+no sidebar/topbar chrome) renders it live from the candidate's `WorkExperience` /
+`Education` / `CandidateSkill` / `Certification` records every time it's viewed, so
+editing the profile updates the "CV" with no re-generation step. It's viewable by the
+candidate or by a recruiter whose org the candidate has actually applied to
+(`portal/views.py:resume_print`, permission-checked manually since it's not
+role-gated). Everywhere a resume is linked (dashboard, candidate profile, resume
+analysis), check `resume.file` first and fall back to `{% url 'resume_print' resume.pk %}`
+— never assume `.file.url` is safe to call on a `Resume`.
 
 **Templates** under `backend/templates/` mirror the role split: `auth/`, `marketing/`,
 `recruiter/` (with `base_recruiter.html` + `_sidebar.html`), `applicant/` (with

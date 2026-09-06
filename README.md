@@ -93,7 +93,9 @@ Everything below is a real view + template + database round trip — not mocked 
 - Resume analysis — AI-style match score breakdown, skill gap comparison, optimization
   suggestions, link to the actual uploaded resume file
 - Jobs — list, post new (multi-section form: role details, requirements, screening
-  rules, publish targets), edit, pause/close, delete drafts
+  rules, publish targets), edit, pause/close, delete drafts. Required skills accept an
+  optional `Skill:weight` syntax (e.g. `Figma:3`) that actually shifts match scoring
+  toward higher-weighted skills — not just cosmetic
 - **Interviews** — org-wide upcoming/past interview list
 - **Analytics** — application volume + trend, pipeline-by-stage breakdown, source
   breakdown, top jobs by applicant volume, avg time-to-hire
@@ -105,7 +107,16 @@ Everything below is a real view + template + database round trip — not mocked 
 - Browse jobs — keyword/location filters, per-job match %, save/unsave
 - Job details — skill match breakdown, apply flow (pick a resume, add a note, consent)
 - Resume upload, with the uploaded file actually openable afterward (by both the
-  applicant and the recruiter reviewing them — this used to be a dead end)
+  applicant and the recruiter reviewing them — this used to be a dead end), plus a real
+  "Export Resume" download on the dashboard (used to be a stub toast)
+- **CV builder** — the Profile page lets you add Work Experience, Education, Skills,
+  and Certifications directly (no file needed), then **generate a CV** from that data,
+  **export it to PDF** (browser print), and **apply to jobs with it** exactly like an
+  uploaded resume. The generated CV always reflects your current profile — there's no
+  stale snapshot to re-upload after an edit.
+- **AI Suggestion tips** on the Profile page — rule-based advice on what to fix to
+  raise your ATS score (missing headline/location, thin experience descriptions, too
+  few skills, unrated proficiency, no certifications, no CV on file)
 - **My Applications** — full history of every job applied to, filterable by stage
 - **Interviews** — everything scheduled by recruiters, upcoming and past
 - **Skill Insights** — proficiency bars for your skills, plus a ranked list of skills
@@ -138,7 +149,13 @@ or the Notifications page, and marked read the moment that page is opened.
 - **Resume/ATS scoring is deterministic, not a real AI/LLM call.** `portal/services.py`
   computes match % from real `CandidateSkill` / `JobSkill` / `WorkExperience` overlap —
   same idea as an AI screener, implemented as plain rules so the whole thing runs with
-  no external API key or cost.
+  no external API key or cost. `JobSkill.weight` (recruiter-set per required skill)
+  actually feeds into this math, not just displayed and ignored.
+- **A `Resume` doesn't need a file.** `Resume.source` distinguishes `uploaded` from
+  `generated` — a generated resume has `file` empty and is rendered live from the
+  candidate's profile data (`resume_print.html`) instead of pointing at a stored
+  document. Everywhere a resume is linked to (dashboard, candidate profile, resume
+  analysis), the template falls back to that print view when there's no file.
 - Money/percent/day fields (salary, ATS score, match %) are stored as plain integers,
   not derived at render time — the backend is the source of truth for these numbers.
 
@@ -149,5 +166,54 @@ or the Notifications page, and marked read the moment that page is opened.
 - No email delivery for notifications (only Django's built-in password-reset email).
 - "Join Meeting" and "View Calendar" on the recruiter dashboard are still placeholders
   — there's no real video-call or calendar integration behind them.
+- The generated CV (`resume_print.html`) has one fixed layout/template — no choice of
+  design, section order, or theme.
 - `recruitai-pro/` (the static prototype) is intentionally frozen and not wired to the
   backend — treat it as a design reference, not a thing to keep in sync.
+
+---
+
+## Changelog (what's been done)
+
+- **Auth + core pipeline**: signup, login, logout, role-select, job posting, browsing,
+  and applying — the original working slice.
+- **Profile editing**: both roles can edit name/avatar/role-specific fields; these
+  links used to be dead stubs ("opens in the full product" toasts).
+- **Resume viewing**: uploaded resumes are openable by both the applicant and the
+  recruiter reviewing them (previously a dead end — files were uploaded but never
+  linked anywhere).
+- **Notifications + messaging**: a `notifications` app — new-application alerts to
+  recruiters, interview-scheduled and stage-change alerts to candidates, and
+  recruiter → candidate direct messaging, all with an unread badge on the bell icon.
+- **Filled out every remaining "Soon" sidebar placeholder**: My Applications,
+  Interviews (both roles), Analytics, Skill Insights, Settings (password change).
+- **Per-skill match weighting**: `JobSkill.weight` existed on the model but had no
+  effect on scoring; recruiters can now set it (`Figma:3` syntax) and it actually
+  shifts the match-percentage math.
+- **Export Resume fix**: the dashboard button was a dead stub; now downloads the real
+  uploaded file (or the generated CV, once that existed).
+- **CV builder**: build a profile (experience/education/skills/certifications) without
+  uploading anything, generate a CV from it, export to PDF, apply with it — plus
+  rule-based AI-style tips for raising your ATS score.
+- **Bug fix along the way**: `Application.ats_score` was being read *before* the
+  resume analysis that computes it had run, so every new application stored a
+  stale/zero score instead of the real one.
+
+## Roadmap (what's left / possible next steps)
+
+Nothing here is started — these are candidate next steps, not commitments:
+- **Real-time notifications** — websockets or polling instead of read-on-page-load.
+- **Email delivery** — actually send an email when a notification is created, not
+  just an in-app row.
+- **Calendar/video integration** — make "Join Meeting" and "View Calendar" real
+  (e.g. a generated meeting link, an .ics export).
+- **CV builder polish** — multiple CV templates/themes, section reordering, a proper
+  server-rendered PDF (not just browser print) if a consistent downloadable file
+  matters more than zero new dependencies.
+- **Bulk actions** — bulk resume import (mentioned in the Candidates page mockup but
+  never wired up), bulk stage changes.
+- **Analytics depth** — trend charts over time (currently single-point stats), export
+  to CSV.
+- **Tests** — there is no automated test suite yet; everything so far has been
+  verified via manual Django-shell/test-client smoke tests during development, not
+  checked-in `pytest`/`TestCase` coverage.
