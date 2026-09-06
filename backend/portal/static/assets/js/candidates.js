@@ -116,6 +116,10 @@
         avatar.alt = row.dataset.name;
       }
 
+      drawer.querySelectorAll('[data-drawer-stage-form]').forEach(function (form) {
+        form.action = row.dataset.stageUrl || '';
+      });
+
       var skillWrap = drawer.querySelector('[data-drawer-skills]');
       if (skillWrap) {
         skillWrap.innerHTML = '';

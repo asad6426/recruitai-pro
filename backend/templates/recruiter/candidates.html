@@ -100,7 +100,8 @@
                 data-location="{{ application.candidate.location }}" data-work="{{ application.job.get_workplace_display }}"
                 data-avatar="{% if application.candidate.user.avatar %}{{ application.candidate.user.avatar.url }}{% else %}{% static 'assets/img/avatars/placeholder.svg' %}{% endif %}"
                 data-skills="{{ row.skills|pipe_join }}"
-                data-insight="{{ row.insight }}">
+                data-insight="{{ row.insight }}"
+                data-stage-url="{% url 'recruiter_application_stage' application.pk %}">
               <td><input class="form-check-input row-check" type="checkbox" aria-label="Select {{ row.name }}"></td>
               <td>
                 <div class="ra-cell-person">
@@ -128,6 +129,14 @@
                     <li><a class="dropdown-item" href="{% url 'recruiter_resume_analysis' application.pk %}"><i class="bi bi-file-text me-2"></i>Resume analysis</a></li>
                     <li><a class="dropdown-item" href="{% url 'recruiter_candidate_profile' application.pk %}"><i class="bi bi-calendar-plus me-2"></i>Schedule interview</a></li>
                     <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <form method="post" action="{% url 'recruiter_application_stage' application.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="stage" value="shortlisted">
+                        <input type="hidden" name="next" value="{% url 'recruiter_candidates' %}">
+                        <button type="submit" class="dropdown-item text-success"><i class="bi bi-check-circle me-2"></i>Shortlist</button>
+                      </form>
+                    </li>
                     <li>
                       <form method="post" action="{% url 'recruiter_application_stage' application.pk %}">
                         {% csrf_token %}
@@ -215,12 +224,18 @@
     </div>
 
     <div class="ra-drawer__foot">
-      <button class="btn btn-outline-danger" data-ra-toast="Use the row actions menu to reject for real." data-ra-toast-variant="danger">
-        <i class="bi bi-x-lg me-1"></i> Reject
-      </button>
-      <button class="btn btn-primary" data-ra-toast="Use the row actions menu to shortlist for real." data-ra-toast-variant="success">
-        <i class="bi bi-check-lg me-1"></i> Shortlist
-      </button>
+      <form method="post" data-drawer-stage-form action="">
+        {% csrf_token %}
+        <input type="hidden" name="stage" value="rejected">
+        <input type="hidden" name="next" value="{% url 'recruiter_candidates' %}">
+        <button type="submit" class="btn btn-outline-danger"><i class="bi bi-x-lg me-1"></i> Reject</button>
+      </form>
+      <form method="post" data-drawer-stage-form action="">
+        {% csrf_token %}
+        <input type="hidden" name="stage" value="shortlisted">
+        <input type="hidden" name="next" value="{% url 'recruiter_candidates' %}">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> Shortlist</button>
+      </form>
     </div>
   </aside>
 </div>
