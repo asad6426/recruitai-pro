@@ -198,6 +198,14 @@ or the Notifications page, and marked read the moment that page is opened.
 - **Bug fix along the way**: `Application.ats_score` was being read *before* the
   resume analysis that computes it had run, so every new application stored a
   stale/zero score instead of the real one.
+- **Shortlist button fix**: the candidates-list drawer's Shortlist/Reject buttons were
+  dead stubs (their own toast text admitted it: "Use the row actions menu... for
+  real") — but the row-actions dropdown had no Shortlist option either, so there was no
+  working way to shortlist a candidate from that page at all. Added a real Shortlist
+  option to the dropdown, and wired the drawer's buttons to real per-candidate forms.
+- **Export/Download Report fix**: resume-analysis's "Download Report" button showed a
+  fake "downloaded" success toast without downloading anything; now triggers a real
+  print-to-PDF (same approach as CV export) with the sidebar/topbar/buttons hidden.
 
 ## Roadmap (what's left / possible next steps)
 
