@@ -351,9 +351,12 @@ def post_job(request, job_id=None):
                 JobBenefit.objects.create(job=job, text=line, order=i)
 
             job.job_skills.all().delete()
-            for name in (s.strip() for s in cd["jobSkills"].split(",") if s.strip()):
+            for raw in (s.strip() for s in cd["jobSkills"].split(",") if s.strip()):
+                name, weight = services.parse_weighted_skill(raw)
+                if not name:
+                    continue
                 skill, _ = Skill.objects.get_or_create(name=name)
-                JobSkill.objects.create(job=job, skill=skill, is_required=True, weight=1)
+                JobSkill.objects.create(job=job, skill=skill, is_required=True, weight=weight)
 
             messages.success(
                 request, "Draft saved." if action == "draft" else "Job posted — screening starts now."
@@ -375,7 +378,10 @@ def post_job(request, job_id=None):
                     "jobRequirements": join_lines(job.requirements.all()),
                     "jobResponsibilities": join_lines(job.responsibilities.all()),
                     "jobBenefits": join_lines(job.benefits.all()),
-                    "jobSkills": ", ".join(job.skills.values_list("name", flat=True)),
+                    "jobSkills": ", ".join(
+                        services.format_weighted_skill(js.skill.name, js.weight)
+                        for js in job.job_skills.select_related("skill").all()
+                    ),
                     "teamName": job.team_name,
                     "teamSize": job.team_size,
                     "minExperience": str(job.min_experience_years)

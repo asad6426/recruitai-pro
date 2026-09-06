@@ -117,8 +117,8 @@
         <div class="card-body">
           <div class="mb-4">
             <label class="form-label" for="jobSkills">Required skills</label>
-            <input type="text" class="form-control" id="jobSkills" name="jobSkills" placeholder="Figma, Design Systems, Prototyping" value="{{ form.jobSkills.value|default:'' }}">
-            <div class="form-text text-xs">Comma separated. Weighted highest in the match score.</div>
+            <input type="text" class="form-control" id="jobSkills" name="jobSkills" placeholder="Figma:3, Design Systems, Prototiope" value="{{ form.jobSkills.value|default:'' }}">
+            <div class="form-text text-xs">Comma separated. Add <code>:2</code>–<code>:5</code> after a skill to weight it higher in the match score (e.g. <code>Figma:3</code>) — plain skills default to weight 1.</div>
             <div class="d-flex flex-wrap gap-2 mt-3" id="skillChipPreview"></div>
           </div>
 
@@ -219,10 +219,13 @@ document.addEventListener('DOMContentLoaded', function () {
   var preview = document.getElementById('skillChipPreview');
   function render() {
     preview.innerHTML = '';
-    (input.value || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean).forEach(function (name) {
+    (input.value || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean).forEach(function (entry) {
+      var parts = entry.split(':');
+      var name = parts[0].trim();
+      var weight = parts.length > 1 ? parseInt(parts[1], 10) : 1;
       var chip = document.createElement('span');
       chip.className = 'ra-chip ra-chip--success';
-      chip.textContent = name;
+      chip.textContent = (weight && weight !== 1) ? name + ' ×' + weight : name;
       preview.appendChild(chip);
     });
   }

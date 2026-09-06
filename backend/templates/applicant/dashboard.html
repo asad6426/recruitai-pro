@@ -12,9 +12,15 @@
       {% with top=recommended.0 %}{% if top %}Your top match right now is {{ top.1.title }} at {{ top.1.organization.name }} — {{ top.0 }}%.{% endif %}{% endwith %}
     </p>
   </div>
-  <button class="btn btn-outline-neutral" data-ra-toast="Resume export isn't wired up in this build yet." data-ra-toast-variant="info">
+  {% if primary_resume.file %}
+  <a href="{{ primary_resume.file.url }}" download class="btn btn-outline-neutral">
+    <i class="bi bi-download me-1"></i> Export Resume
+  </a>
+  {% else %}
+  <button class="btn btn-outline-neutral" disabled title="Upload a resume first">
     <i class="bi bi-download me-1"></i> Export Resume
   </button>
+  {% endif %}
 </div>
 
 <div class="row g-3 mb-4">

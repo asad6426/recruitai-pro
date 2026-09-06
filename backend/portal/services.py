@@ -13,6 +13,28 @@ from notifications.models import Notification
 from resumes.models import OptimizationSuggestion, ResumeAnalysis, ResumeSkillMatch
 
 
+MAX_SKILL_WEIGHT = 5
+
+
+def parse_weighted_skill(raw):
+    """Parses a post-job.html skill entry like 'Figma:3' into ('Figma', 3).
+    Plain 'Figma' (no colon) defaults to weight 1. Weight is clamped to
+    1..MAX_SKILL_WEIGHT so a typo can't zero out or blow up the match score."""
+    name, sep, weight_str = raw.rpartition(":")
+    if not sep:
+        return raw.strip(), 1
+    name = name.strip()
+    try:
+        weight = int(weight_str.strip())
+    except ValueError:
+        return name, 1
+    return name, max(1, min(MAX_SKILL_WEIGHT, weight))
+
+
+def format_weighted_skill(name, weight):
+    return f"{name}:{weight}" if weight != 1 else name
+
+
 def match_tier(pct):
     """(label, badge-variant) bucket used for Excellent/Strong/Average/Low-Fit badges."""
     if pct is None:
@@ -38,14 +60,15 @@ def match_percent_for(candidate, job):
         if analysis:
             return analysis.overall_match_pct
 
-    required_skill_ids = set(job.job_skills.filter(is_required=True).values_list("skill_id", flat=True))
-    if not required_skill_ids:
-        required_skill_ids = set(job.job_skills.values_list("skill_id", flat=True))
-    if not required_skill_ids:
+    required_job_skills = list(job.job_skills.filter(is_required=True))
+    if not required_job_skills:
+        required_job_skills = list(job.job_skills.all())
+    if not required_job_skills:
         return None
     candidate_skill_ids = set(candidate.skills.values_list("skill_id", flat=True))
-    overlap = len(required_skill_ids & candidate_skill_ids)
-    return round(overlap / len(required_skill_ids) * 100)
+    total_weight = sum(js.weight for js in required_job_skills) or 1
+    matched_weight = sum(js.weight for js in required_job_skills if js.skill_id in candidate_skill_ids)
+    return round(matched_weight / total_weight * 100)
 
 
 def resume_score_for(resume):
@@ -67,17 +90,20 @@ def run_resume_analysis(resume, job):
     }
 
     matched, partial, missing = [], [], []
+    matched_weight = partial_weight = 0
     for js in job_skills:
         cs = candidate_skills.get(js.skill_id)
         if cs and (cs.proficiency_pct is None or cs.proficiency_pct >= 60):
             matched.append(js.skill)
+            matched_weight += js.weight
         elif cs:
             partial.append(js.skill)
+            partial_weight += js.weight
         else:
             missing.append(js.skill)
 
-    total = len(job_skills) or 1
-    technical_pct = round((len(matched) + 0.5 * len(partial)) / total * 100)
+    total_weight = sum(js.weight for js in job_skills) or 1
+    technical_pct = round((matched_weight + 0.5 * partial_weight) / total_weight * 100)
 
     years = 0.0
     for exp in candidate.work_experiences.all():
@@ -88,7 +114,7 @@ def run_resume_analysis(resume, job):
     else:
         experience_pct = 100 if years > 0 else 60
 
-    keyword_pct = round((len(matched) + len(partial)) / total * 100)
+    keyword_pct = round((matched_weight + partial_weight) / total_weight * 100)
     overall_pct = round(technical_pct * 0.5 + experience_pct * 0.3 + keyword_pct * 0.2)
 
     analysis = ResumeAnalysis.objects.create(
