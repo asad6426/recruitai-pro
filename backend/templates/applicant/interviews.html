@@ -22,6 +22,9 @@
           </div>
           <div class="fw-bold ra-navy text-sm mb-1">{{ interview.application.job.title }}</div>
           <div class="text-xs ra-muted mb-3">{{ interview.application.job.organization.name }} &bull; {{ interview.get_mode_display }}</div>
+          {% if interview.meeting_link %}
+          <a href="{{ interview.meeting_link }}" target="_blank" rel="noopener" class="btn btn-primary w-100 mb-2">Join Meeting</a>
+          {% endif %}
           <a href="{% url 'applicant_job_detail' interview.application.job.pk %}" class="btn btn-outline-neutral w-100">View Job</a>
         </div>
         {% empty %}

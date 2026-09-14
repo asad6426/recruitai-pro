@@ -1,0 +1,50 @@
+{% extends "recruiter/base_recruiter.html" %}
+{% load static %}
+{% block title %}Pay to Publish &middot; RecruitAI Pro{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header"><h2 class="ra-title mb-0">Pay to Publish</h2></div>
+      <div class="card-body">
+        <p class="text-sm ra-muted">
+          <strong>{{ job.title }}</strong> is saved as a draft. Pay the one-time job
+          posting fee to publish it — screening starts automatically once it's live.
+        </p>
+
+        <div class="d-flex align-items-center justify-content-between border rounded p-3 mb-3" style="border-color:var(--ra-border)!important;">
+          <span class="text-sm fw-semibold">Job posting fee</span>
+          <span class="fs-4 fw-bold ra-navy">৳{{ fee }}</span>
+        </div>
+
+        <form method="post" action="{% url 'recruiter_job_payment_initiate' job.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary w-100 btn-lg">
+            <i class="bi bi-credit-card me-1"></i> Pay with SSLCommerz
+          </button>
+        </form>
+        <p class="text-xs ra-muted mt-2 mb-0">
+          You'll be redirected to SSLCommerz's checkout (sandbox mode — no real money moves).
+        </p>
+
+        {% if recent_payments %}
+        <hr class="my-4">
+        <div class="ra-eyebrow mb-2">Previous attempts</div>
+        {% for p in recent_payments %}
+        <div class="d-flex justify-content-between text-sm mb-1">
+          <span class="ra-muted">{{ p.created_at|date:"M d, Y g:i A" }}</span>
+          <span class="ra-badge ra-badge--{% if p.status == 'success' %}success{% elif p.status == 'failed' %}danger{% elif p.status == 'cancelled' %}neutral{% else %}warning{% endif %}">{{ p.get_status_display }}</span>
+        </div>
+        {% endfor %}
+        {% endif %}
+      </div>
+      <div class="card-footer">
+        <a href="{% url 'recruiter_jobs' %}" class="text-sm">Back to Jobs (stays as draft)</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

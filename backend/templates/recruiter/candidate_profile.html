@@ -97,11 +97,13 @@
             <label class="form-label text-sm" for="scheduledAt">Date &amp; time</label>
             <input type="datetime-local" class="form-control form-control-sm mb-2" id="scheduledAt" name="scheduled_at" required>
             <label class="form-label text-sm" for="interviewMode">Mode</label>
-            <select class="form-select form-select-sm mb-3" id="interviewMode" name="mode">
+            <select class="form-select form-select-sm mb-2" id="interviewMode" name="mode">
               <option value="video">Video</option>
               <option value="in_person">In person</option>
               <option value="panel">Panel</option>
             </select>
+            <label class="form-label text-sm" for="interviewMeetingLink">Meeting link <span class="ra-muted">(optional)</span></label>
+            <input type="url" class="form-control form-control-sm mb-3" id="interviewMeetingLink" name="meeting_link" placeholder="https://meet.google.com/xxx-xxxx-xxx">
             <button type="submit" class="btn btn-primary btn-sm w-100">Confirm Interview</button>
           </form>
         </div>

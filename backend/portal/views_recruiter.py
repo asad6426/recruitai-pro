@@ -3,18 +3,23 @@ from django.contrib.auth import update_session_auth_hash
 from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+
+import uuid
+
+from django.conf import settings
 
 from accounts.models import ApplicantProfile, RecruiterGoal, User
 from applications.models import Application, Interview, Note
 from candidates.models import CandidateSkill
-from jobs.models import Job, JobBenefit, JobRequirement, JobResponsibility, JobSkill
+from jobs.models import Job, JobBenefit, JobPayment, JobRequirement, JobResponsibility, JobSkill
 from notifications.models import Notification
 from resumes.models import OptimizationSuggestion, ResumeAnalysis, ResumeSkillMatch
 from taxonomy.models import Skill
 
-from . import services
+from . import services, sslcommerz
 from .decorators import role_required
 from .forms import (
     InterviewForm,
@@ -332,12 +337,20 @@ def post_job(request, job_id=None):
             job.publish_to_partner_boards = cd["chBoard"]
 
             action = request.POST.get("action", "publish")
+            has_paid_before = bool(job.pk) and JobPayment.objects.filter(
+                job=job, status=JobPayment.Status.SUCCESS
+            ).exists()
+
             if action == "draft":
                 job.status = Job.Status.DRAFT
-            else:
+            elif has_paid_before:
                 job.status = Job.Status.OPEN
                 if not job.published_at:
                     job.published_at = timezone.now()
+            else:
+                # First-time publish needs the posting fee paid first — stays
+                # a draft until job_payment_confirm's flow marks it paid.
+                job.status = Job.Status.DRAFT
             job.save()
 
             job.requirements.all().delete()
@@ -357,6 +370,10 @@ def post_job(request, job_id=None):
                     continue
                 skill, _ = Skill.objects.get_or_create(name=name)
                 JobSkill.objects.create(job=job, skill=skill, is_required=True, weight=weight)
+
+            if action == "publish" and not has_paid_before:
+                messages.info(request, "Almost there — pay the job posting fee to publish this role.")
+                return redirect("recruiter_job_payment_confirm", job_id=job.pk)
 
             messages.success(
                 request, "Draft saved." if action == "draft" else "Job posted — screening starts now."
@@ -412,8 +429,62 @@ def post_job(request, job_id=None):
         "job": job,
         "hiring_managers": hiring_managers,
         "expected_reach": ApplicantProfile.objects.count(),
+        "job_posting_fee": settings.JOB_POSTING_FEE_BDT,
     }
     return render(request, "recruiter/post_job.html", context)
+
+
+@role_required("recruiter")
+def job_payment_confirm(request, job_id):
+    job = get_object_or_404(Job, pk=job_id, organization=_org(request))
+    if job.payments.filter(status=JobPayment.Status.SUCCESS).exists():
+        messages.info(request, f"{job.title} is already paid for.")
+        return redirect("recruiter_jobs")
+
+    context = {
+        "active_nav": "jobs",
+        "page_title": "Pay to Publish",
+        "job": job,
+        "fee": settings.JOB_POSTING_FEE_BDT,
+        "recent_payments": job.payments.order_by("-created_at")[:5],
+    }
+    return render(request, "recruiter/job_payment_confirm.html", context)
+
+
+@role_required("recruiter")
+@require_POST
+def job_payment_initiate(request, job_id):
+    job = get_object_or_404(Job, pk=job_id, organization=_org(request))
+    payment = JobPayment.objects.create(
+        job=job,
+        initiated_by=request.user,
+        tran_id=f"JOB{job.pk}-{uuid.uuid4().hex[:12]}",
+        amount=settings.JOB_POSTING_FEE_BDT,
+    )
+
+    gateway_url, raw = sslcommerz.init_session(
+        tran_id=payment.tran_id,
+        amount=payment.amount,
+        success_url=request.build_absolute_uri(reverse("recruiter_job_payment_success")),
+        fail_url=request.build_absolute_uri(reverse("recruiter_job_payment_fail")),
+        cancel_url=request.build_absolute_uri(reverse("recruiter_job_payment_cancel")),
+        ipn_url=request.build_absolute_uri(reverse("recruiter_job_payment_ipn")),
+        customer={
+            "name": request.user.get_full_name(),
+            "email": request.user.email,
+        },
+    )
+
+    if not gateway_url:
+        payment.gateway_response = raw
+        payment.status = JobPayment.Status.FAILED
+        payment.save(update_fields=["gateway_response", "status"])
+        messages.error(
+            request, f"Could not start payment ({raw.get('failedreason', 'unknown error')}). Try again."
+        )
+        return redirect("recruiter_job_payment_confirm", job_id=job.pk)
+
+    return redirect(gateway_url)
 
 
 @role_required("recruiter")
@@ -440,6 +511,7 @@ def interview_schedule(request, application_id):
             interviewer=request.user,
             scheduled_at=form.cleaned_data["scheduled_at"],
             mode=form.cleaned_data["mode"],
+            meeting_link=form.cleaned_data["meeting_link"],
         )
         services.notify_interview_scheduled(interview)
         messages.success(request, "Interview scheduled.")
@@ -554,6 +626,11 @@ def settings_view(request):
 def job_status_update(request, job_id):
     job = get_object_or_404(Job, pk=job_id, organization=_org(request))
     status = request.POST.get("status")
+
+    if status == Job.Status.OPEN and not job.payments.filter(status=JobPayment.Status.SUCCESS).exists():
+        messages.info(request, "Pay the job posting fee to publish this role.")
+        return redirect("recruiter_job_payment_confirm", job_id=job.pk)
+
     if status in (Job.Status.OPEN, Job.Status.PAUSED, Job.Status.CLOSED):
         job.status = status
         if status == Job.Status.OPEN and not job.published_at:

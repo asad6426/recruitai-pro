@@ -368,15 +368,18 @@ def notify_new_application(application):
 
 def notify_interview_scheduled(interview):
     application = interview.application
+    message = (
+        f"Interview scheduled for {application.job.title} on "
+        f"{timezone.localtime(interview.scheduled_at):%b %d, %Y at %I:%M %p}."
+    )
+    if interview.meeting_link:
+        message += f" Join here: {interview.meeting_link}"
     Notification.objects.create(
         recipient=application.candidate.user,
         sender=interview.interviewer,
         application=application,
         verb=Notification.Verb.INTERVIEW_SCHEDULED,
-        message=(
-            f"Interview scheduled for {application.job.title} on "
-            f"{timezone.localtime(interview.scheduled_at):%b %d, %Y at %I:%M %p}."
-        ),
+        message=message,
     )
 
 

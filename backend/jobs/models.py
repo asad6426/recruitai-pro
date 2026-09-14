@@ -81,6 +81,37 @@ class Job(models.Model):
         return f"{self.title} @ {self.organization}"
 
 
+class JobPayment(models.Model):
+    """One SSLCommerz transaction attempt to pay the job-posting fee. A job
+    can have several (retries after a failed/cancelled attempt) — the job
+    only goes live once one of them reaches SUCCESS."""
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending"
+        SUCCESS = "success", "Success"
+        FAILED = "failed", "Failed"
+        CANCELLED = "cancelled", "Cancelled"
+
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="payments")
+    initiated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="job_payments"
+    )
+    tran_id = models.CharField(max_length=64, unique=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    currency = models.CharField(max_length=10, default="BDT")
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
+    val_id = models.CharField(max_length=100, blank=True)  # SSLCommerz validation id, set on success
+    gateway_response = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.tran_id} — {self.job} ({self.status})"
+
+
 class JobSkill(models.Model):
     """Through table: a required/nice-to-have skill for a job, weighted for match scoring."""
 

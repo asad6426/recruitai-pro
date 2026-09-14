@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Payment {{ outcome|title }} &middot; RecruitAI Pro{% endblock %}
+
+{% block body %}
+<div class="d-flex align-items-center justify-content-center" style="min-height:100vh; background:var(--ra-bg);">
+  <div class="card" style="max-width:28rem; width:100%;">
+    <div class="card-body text-center p-4">
+      {% if outcome == "success" %}
+        <div class="mb-3"><i class="bi bi-check-circle-fill" style="font-size:3rem; color:var(--ra-success);"></i></div>
+        <h2 class="mb-2" style="font-size:1.375rem;">Payment received</h2>
+        <p class="ra-muted text-sm mb-4">{{ payment.job.title }} is now live and open to applicants.</p>
+      {% elif outcome == "fail" %}
+        <div class="mb-3"><i class="bi bi-x-circle-fill" style="font-size:3rem; color:var(--ra-danger);"></i></div>
+        <h2 class="mb-2" style="font-size:1.375rem;">Payment failed</h2>
+        <p class="ra-muted text-sm mb-4">{{ payment.job.title|default:"Your job" }} is still saved as a draft — no charge was made. You can try again.</p>
+      {% elif outcome == "cancel" %}
+        <div class="mb-3"><i class="bi bi-dash-circle-fill" style="font-size:3rem; color:var(--ra-warning);"></i></div>
+        <h2 class="mb-2" style="font-size:1.375rem;">Payment cancelled</h2>
+        <p class="ra-muted text-sm mb-4">{{ payment.job.title|default:"Your job" }} is still saved as a draft.</p>
+      {% else %}
+        <div class="mb-3"><i class="bi bi-exclamation-triangle-fill" style="font-size:3rem; color:var(--ra-warning);"></i></div>
+        <h2 class="mb-2" style="font-size:1.375rem;">Couldn't verify payment</h2>
+        <p class="ra-muted text-sm mb-4">We couldn't confirm this transaction with SSLCommerz. If money was deducted, it will be reconciled shortly — otherwise no charge was made.</p>
+      {% endif %}
+
+      {% if payment.job_id and outcome != "success" %}
+      <a href="{% url 'recruiter_job_payment_confirm' payment.job_id %}" class="btn btn-outline-neutral w-100 mb-2">Try Again</a>
+      {% endif %}
+      <a href="{% url 'recruiter_jobs' %}" class="btn btn-primary w-100">Back to Jobs</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

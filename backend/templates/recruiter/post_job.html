@@ -203,6 +203,9 @@
       <div class="card">
         <div class="card-body d-grid gap-2">
           <button type="submit" name="action" value="publish" class="btn btn-primary btn-lg">{% if job.status == 'open' %}Save Changes{% else %}Publish Job{% endif %}</button>
+          {% if job.status != 'open' %}
+          <p class="text-xs ra-muted text-center mb-0">You'll be asked to pay the ৳{{ job_posting_fee }} posting fee before it goes live.</p>
+          {% endif %}
           <button type="submit" name="action" value="draft" class="btn btn-outline-neutral">Save as Draft</button>
           <a href="{% url 'recruiter_jobs' %}" class="btn btn-link ra-muted text-decoration-none">Cancel</a>
         </div>

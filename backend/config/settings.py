@@ -138,6 +138,16 @@ STATIC_URL = 'static/'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+
+# SSLCommerz (job-posting fee)
+# Defaults are SSLCommerz's publicly documented sandbox demo credentials —
+# https://developer.sslcommerz.com — fine for testing, override via env vars
+# for a real (even sandbox-tier) merchant account.
+SSLCOMMERZ_STORE_ID = os.environ.get('SSLCOMMERZ_STORE_ID', 'testbox')
+SSLCOMMERZ_STORE_PASSWORD = os.environ.get('SSLCOMMERZ_STORE_PASSWORD', 'qwerty')
+SSLCOMMERZ_IS_SANDBOX = os.environ.get('SSLCOMMERZ_IS_SANDBOX', 'true').lower() == 'true'
+JOB_POSTING_FEE_BDT = int(os.environ.get('JOB_POSTING_FEE_BDT', '500'))
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

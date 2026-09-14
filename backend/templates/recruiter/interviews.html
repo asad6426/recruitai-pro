@@ -30,6 +30,9 @@
               <div class="text-xs ra-muted">{{ interview.application.job.title }}</div>
             </div>
           </div>
+          {% if interview.meeting_link %}
+          <a href="{{ interview.meeting_link }}" target="_blank" rel="noopener" class="btn btn-primary w-100 mb-2">Join Meeting</a>
+          {% endif %}
           <a href="{% url 'recruiter_candidate_profile' interview.application.pk %}" class="btn btn-outline-neutral w-100">View Profile</a>
         </div>
         {% empty %}

@@ -181,8 +181,8 @@
               <div class="text-xs ra-muted">{{ interview.application.job.title }}</div>
             </div>
           </div>
-          {% if interview.mode == 'video' %}
-          <button class="btn btn-primary w-100" data-ra-toast="Opening meeting room…" data-ra-toast-variant="info">Join Meeting</button>
+          {% if interview.meeting_link %}
+          <a href="{{ interview.meeting_link }}" target="_blank" rel="noopener" class="btn btn-primary w-100">Join Meeting</a>
           {% else %}
           <a href="{% url 'recruiter_candidate_profile' interview.application.pk %}" class="btn btn-outline-neutral w-100">View Profile</a>
           {% endif %}

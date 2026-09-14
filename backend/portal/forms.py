@@ -56,6 +56,7 @@ class NoteForm(forms.Form):
 class InterviewForm(forms.Form):
     scheduled_at = forms.DateTimeField()
     mode = forms.ChoiceField(choices=Interview.Mode.choices)
+    meeting_link = forms.URLField(required=False)
 
 
 class ApplyForm(forms.Form):
